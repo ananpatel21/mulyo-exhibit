@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mulyo Exhibit Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&family=Caveat:wght@600;700&family=Poppins:wght@400;600&family=Noto+Sans+Devanagari:wght@400&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 3D viewer leads with a station rail beside it (stacks on phones); ideas and build notes follow */
+:root{
+  --bg:#F4F2EF; --surface:#FFFFFF; --fg:#231C1F; --muted:#6C6266; --line:#E1DAD6;
+  --accent:#8C1D3A; --saffron:#C9741A; --stage:#E7E1DB; --chip:#F3E7E0;
+  --f-display:"Josefin Sans","Century Gothic","Avenir Next",system-ui,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#151213; --surface:#1E1A1B; --fg:#EFE9E5; --muted:#A79CA0; --line:#352E30;
+  --accent:#E46A88; --saffron:#F0A44C; --stage:#2A2425; --chip:#2C2224; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#151213; --surface:#1E1A1B; --fg:#EFE9E5; --muted:#A79CA0; --line:#352E30;
+  --accent:#E46A88; --saffron:#F0A44C; --stage:#2A2425; --chip:#2C2224; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:1320px;margin:0 auto;display:grid;gap:28px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 32px}
+header h1{font-family:var(--f-display);font-weight:300;font-size:clamp(30px,4.4vw,48px);letter-spacing:.04em;line-height:1;margin:0;text-transform:uppercase;text-wrap:balance}
+header h1 b{font-weight:700;color:var(--accent)}
+.flow{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.flow span{padding:3px 8px;border:1px solid var(--line);border-radius:4px}
+.flow span.here{border-color:var(--accent);color:var(--accent);font-weight:500}
+.lede{max-width:68ch;color:var(--muted);margin:6px 0 0}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
+@media (max-width:960px){.main{grid-template-columns:1fr}}
+.viewer{position:relative;height:clamp(380px,68vh,760px);border-radius:10px;overflow:hidden;background:var(--stage);border:1px solid var(--line)}
+.viewer canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.tools{position:absolute;left:10px;top:10px;right:10px;display:flex;flex-wrap:wrap;gap:6px;pointer-events:none}
+.tools button{pointer-events:auto}
+button{font:600 12.5px/1 var(--f-body);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 11px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.hint{position:absolute;left:10px;bottom:10px;font:12px var(--f-mono);color:var(--muted);background:var(--surface);padding:5px 8px;border-radius:5px;border:1px solid var(--line)}
+.dims{position:absolute;right:10px;bottom:10px;font:12px var(--f-mono);color:var(--muted);background:var(--surface);padding:5px 8px;border-radius:5px;border:1px solid var(--line)}
+aside{display:grid;gap:14px;min-width:0}
+.list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.list button{width:100%;text-align:left;display:flex;gap:8px;align-items:center;padding:8px 9px;font-weight:400}
+.list button .n{font:500 11px var(--f-mono);color:var(--muted);min-width:18px}
+.list button[aria-current="true"]{border-color:var(--accent);background:var(--chip)}
+.list button[aria-current="true"] .n{color:var(--accent)}
+.detail{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 16px;min-width:0}
+.detail .kick{font:500 11.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--saffron);margin:0 0 4px}
+.detail h2{font-family:var(--f-display);font-weight:600;font-size:28px;letter-spacing:.03em;margin:0;line-height:1.1;text-transform:uppercase}
+.detail h2 small{display:block;font-weight:300;font-size:16px;letter-spacing:.06em;color:var(--muted);margin-top:4px}
+.detail dl{margin:14px 0 0;display:grid;gap:11px}
+.detail dt{font:600 11px var(--f-body);letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+.detail dd{margin:2px 0 0}
+.detail .foot{font-family:var(--f-mono);font-size:12px;background:var(--chip);border-radius:4px;padding:2px 6px}
+.take{margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line);font-style:italic}
+section h3{font-family:var(--f-display);font-weight:400;font-size:22px;letter-spacing:.06em;text-transform:uppercase;margin:0 0 12px}
+.ideas{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.idea{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 15px}
+.idea h4{margin:0 0 4px;font-size:15px}
+.idea p{margin:0;color:var(--muted);font-size:14px}
+.tag{display:inline-block;font:500 10.5px var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--saffron);margin-bottom:6px}
+.notes{margin:0;padding-left:18px;max-width:80ch;display:grid;gap:6px;color:var(--muted)}
+.notes b{color:var(--fg);font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.vcard{aspect-ratio:6/4;max-width:100%;background:#FBF6EE;color:#2A1E22;border-radius:6px;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;box-shadow:0 1px 0 var(--line),0 6px 18px rgba(40,20,25,.08);border:1px solid var(--line)}
+.vcard .top{background:#8C1D3A;color:#fff;padding:10px 14px 8px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.vcard .top b{font:700 22px/1 var(--f-display);letter-spacing:.06em;text-transform:uppercase}
+.vcard .top span{font:300 13px var(--f-display);letter-spacing:.08em;text-transform:uppercase;color:#F2B66B}
+.vcard .mid{padding:10px 14px;font-size:12.5px;line-height:1.45;min-width:0}
+.vcard .mid i{color:#5A4A50}
+.vcard .mid p{margin:0 0 6px}
+.vcard .mid .try{font-weight:600;color:#8C1D3A}
+.vcard .bot{background:#C9741A;color:#fff;font:500 10.5px var(--f-mono);letter-spacing:.05em;padding:5px 14px;text-transform:uppercase}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1><b>Mulyo</b> Exhibit Plan</h1>
+      <p class="lede">A walk-through mock-up of the 40 × 20 ft values section: eight hands-on stations along a U-shaped path, from the Festival exit to Mandir, Shastras &amp; Sant. Drag to orbit, scroll or pinch to zoom, click any station.</p>
+    </div>
+    <div class="flow" aria-label="Exhibition order"><span>Festival</span>→<span class="here">Mulyo</span>→<span>Mandir, Shastras &amp; Sant</span></div>
+  </header>
+
+  <div class="main">
+    <div class="viewer" id="viewer">
+      <div class="tools">
+        <button id="bOver" aria-pressed="true">Overview</button>
+        <button id="bTop" aria-pressed="false">Floor plan</button>
+        <button id="bWalk" aria-pressed="false">▶ Walk through</button>
+        <button id="bWalls" aria-pressed="true">See-through walls</button>
+        <button id="bLabels" aria-pressed="true">Labels</button>
+        <button id="bLight" aria-pressed="true">Exhibit lighting</button>
+      </div>
+      <div class="dims">1 grid = 1 ft · walls 8 ft</div>
+      <div class="hint" id="hint">Loading model…</div>
+    </div>
+    <aside>
+      <ol class="list" id="list"></ol>
+      <article class="detail" id="detail" aria-live="polite"></article>
+    </aside>
+  </div>
+
+  <section>
+    <h3>Take-home value cards</h3>
+    <p class="lede" style="margin:-4px 0 14px">One 4 × 6 in card per value, stacked in a rack at the Diya Wall. Visitors take the card for the value they lit. Each carries a one-line story and one small thing to try this week.</p>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section>
+    <h3>More ideas to layer in</h3>
+    <div class="ideas">
+      <div class="idea"><span class="tag">Flow</span><h4>Mulyo Passport</h4><p>A fold card with eight boxes, handed out at the welcome wall. One self-inking stamp per station; a finished card earns a diya sticker at the exit. It keeps families moving in order.</p></div>
+      <div class="idea"><span class="tag">Media</span><h4>QR story videos</h4><p>Every panel gets a QR code to its 30-second story video. Visitors watch on their phones, so the only screens needed are the Aadar video and one story TV in the south aisle.</p></div>
+      <div class="idea"><span class="tag">Kids</span><h4>Mushak hunt</h4><p>Hide a small Mushak (Ganeshji's mouse) at each station. Kids count them and tell the volunteer at the Diya Wall for a small prize.</p></div>
+      <div class="idea"><span class="tag">Santosh</span><h4>Gratitude counter</h4><p>A small chalkboard by the wall: “Leaves added today: ___”, updated each hour. People like seeing the number climb.</p></div>
+      <div class="idea"><span class="tag">Kshama</span><h4>Dissolving-paper option</h4><p>Alongside the backpack, visitors write a grudge on water-soluble paper and drop it in a bowl of water. It disappears in seconds.</p></div>
+      <div class="idea"><span class="tag">Vivek</span><h4>Kids' crossword</h4><p>Print a letter-size version of the word search on the back of the passport, so younger visitors can finish it while parents read panels.</p></div>
+      <div class="idea"><span class="tag">Tyag</span><h4>Thank-you cards</h4><p>Add a small ledge with cards so visitors can write to the crews who lent the gear. Deliver them, with a signed banner, after Diwali.</p></div>
+      <div class="idea"><span class="tag">Entrance</span><h4>Rangoli threshold</h4><p>A walk-on rangoli vinyl at the entrance from Festival marks the shift from celebration to values, and gives a natural photo moment.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h3>Notes before you build</h3>
+    <ul class="notes">
+      <li><b>Aisles.</b> Each corridor is 10 ft; with 2.5 ft tables you keep about 7 ft clear, enough for two-way traffic and strollers.</li>
+      <li><b>Spine wall.</b> The 32 ft center wall carries panels on both faces. Confirm whether it can be a hard wall or double-sided pipe-and-drape with panels on frames, and that the south face has power for its story TV. The north wall needs power for the Aadar screen. The north face now carries the 25 ft Ramayan mural.</li>
+      <li><b>Values chosen.</b> The eight here match the packet's station ideas. Satya/Nishtha, Ahimsa and Shuddhi are left out; the packet's Shuddhi story repeats the Ahimsa story and p. 5 still has template text, so fix those first if you add them.</li>
+      <li><b>Section 3 overlap.</b> Several stories (Shiv, Ganeshji, Ram) may also appear in the deity section. Agree on who tells which story before artwork.</li>
+      <li><b>Lighting.</b> Gym overheads stay off (keep exit signs and any required egress lighting on). About 20 clamp-on LED spots on the wall tops, warm white around 3000K, each aimed at one panel, except Santosh, which uses UV floods so the glow tree reads; 3 floor uplights on the kavad, gear mannequin and mirror plinth; the Aadar screen lights its own bench; the Diya Wall glows on its own tealights. The orange visitor path can be glow tape or low-profile LED strip under a clear cover. Check outlets and circuits with the venue, and put the spots on dimmers. Use “Exhibit lighting” in the viewer to compare with house lights.</li>
+      <li><b>Value signs.</b> Each value’s banner is an 8 × 1.7 ft header mounted on top of the wall directly above its station, from about 8.25 to 10 ft, so it reads from across the room. Mount them on drape-pipe extensions or the spine’s frame, and light them with the station spots.</li>
+      <li><b>Volunteers.</b> Plan one guide per aisle to start activities, wipe the word search, and reload the backpacks and kavad baskets.</li>
+    </ul>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+const S=[
+ {short:'Welcome',name:'Welcome',en:'Values to Light Our Lives',where:'Spine wall, facing the entrance',foot:'5 × 5 ft panel + passport holder',
+  story:'Key message from the packet: “These are not Hindu values alone. They are human values — rooted in an ancient tradition, alive in every act of kindness today.”',
+  act:'Every visitor takes a Mulyo Passport from the holder under the welcome panel. It’s a black-and-white fold card with the key message on the cover and a stamp circle for each of the eight values inside. They stamp it at each station and bring it to the Diya Wall at the end.',
+  build:'5 × 5 ft black-and-white panel · 3-pocket wall-mounted acrylic brochure holder at 2–3 ft so kids can reach it · passports printed 2 per letter sheet, double-sided, cut and folded (plan on 1,000+) · 8 self-inking stamps, one per station, each with its own simple icon.',
+  take:'Within ten seconds, any visitor should know what this room is about and what to do.',
+  view:{p:[15,5.6,-6.5],l:[17,3.8,0]},spot:[17,-3]},
+ {short:'Santosh',name:'Santosh',en:'Contentment',where:'North wall',foot:'8 × 7 ft glow wall',
+  story:'Krishna and Sudama. Sudama was poor but content and devoted, and Krishna rewarded his sincerity without Sudama ever asking.',
+  act:'Glow Gratitude Tree. A black wall with a neon tree painted on it, lit only by UV blacklights. Visitors write what they are grateful for with fluorescent markers, filling the leaves and branches. By the end of Diwali the whole tree glows with the community’s words.',
+  build:'8 × 7 ft black writing surface (black dry-erase vinyl, chalkboard, or matte black board) · tree outline in UV-reactive paint · 2 UV LED floods (395–400 nm) on the wall top plus one UV bar on the floor · 40+ fluorescent liquid-chalk or paint markers in neon colors (they glow far brighter under UV than true glow-in-the-dark ink) · black table with marker cups · black drape on the sides to keep the corner dark.',
+  take:'Contentment comes from gratitude, not from having more.',
+  view:{p:[9,5.4,-2.2],l:[9,3.6,-10]},spot:[9,-7.2]},
+ {short:'Aadar',name:'Aadar',en:'Respect',where:'North wall',foot:'6 ft screen + bench',
+  story:'When Ram returned from vanvas, He honored Kaikeyi Mata with the same respect He gave everyone else.',
+  act:'Say It With Aadar. A large screen loops a short video: a harsh phrase appears, glitches, and turns into a respectful way of saying the same thing. “That’s a stupid idea” becomes “Can you tell me more about your idea?” A bench lets families watch the full loop, and a small card asks “Which one have you said this week?”',
+  build:'75–85 in TV on a wall mount or rolling stand, or a rented LED wall about 6 × 3.5 ft · media player looping a 60–90 second video · power on the north wall · 6 × 1.3 ft story strip under the screen · bench for 3–4 people.',
+  take:'Respect is a choice we make with every sentence.',
+  view:{p:[0,5.4,-2.2],l:[0,4.2,-9.75]},spot:[0,-6.6]},
+ {short:'Daya',name:'Daya',en:'Compassion',where:'North wall',foot:'9.5 × 7.5 ft heart wall',
+  story:'Two stories side by side. Shiv Bhagwan drank the halahal poison to protect all creation and became Neelkanth. Harriet Tubman escaped slavery, then went back about 13 times to lead some 70 people to freedom.',
+  act:'No activity here: it is a quiet, beautiful stop. A large heart of red roses stands out from a black wall, with Shiv Bhagwan’s story on the left and Harriet Tubman’s on the right.',
+  build:'9.5 × 7.5 ft black backdrop with both stories printed in white · heart about 5 ft wide, built from artificial red roses on a foam or plywood heart (red foam or a flower-wall panel also works) · warm spotlight on the heart plus a low red uplight.',
+  take:'Compassion means feeling someone’s pain and then doing something about it.',
+  view:{p:[-8.75,5.4,-2.2],l:[-8.75,4,-10]},spot:[-8.75,-7.2]},
+ {short:'Vivek',name:'Vivek',en:'Wisdom',where:'West wall, at the turn',foot:'12 × 7 ft wall + 5 ft floor ring',
+  story:'Asked to circle the world three times, Kartikeya flew off on his peacock. Ganeshji walked around Shiv Bhagwan and Parvati Maa and said, “You are my world.”',
+  act:'Giant Word Search. A dry-erase grid hides the eight values and names from the story; visitors circle what they find. On the floor, a ring around a mirror plinth asks “Who is your world?” so families can walk around it as Ganeshji did.',
+  build:'12 × 7 ft dry-erase vinyl on rigid board · tray with 12+ markers and erasers, wiped every hour · 5 ft floor ring decal · 3 ft plinth with a mirror.',
+  take:'Wisdom is knowing what truly matters.',
+  view:{p:[-12.5,5.6,0.5],l:[-20,3.8,0]},spot:[-15.8,0]},
+ {short:'Kshama',name:'Kshama',en:'Forgiveness',where:'South wall, after the turn',foot:'3 × 4 ft tank + writing ledge',
+  story:'After Ravan’s defeat, Hanumanji asked to punish the rakshasis who had tormented Sita Mata. She refused and asked him to protect them instead.',
+  act:'Let It Go Tank. At the ledge, visitors write what they are letting go of on a sticky note, fold it, and drop it through the slot in the lid. Nobody reads the notes. Over Diwali the clear tank fills with paper, and the sign on it reads “This much was let go.” In this model, click the tank to add notes.',
+  build:'Clear acrylic tank about 3 × 4 × 1.5 ft on a 1.5 ft plinth, with a locked lid and a drop slot · writing ledge with sticky-note pads in several colors and pens · “This much was let go” decal on the front · the tank is never emptied during the festival; afterwards the notes are shredded unread.',
+  take:'Forgiveness is strongest when you could punish and choose not to.',
+  view:{p:[-10,5.6,1.8],l:[-10,3.4,8.5]},spot:[-10,6.2]},
+ {short:'Dharma',name:'Dharma',en:'Duty',where:'Spine wall, south face',foot:'6 × 7 ft panel + kavad rack',
+  story:'Shravan carried his blind, elderly parents on a kavad to every pilgrimage they wished to see, through sun and rain.',
+  act:'Shoulder the Kavad. Lift a bamboo kavad with two baskets onto your shoulder and take a few steps. It doubles as the room’s photo spot.',
+  build:'6 × 7 ft panel · 6 ft bamboo pole with two baskets, weights secured inside (about 10 lb a side) · rack holding it at shoulder height · anti-slip mat.',
+  take:'Duty becomes devotion when it is done with love.',
+  view:{p:[-4,5.4,8.5],l:[-4,3,0]},spot:[-4,2.8]},
+ {short:'Sankalp',name:'Sankalp',en:'Purpose & Courage',where:'South wall',foot:'4 ft target + 4 × 6 ft lane',
+  story:'Dronacharya asked his students what they saw before shooting at a wooden bird. The others saw trees, branches and sky. Arjun saw only the bird’s eye, and hit it.',
+  act:'Bird’s Eye Toss. A 4 ft target with the bird’s eye at the center and rings for Distraction, Doubt and Fear. Visitors say one goal out loud, then throw three velcro balls at the eye. Kids throw from the closer line.',
+  build:'4 ft velcro target (velcro balls or magnetic darts, never sharp darts in a family crowd) · throw lines taped at about 6 ft and 4 ft · bucket of 12 balls · rope or stanchions along both sides of the lane · 4 × 7 ft story panel beside the target.',
+  take:'Purpose means keeping your eye on the goal when everything else pulls at you.',
+  view:{p:[2,5.6,1.6],l:[2,4,9.75]},spot:[2,5]},
+ {short:'Tyag',name:'Tyag',en:'Sacrifice · Thank you, first responders',where:'Spine wall, south face',foot:'6 × 7 ft panel + gear area',
+  story:'After a 48-day fast, King Rantidev gave his meal to each hungry guest, and finally his last cup of water. Today firefighters, EMS crews and service members give their time and safety for people they have never met.',
+  act:'What They Carry. Try on a firefighter’s helmet and turnout coat, lift an EMS jump bag, and step into a pair of army boots. A sign gives the real weights (full firefighter gear can top 50 lb). A mannequin in full gear and a mirror make it the second photo spot.',
+  build:'6 × 7 ft panel · gear borrowed from the local fire department, EMS squad and a veterans’ group or recruiting office (agree on who supervises) · freestanding rack with 3 coats · mannequin in full turnout gear, air pack for display only · bench and mirror · kid-size helmets · wipes to clean helmets between wears.',
+  take:'Real sacrifice is giving what we need most, so others can be safe.',
+  view:{p:[10,5.4,8.5],l:[10,3,0]},spot:[10,2.8]},
+ {short:'Diya Wall',name:'Diya Wall',en:'Light Your Value',where:'East wall, at the exit',foot:'8 × 7 ft wall + 4 × 7 ft bridge panel',
+  story:'Bridge to the next section: every value in this room is lived by the Sant. A panel on the spine introduces that just before visitors step into Mandir, Shastras & Sant.',
+  act:'Choose the one value you will carry home and place a battery tealight on its shelf. The wall glows brighter through Diwali. Finished passports get a diya sticker here, and each visitor takes home the printed card for the value they chose.',
+  build:'8 × 7 ft panel with 8 labelled shelves · card rack with the 8 take-home cards · 300+ warm-white LED tealights, reset each night · 4 × 7 ft bridge panel on the spine.',
+  take:'Leave with one value to practise, not eight to remember.',
+  view:{p:[12.5,5.6,4.5],l:[20,3.8,4.5]},spot:[17.5,4.5]},
+ {short:'Values Today',name:'Modern Day Values',en:'The same values, lived in our own time',where:'Spine wall, north face',foot:'25 × 7 ft mural',
+  story:'A photo-and-quote mural of the packet’s modern parallels, read in the direction visitors walk: the Golden Rule (Aadar), Harriet Tubman (Daya), Martin Luther King Jr. (Sankalp), “for better or for worse” (Nishtha), those who serve (Tyag), care for every life (Ahimsa) and living clean (Shuddhi). It ends with a double-width panel of Mahant Swami Maharaj, the one life that shows every value, leading into Section 6.',
+  act:'Visitors read it between stations and match each person or idea to a value. It also covers the three values that don’t have their own station (Nishtha, Ahimsa and Shuddhi).',
+  build:'25 × 7 ft print (tension fabric or vinyl on board in 5 ft sections) · photos must be licensed or public domain; Mahant Swami Maharaj photos and quotes from BAPS with approval · 3 track spots along the top.',
+  take:'These are not old values. People are living them right now.',
+  view:{p:[1,6.2,-9.4],l:[1,4.2,0]},spot:[1,-2.5]}
+];
+
+
+const CARDS=[
+ ['Santosh','Contentment','Sudama had little, yet stayed content and devoted, and Krishna honored him without being asked.','Before bed, name three things from today you are grateful for.'],
+ ['Aadar','Respect','Returning from vanvas, Ram greeted Kaikeyi Mata with the same respect He gave every elder.','In one disagreement, repeat the other person’s view back before giving yours.'],
+ ['Daya','Compassion','Shiv Bhagwan drank the halahal poison to protect all creation and became Neelkanth.','When you notice someone struggling, do one small thing about it the same day.'],
+ ['Vivek','Wisdom','Ganeshji circled his parents and said, “You are my world.”','Before a big choice, stop and ask: what truly matters here?'],
+ ['Kshama','Forgiveness','Sita Mata asked Hanumanji to protect the rakshasis who had tormented her.','Write down one old grudge, then tear up the paper and let it go.'],
+ ['Dharma','Duty','Shravan carried his blind parents on a kavad to every pilgrimage they wished to see.','Do one task for your parents or elders this week without being asked.'],
+ ['Sankalp','Purpose & Courage','Arjun saw only the bird’s eye, not the trees or the sky, and hit his target.','Pick one goal and give it ten focused minutes every day this week.'],
+ ['Tyag','Sacrifice','King Rantidev gave away his last meal. Firefighters, EMS crews and service members give their safety for strangers.','Thank a firefighter, EMT or service member this week, in person or with a note.']];
+document.getElementById('cards').innerHTML=CARDS.map(c=>'<div class="vcard"><div class="top"><b>'+c[0]+'</b><span>'+c[1]+'</span></div><div class="mid"><p><i>'+c[2]+'</i></p><p class="try">This week, try:</p><p>'+c[3]+'</p></div><div class="bot">Light Beyond Lamps · Diwali 2026</div></div>').join('');
+let noGL=false;
+const listEl=document.getElementById('list'), detailEl=document.getElementById('detail');
+S.forEach((s,i)=>{const li=document.createElement('li');const b=document.createElement('button');b.id='st'+i;
+  b.innerHTML='<span class="n">'+(i===0?'IN':i===9?'OUT':i===10?'ART':String(i).padStart(2,'0'))+'</span>'+s.short;
+  b.addEventListener('click',()=>{if(noGL||!window.__mulyo){renderDetail(i);return}window.__mulyo.stop();window.__mulyo.select(i,true)});li.appendChild(b);listEl.appendChild(li);});
+function renderDetail(i){const s=S[i];
+  detailEl.innerHTML='<p class="kick">'+(i===0?'Start':i===9?'Exit':i===10?'Between stations':'Station '+i)+' · '+s.where+'</p><h2>'+s.name+'<small>'+s.en+'</small></h2>'+
+  '<dl><div><dt>Story</dt><dd>'+s.story+'</dd></div><div><dt>Interactive</dt><dd>'+s.act+'</dd></div><div><dt>Build</dt><dd><span class="foot">'+s.foot+'</span> '+s.build+'</dd></div></dl>'+
+  '<p class="take">'+s.take+'</p>';
+  S.forEach((_,j)=>document.getElementById('st'+j).setAttribute('aria-current',j===i?'true':'false'));}
+renderDetail(0);
+
+if(!window.THREE){noGL=true;document.getElementById('hint').textContent='3D view could not load. The station guide still works.';return;}
+const fontsReady=(document.fonts&&document.fonts.load)?Promise.race([Promise.all(['300 20px "Josefin Sans"','600 20px "Josefin Sans"','700 20px "Josefin Sans"','400 20px "Public Sans"','600 20px "Public Sans"','700 20px "Caveat"','600 20px "Poppins"','400 20px "Poppins"','400 20px "Noto Sans Devanagari"'].map(f=>document.fonts.load(f))),new Promise(r=>setTimeout(r,2500))]):Promise.resolve();
+fontsReady.catch(()=>{}).then(build);
+function build(){
+
+/* ---------- helpers ---------- */
+const MAROON='#8C1D3A',SAFF='#D9831C',IVORY='#FBF6EE',INK='#2A1E22';
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function canvasTex(w,h,draw){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');draw(x,w,h);
+  const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;t.anisotropy=8;return t;}
+function wrap(ctx,text,x,y,maxW,lh,maxLines){const words=text.split(' ');let line='',n=0;
+  for(let i=0;i<words.length;i++){const test=line?line+' '+words[i]:words[i];
+    if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,y+n*lh);n++;line=words[i];if(maxLines&&n>=maxLines)return n;}else line=test;}
+  if(line){ctx.fillText(line,x,y+n*lh);n++}return n;}
+const FD='"Josefin Sans","Century Gothic",sans-serif',FB='"Public Sans",system-ui,sans-serif';
+function diya(c,x,y,s){c.save();c.translate(x,y);
+  const g=c.createRadialGradient(0,-s*.9,0,0,-s*.9,s*1.6);g.addColorStop(0,'rgba(255,200,90,.55)');g.addColorStop(1,'rgba(255,200,90,0)');
+  c.fillStyle=g;c.beginPath();c.arc(0,-s*.9,s*1.6,0,7);c.fill();
+  c.fillStyle=SAFF;c.beginPath();c.moveTo(-s,0);c.quadraticCurveTo(0,s*.9,s,0);c.lineTo(s*.7,-s*.08);c.lineTo(-s*.7,-s*.08);c.closePath();c.fill();
+  c.fillStyle='#F6B53B';c.beginPath();c.moveTo(0,-s*1.25);c.quadraticCurveTo(s*.28,-s*.55,0,-s*.2);c.quadraticCurveTo(-s*.28,-s*.55,0,-s*1.25);c.fill();c.restore();}
+function panelTex(o,wft,hft){const W=1024,H=Math.round(1024*hft/wft);return canvasTex(W,H,(c)=>{
+  const u=W/100;c.fillStyle=IVORY;c.fillRect(0,0,W,H);
+  c.fillStyle=MAROON;c.fillRect(0,0,W,H*.2);
+  c.fillStyle='#F2B66B';c.font='600 '+(u*2.6)+'px '+FD;c.fillText((o.kick||'').toUpperCase(),u*5,H*.065);
+  c.fillStyle='#fff';c.font='700 '+Math.min(u*10,H*.11)+'px '+FD;c.fillText(o.title.toUpperCase(),u*5,H*.165);
+  c.fillStyle=MAROON;c.font='300 '+(u*4.6)+'px '+FD;c.fillText(o.en.toUpperCase(),u*5,H*.27);
+  // art window
+  const ax=u*5,ay=H*.31,aw=W-u*10,ah=H*.3;const g=c.createLinearGradient(0,ay,0,ay+ah);g.addColorStop(0,o.sky||'#F3DCC2');g.addColorStop(1,'#E9C9A8');
+  c.fillStyle=g;c.fillRect(ax,ay,aw,ah);if(o.art)o.art(c,ax,ay,aw,ah);else diya(c,ax+aw/2,ay+ah*.75,ah*.25);
+  c.fillStyle=INK;c.font='600 '+(u*3)+'px '+FB;c.fillText(o.storyTitle,u*5,H*.68);
+  c.font='400 '+(u*2.6)+'px '+FB;c.fillStyle='#4B3D42';wrap(c,o.story,u*5,H*.68+u*4.4,W-u*10,u*3.6,o.lines||4);
+  c.fillStyle=SAFF;c.fillRect(0,H*.88,W,H*.12);c.fillStyle='#fff';c.font='600 '+(u*3.2)+'px '+FB;
+  c.textAlign='center';c.fillText(o.prompt,W/2,H*.955);c.textAlign='left';});}
+function figure(c,x,y,s,col){c.fillStyle=col;c.beginPath();c.arc(x,y-s*1.9,s*.38,0,7);c.fill();
+  c.beginPath();c.moveTo(x-s*.55,y);c.quadraticCurveTo(x-s*.6,y-s*1.4,x,y-s*1.45);c.quadraticCurveTo(x+s*.6,y-s*1.4,x+s*.55,y);c.fill();}
+
+/* ---------- scene ---------- */
+const host=document.getElementById('viewer');
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+host.insertBefore(renderer.domElement,host.firstChild);
+const scene=new THREE.Scene();
+let exhibitLit=true;
+function stageColor(){const v=exhibitLit?'#0E0B0C':(getComputedStyle(document.documentElement).getPropertyValue('--stage').trim()||'#E7E1DB');scene.background=new THREE.Color(v);scene.fog=new THREE.Fog(v,90,170);}
+stageColor();try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',stageColor)}catch(e){}
+new MutationObserver(stageColor).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+const camera=new THREE.PerspectiveCamera(45,1,0.1,400);
+const controls=new THREE.OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.maxPolarAngle=Math.PI/2-0.04;controls.minDistance=3;controls.maxDistance=130;
+
+const hemi=new THREE.HemisphereLight(0xffffff,0xb59f86,0.78);scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xfff4e6,0.72);sun.position.set(-14,40,22);sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-28,right:28,top:18,bottom:-18,near:1,far:90});sun.shadow.bias=-0.0006;scene.add(sun);
+
+const M=(c,o)=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.85},o||{}));
+function box(w,h,d,mat,x,y,z,parent){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat.isMaterial?mat:M(mat));m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;(parent||scene).add(m);return m;}
+function cyl(rt,rb,h,mat,x,y,z,parent,seg){const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg||20),mat.isMaterial?mat:M(mat));m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;(parent||scene).add(m);return m;}
+
+// floor with 1 ft grid + gym planks
+const floorTex=canvasTex(1024,1024,(c,w,h)=>{c.fillStyle='#D8BE98';c.fillRect(0,0,w,h);const r=rng(4);
+  for(let y=0;y<h;y+=32){for(let x=(y/32%2)*80;x<w;x+=160){c.fillStyle='rgba(120,80,40,'+(0.04+r()*0.06)+')';c.fillRect(x,y,158,30)}}
+  c.strokeStyle='rgba(90,60,30,.18)';c.lineWidth=2;for(let i=0;i<=1024;i+=64){c.beginPath();c.moveTo(i,0);c.lineTo(i,h);c.stroke();c.beginPath();c.moveTo(0,i);c.lineTo(w,i);c.stroke();}});
+floorTex.wrapS=floorTex.wrapT=THREE.RepeatWrapping;floorTex.repeat.set(64/16,48/16);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(64,48),M(0xffffff,{map:floorTex,roughness:.7}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
+// footprint outline
+const fp=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(40,0.01,20)),new THREE.LineBasicMaterial({color:0x8C1D3A}));fp.position.y=0.03;scene.add(fp);
+function floorText(text,x,z,rot,w,size){const t=canvasTex(1024,160,(c,W,H)=>{c.fillStyle=MAROON;c.globalAlpha=.75;c.font='600 '+(size||70)+'px '+FD;c.textAlign='center';c.textBaseline='middle';c.fillText(text,W/2,H/2)});
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(w,w*160/1024),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false}));m.rotation.x=-Math.PI/2;m.rotation.z=rot||0;m.position.set(x,0.04,z);scene.add(m);}
+floorText('↓  FROM FESTIVAL',17,-14,0,14);floorText('↓  TO MANDIR, SHASTRAS & SANT',17,14,0,18,62);
+floorText('MAIN HALL  →',25,0,Math.PI/2,12);floorText('40 FT',0,-11.6,0,8);floorText('20 FT',-21.6,0,Math.PI/2,8);
+
+// walls
+const drapeMat=M(0x3A2E32,{roughness:1,transparent:true,opacity:1});
+const ghostables=[];
+function drape(w,x,z,rotY){const m=box(w,8,0.25,drapeMat,x,4,z);m.rotation.y=rotY||0;ghostables.push(m);return m;}
+drape(35,-2.5,-10);drape(0.6,19.7,-10);   // north wall, 4.4 ft entry gap
+drape(35,-2.5,10);drape(0.6,19.7,10);     // south wall, exit gap
+drape(20,-20,0,Math.PI/2);drape(20,20,0,Math.PI/2);
+const spineMat=M(0xF1ECE6);box(32,8,0.5,spineMat,4,4,0); // spine wall from x=-12 to 20
+box(32,0.25,0.7,M(0x8C1D3A),4,8.1,0);
+
+/* ---------- stations ---------- */
+const pick=[];const labelSprites=[];
+function tag(obj,i){obj.traverse(o=>{if(o.isMesh){o.userData.si=i;pick.push(o)}})}
+const frameMat=M(0x5A1226);
+function panel(tex,w,h,x,y,z,rotY,i){const g=new THREE.Group();
+  const b=box(w+0.2,h+0.2,0.15,frameMat,0,0,0,g);
+  const f=new THREE.Mesh(new THREE.PlaneGeometry(w,h),M(0xffffff,{map:tex,roughness:.8}));f.position.z=0.08;f.receiveShadow=true;g.add(f);
+  g.position.set(x,y,z);g.rotation.y=rotY;scene.add(g);if(i!=null)tag(g,i);return g;}
+function table(x,z,w,d,rotY,runner,i){const g=new THREE.Group();box(w,2.5,d,M(0xF7F1E6),0,1.25,0,g);box(w*0.38,2.52,d+0.04,M(runner||0x1F5F5B),0,1.26,0,g);
+  g.position.set(x,0,z);g.rotation.y=rotY||0;scene.add(g);if(i!=null)tag(g,i);return g;}
+function chair(x,z,rotY,col,parent){const g=new THREE.Group();const m=M(col||0xB98E5E);box(1.4,0.15,1.4,m,0,1.5,0,g);box(1.4,1.6,0.14,m,0,2.35,-0.64,g);
+  [[-.6,-.6],[.6,-.6],[-.6,.6],[.6,.6]].forEach(p=>box(.1,1.5,.1,m,p[0],.75,p[1],g));g.position.set(x,0,z);g.rotation.y=rotY;(parent||scene).add(g);return g;}
+
+// 0 Welcome — spine north face, faces north: black-and-white welcome panel with a passport holder below
+const PF='Poppins,"Century Gothic",sans-serif';
+const welTex=canvasTex(1024,1024,(c,W,H)=>{c.fillStyle='#000';c.fillRect(0,0,W,H);
+  c.fillStyle='#bdbdbd';c.font='400 26px '+PF;c.fillText('LIGHT BEYOND LAMPS  ·  SECTION 5',70,100);
+  c.fillStyle='#fff';c.font='600 170px '+PF;c.fillText('mulyo',62,290);
+  c.font='300 54px '+PF;c.fillText('values to light our lives',70,370);
+  c.fillRect(70,450,5,250);c.font='italic 300 40px '+PF;wrap(c,'These are not Hindu values alone. They are human values — rooted in an ancient tradition, alive in every act of kindness today.',105,495,840,56,5);
+  c.fillStyle='#fff';c.font='600 40px '+PF;c.fillText('take a passport  ↓',70,880);c.fillStyle='#bdbdbd';c.font='400 30px '+PF;c.fillText('Collect all 8 stamps, then light your diya at the end.',70,935);});
+panel(welTex,5.2,5.2,17,5.3,-0.4,Math.PI,0);
+const ppTex=canvasTex(256,330,(c,W,H)=>{c.fillStyle='#000';c.fillRect(0,0,W,H);c.fillStyle='#fff';c.font='600 58px '+PF;c.fillText('mulyo',22,150);c.font='300 34px '+PF;c.fillText('passport',24,192);
+  c.fillRect(24,230,3,60);c.fillStyle='#bdbdbd';c.font='italic 300 14px '+PF;wrap(c,'These are not Hindu values alone. They are human values…',36,246,190,18,3);});
+const holder=new THREE.Group();box(3.8,1.6,.08,M(0x111111),0,1.95,.08,holder);
+const acr2=M(0xDDEEF5,{transparent:true,opacity:.28,roughness:.08});
+[-1.25,0,1.25].forEach(x=>{box(1.05,.95,.04,acr2,x,1.75,.42,holder);box(1.05,.04,.34,acr2,x,1.28,.26,holder);
+  for(let k=0;k<3;k++){const pp=new THREE.Mesh(new THREE.PlaneGeometry(.85,1.1),new THREE.MeshBasicMaterial({map:ppTex}));pp.position.set(x+(k-1)*.02,1.88,.18+k*.06);pp.rotation.x=-.12;holder.add(pp);}});
+holder.position.set(17,0,-0.25);holder.rotation.y=Math.PI;scene.add(holder);tag(holder,0);
+
+// 1 Santosh — UV glow gratitude tree, north wall facing south
+const glowTex=canvasTex(1536,1344,(c,W,H)=>{const r=rng(11);c.fillStyle='#07060A';c.fillRect(0,0,W,H);
+  const glow=(col,b)=>{c.shadowColor=col;c.shadowBlur=b};
+  const neon=['#39FF14','#FF3EA5','#00E5FF','#FFE81F','#FF8C1A','#B388FF'];
+  const words=['my family','health','Happy Diwali!','my mom','friends','Bhagwan','my teachers','food on our table','kindness','home','my dadi','music','peace','my brother','learning','my dog','be kind','thank you','my baa','satsang','my sister','love','new friends','my papa','good grades','this mandir','HAPPY DIWALI','help others','HONESTY','my nana'];
+  // background handwriting first, so the tree sits on top of it
+  for(let k=0;k<170;k++){const col=neon[k%neon.length];c.fillStyle=col;glow(col,8);c.save();c.translate(20+r()*(W-40),60+r()*(H-120));c.rotate((r()-.5)*.6);
+    c.font='700 '+(20+r()*22)+'px "Caveat","Comic Sans MS",cursive';c.fillText(words[Math.floor(r()*words.length)],0,0);c.restore();}
+  // centered tree: trunk from the bottom middle, symmetric canopy
+  const cx=W/2,tips=[];c.lineCap='round';c.strokeStyle='#FFB52E';glow('#FF9A1E',24);
+  const br=(x,y,a,len,w,d)=>{const x2=x+Math.cos(a)*len,y2=y+Math.sin(a)*len;c.lineWidth=w;c.beginPath();c.moveTo(x,y);
+    c.quadraticCurveTo((x+x2)/2+Math.cos(a+Math.PI/2)*len*.12,(y+y2)/2+Math.sin(a+Math.PI/2)*len*.12,x2,y2);c.stroke();
+    if(d>=4){tips.push([x2,y2,a]);return}const sp=.42+r()*.12;br(x2,y2,a-sp,len*.74,w*.68,d+1);br(x2,y2,a+sp,len*.74,w*.68,d+1);};
+  c.lineWidth=46;c.beginPath();c.moveTo(cx-40,H);c.quadraticCurveTo(cx-10,H*.82,cx,H*.66);c.stroke();
+  c.beginPath();c.moveTo(cx+40,H);c.quadraticCurveTo(cx+10,H*.82,cx,H*.66);c.stroke();
+  [-.75,-.25,.25,.75].forEach(off=>br(cx,H*.66,-Math.PI/2+off,250,24,1));
+  // leaves on every branch tip, each a writing space
+  c.lineWidth=6;tips.forEach(([x,y,a],k)=>{c.strokeStyle=k%3?'#D4FF3A':'#7CFF6B';glow('#B8FF00',16);c.save();c.translate(x,y);c.rotate(a);
+    c.beginPath();c.moveTo(-10,0);c.quadraticCurveTo(45,-42,110,0);c.quadraticCurveTo(45,42,-10,0);c.stroke();c.restore();
+    const col=neon[(k+2)%neon.length];c.fillStyle=col;glow(col,8);c.save();c.translate(x+Math.cos(a)*50,y+Math.sin(a)*50);c.rotate(a>-Math.PI/2?a:a+Math.PI);
+    c.font='700 22px "Caveat",cursive';c.textAlign='center';c.fillText(words[(k*7)%words.length],0,7);c.restore();});
+  for(let k=0;k<20;k++){const col=neon[k%neon.length];c.strokeStyle=col;glow(col,10);c.lineWidth=4;const x=r()*W,y=r()*H,z=14+r()*12;
+    c.beginPath();c.moveTo(x,y+z*.6);c.bezierCurveTo(x-z*1.6,y-z*.4,x-z*.4,y-z*1.4,x,y-z*.3);c.bezierCurveTo(x+z*.4,y-z*1.4,x+z*1.6,y-z*.4,x,y+z*.6);c.stroke();}
+  // question at lower left, value name at lower right, clear of the trunk
+  glow('transparent',0);c.fillStyle='rgba(7,6,10,.85)';c.fillRect(50,930,520,370);c.fillRect(W-470,1180,420,110);
+  c.fillStyle='#FF8C1A';glow('#FF6A00',24);
+  ['This Diwali,','what are','YOU grateful for?'].forEach((l,k)=>{c.font='700 '+(k===2?72:64)+'px "Caveat",cursive';c.fillText(l,80,1010+k*90)});
+  glow('#8A4DFF',14);c.fillStyle='#B388FF';c.font='600 34px '+FD;c.textAlign='right';c.fillText('SANTOSH · CONTENTMENT',W-70,1250);c.textAlign='left';glow('transparent',0);});
+const gw=panel(glowTex,8,7,9,4.4,-9.75,0,1);gw.children[1].material=new THREE.MeshBasicMaterial({map:glowTex});
+const t1=table(9,-8.5,6,1.6,0,0x111111,1);t1.children.forEach(m=>m.material=M(0x161318));
+[0x39FF14,0xFF3EA5,0x00E5FF,0xFFE81F,0xFF8C1A].forEach((col,k)=>{cyl(.2,.18,.45,M(0x222222),-2+k,2.72,.1,t1,12);
+  for(let j=0;j<3;j++){const mk=cyl(.04,.04,.6,new THREE.MeshBasicMaterial({color:col}),-2+k+(j-1)*.07,3.05,.1,t1,6);mk.rotation.z=(j-1)*.15;}});
+box(6,.18,.25,new THREE.MeshBasicMaterial({color:0x8A4DFF}),9,.12,-9.3);
+
+// 2 Aadar — LED screen looping the harsh-to-respectful glitch video, with a bench
+const PH=[['Whatever. You don’t get it.','Help me understand how you see it.'],
+ ['That’s a stupid idea.','Can you tell me more about your idea?'],
+ ['Ugh, Mom, not now!','Mom, can we talk in five minutes?'],
+ ['You’re wrong.','I see it differently. Here’s why.'],
+ ['Just do what I said.','Could you help me with this, please?'],
+ ['Old people don’t get it.','I’d love to hear what you’ve learned.'],
+ ['Stop talking.','Let me finish, then I’ll listen.']];
+const scrC=document.createElement('canvas');scrC.width=1024;scrC.height=576;const sx=scrC.getContext('2d');
+const scrTex=new THREE.CanvasTexture(scrC);scrTex.encoding=THREE.sRGBEncoding;
+const GL='!<>-_/[]{}=+*^?#%&@';let lastScr=0;
+function drawScreen(now){const W=1024,H=576,cyc=7000,t=now%(cyc*PH.length),i=Math.floor(t/cyc),f=(t%cyc)/1000,ph=PH[i];
+  const g=sx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#14101A');g.addColorStop(1,'#241018');sx.fillStyle=g;sx.fillRect(0,0,W,H);
+  sx.textAlign='center';sx.font='600 26px '+FD;
+  let txt,col,lab,labCol,glitch=0;
+  if(f<2.6){txt=ph[0];col='#FF6060';lab='WHAT WE SOMETIMES SAY';labCol='#FF8A8A'}
+  else if(f<3.4){glitch=(f-2.6)/.8;const a=ph[0],b=ph[1],n=Math.max(a.length,b.length);txt='';
+    for(let k=0;k<n;k++){const rr=Math.random();txt+=rr<glitch*.9?(b[k]||''):rr<.75?GL[Math.floor(Math.random()*GL.length)]:(a[k]||'')}
+    col='#FFFFFF';lab='REWRITING…';labCol='#9FE8FF'}
+  else{txt=ph[1];col='#FFE7C2';lab='SAID WITH AADAR';labCol='#F2B66B'}
+  sx.fillStyle=labCol;sx.fillText(lab,W/2,110);
+  sx.font='700 64px '+FB;
+  const drawT=(c2,dx)=>{sx.fillStyle=c2;wrap(sx,txt,W/2+dx,270,W-160,78,3)};
+  if(glitch){sx.globalCompositeOperation='lighter';drawT('rgba(255,40,80,.9)',-8);drawT('rgba(40,220,255,.9)',8);sx.globalCompositeOperation='source-over';
+    for(let k=0;k<9;k++){const y=Math.random()*H,h=6+Math.random()*40;sx.drawImage(scrC,0,y,W,h,(Math.random()-.5)*90,y,W,h)}}
+  else drawT(col,0);
+  sx.fillStyle='rgba(0,0,0,.18)';for(let y=0;y<H;y+=4)sx.fillRect(0,y,W,2);
+  sx.font='600 22px '+FD;sx.fillStyle='rgba(242,182,107,.85)';sx.fillText('AADAR · RESPECT',W/2,H-40);sx.textAlign='left';scrTex.needsUpdate=true;}
+function updateScreen(now){if(now-lastScr>60){lastScr=now;drawScreen(now)}}
+drawScreen(5000);
+const scr=new THREE.Group();box(6.5,3.85,.3,M(0x0A0A0A),0,0,0,scr);const sf=new THREE.Mesh(new THREE.PlaneGeometry(6.2,3.49),new THREE.MeshBasicMaterial({map:scrTex}));sf.position.z=.16;scr.add(sf);
+scr.position.set(0,5.25,-9.65);scene.add(scr);tag(scr,2);
+const stripTex=canvasTex(1024,208,(c,W,H)=>{c.fillStyle=MAROON;c.fillRect(0,0,W,H);c.fillStyle='#F2B66B';c.font='600 26px '+FD;c.fillText('02 · THE RAMAYANA',36,50);
+  c.fillStyle='#fff';c.font='700 58px '+FD;c.fillText('AADAR · RESPECT',36,118);c.fillStyle='#F5E6DA';c.font='400 24px '+FB;
+  c.fillText('Ram honored Kaikeyi Mata like every elder. Respect starts with how we speak.',36,170);});
+panel(stripTex,6.4,1.3,0,2.45,-9.75,0,2);
+const bench=new THREE.Group();box(5,.3,1.4,M(0x8A6A43),0,1.5,0,bench);[-2.2,2.2].forEach(x=>box(.3,1.5,1.2,M(0x6B4A2E),x,.75,0,bench));bench.position.set(0,0,-6.4);scene.add(bench);tag(bench,2);
+const scrGlow=new THREE.PointLight(0xA9B8FF,.55,10,1.5);scrGlow.position.set(0,5,-8.2);scene.add(scrGlow);
+
+// 3 Daya — black backdrop with a 3D heart of red roses, Shiv Bhagwan's story on the left and Harriet Tubman's on the right. No activity.
+const DPF='Poppins,"Century Gothic",sans-serif';
+const dayaTex=canvasTex(1900,1500,(c,W,H)=>{c.fillStyle='#000';c.fillRect(0,0,W,H);
+  c.fillStyle='#fff';c.textAlign='center';c.font='600 110px '+DPF;c.fillText('daya',W/2,150);
+  c.font='300 40px '+DPF;c.fillStyle='#d8d8d8';c.fillText('(DUH-yaa) दया  ·  compassion',W/2,210);
+  c.font='italic 300 34px '+DPF;c.fillStyle='#fff';wrap(c,'True compassion is not just feeling someone’s pain. It is having the courage to do something about it.',W/2,1330,980,46,2);
+  c.textAlign='left';
+  const col=(x,kick,title,body,art)=>{c.fillStyle='#bdbdbd';c.font='500 22px '+DPF;c.fillText(kick,x,330);c.fillStyle='#fff';c.font='600 46px '+DPF;wrap(c,title,x,395,380,52,2);
+    c.setLineDash([10,8]);c.strokeStyle='#555';c.lineWidth=3;c.strokeRect(x,470,380,300);c.setLineDash([]);c.fillStyle='#777';c.font='400 20px '+DPF;c.textAlign='center';wrap(c,art,x+190,615,320,26,2);c.textAlign='left';
+    c.fillStyle='#e0e0e0';c.font='400 23px '+DPF;wrap(c,body,x,830,380,34,14);};
+  col(70,'SAMUDRA MANTHAN','Shiv Bhagwan, Neelkanth','When the devas and asuras churned the cosmic ocean, a deadly poison, halahal, rose up and threatened all creation. Everyone was afraid. Without hesitation, Shiv Bhagwan drank it to save the universe. Parvati Maa held His throat so it could not spread, and His throat turned blue. From then on He was called Neelkanth.','Art: Shiv Bhagwan as Neelkanth');
+  col(W-450,'AMERICAN PARALLEL','Harriet Tubman','After escaping slavery, she could have stayed safe in the North. Instead she went back about 13 times over ten years and led some 70 people to freedom on the Underground Railroad, through tracking dogs, bitter cold and the risk of death if caught.','Photo: Harriet Tubman portrait (public domain)');});
+const dw3=panel(dayaTex,9.5,7.5,-8.75,4.15,-9.75,0,3);dw3.children[1].material=new THREE.MeshBasicMaterial({map:dayaTex});
+// heart of roses: instanced blooms filling a heart shape, domed out from the wall
+const heart=new THREE.Group();const hb=[],rh=rng(17),HS=2.2;
+for(let y=-1.25;y<=1.2;y+=.075)for(let x=-1.3;x<=1.3;x+=.075){const X=x*1.05,Y=y+.15;if(Math.pow(X*X+Y*Y-1,3)-X*X*Y*Y*Y>0)continue;
+  const r=Math.min(1,Math.hypot(x,y*.9));hb.push([x*HS+(rh()-.5)*.05,y*HS+(rh()-.5)*.05,.06+.55*Math.sqrt(Math.max(0,1-r*r))+(rh()-.5)*.05]);}
+const roses=new THREE.InstancedMesh(new THREE.SphereGeometry(.11,10,8),M(0xffffff,{roughness:.75}),hb.length);const hd3=new THREE.Object3D(),hc=new THREE.Color();
+const reds=[0xB0102A,0xC8143A,0x9A0E22,0xD61E3C,0x8A0B1E,0xE0284A];
+hb.forEach((q,k)=>{hd3.position.set(q[0],q[1],q[2]);const sc=.85+rh()*.4;hd3.scale.set(sc,sc,sc*.7);hd3.updateMatrix();roses.setMatrixAt(k,hd3.matrix);roses.setColorAt(k,hc.setHex(reds[Math.floor(rh()*reds.length)]))});
+roses.castShadow=true;heart.add(roses);heart.position.set(-8.75,4.35,-9.6);scene.add(heart);tag(heart,3);
+
+// 4 Vivek — giant word search on west wall + floor ring
+const WORDS=['SANTOSH','AADAR','DAYA','VIVEK','KSHAMA','DHARMA','SANKALP','TYAG','GANESH','PARVATI','SHIV','WORLD'];
+const COLS=17,ROWS=9;const grid=Array.from({length:ROWS},()=>Array(COLS).fill(''));const placed=[];const r4=rng(7);
+WORDS.forEach(wd=>{for(let a=0;a<800;a++){const d=[[1,0],[0,1],[1,1]][Math.floor(r4()*3)];const x0=Math.floor(r4()*COLS),y0=Math.floor(r4()*ROWS);
+  const x1=x0+d[0]*(wd.length-1),y1=y0+d[1]*(wd.length-1);if(x1>=COLS||y1>=ROWS)continue;let ok=true;
+  for(let k=0;k<wd.length;k++){const ch=grid[y0+d[1]*k][x0+d[0]*k];if(ch&&ch!==wd[k]){ok=false;break}}if(!ok)continue;
+  for(let k=0;k<wd.length;k++)grid[y0+d[1]*k][x0+d[0]*k]=wd[k];placed.push({wd,x0,y0,x1,y1});break;}});
+const AZ='ABCDEFGHIKLMNOPRSTUVY';for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++)if(!grid[y][x])grid[y][x]=AZ[Math.floor(r4()*AZ.length)];
+const wsTex=canvasTex(2048,1195,(c,W,H)=>{c.fillStyle='#FFFFFF';c.fillRect(0,0,W,H);c.fillStyle=MAROON;c.fillRect(0,0,W,170);
+  c.fillStyle='#F2B66B';c.font='600 40px '+FD;c.fillText('04 · GANESHJI & KARTIKEYA',60,64);c.fillStyle='#fff';c.font='700 86px '+FD;c.fillText('VIVEK · FIND WHAT MATTERS',60,148);
+  c.fillStyle='#4B3D42';c.font='400 34px '+FB;c.textAlign='right';c.fillText('Ganeshji circled his parents: “You are my world.”',W-60,148);c.textAlign='left';
+  const gx=70,gy=215,cw=(W-140)/COLS,ch=(H-320)/ROWS;
+  c.strokeStyle='#E6DDD6';c.lineWidth=2;for(let x=0;x<=COLS;x++){c.beginPath();c.moveTo(gx+x*cw,gy);c.lineTo(gx+x*cw,gy+ROWS*ch);c.stroke()}
+  for(let y=0;y<=ROWS;y++){c.beginPath();c.moveTo(gx,gy+y*ch);c.lineTo(gx+COLS*cw,gy+y*ch);c.stroke()}
+  c.fillStyle=INK;c.font='600 '+Math.floor(ch*.55)+'px '+FD;c.textAlign='center';c.textBaseline='middle';
+  for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++)c.fillText(grid[y][x],gx+(x+.5)*cw,gy+(y+.55)*ch);
+  // two words already circled in marker, to show how it's used
+  c.lineWidth=9;[['#D23B3B',0],['#2F6FB3',1]].forEach(([col,n])=>{const p=placed[n];if(!p)return;
+    const ax=gx+(p.x0+.5)*cw,ay=gy+(p.y0+.5)*ch,bx=gx+(p.x1+.5)*cw,by=gy+(p.y1+.5)*ch;const ang=Math.atan2(by-ay,bx-ax),len=Math.hypot(bx-ax,by-ay);
+    c.save();c.translate((ax+bx)/2,(ay+by)/2);c.rotate(ang);c.strokeStyle=col;c.beginPath();c.ellipse(0,0,len/2+cw*.48,ch*.46,0,0,7);c.stroke();c.restore();});
+  c.textBaseline='alphabetic';c.fillStyle=SAFF;c.fillRect(0,H-90,W,90);c.fillStyle='#fff';c.font='600 42px '+FB;
+  c.fillText('Find all 8 values + 4 names from the story · grab a marker and circle them',W/2,H-32);});
+panel(wsTex,12,7,-19.75,4.4,0,Math.PI/2,4);
+box(10,0.25,0.5,M(0x6B4A2E),-19.55,1.1,0);tag(scene.children[scene.children.length-1],4);
+const viv=new THREE.Group();const ring=new THREE.Mesh(new THREE.RingGeometry(2.2,2.55,64),M(0xD9831C,{roughness:1}));ring.rotation.x=-Math.PI/2;ring.position.y=0.03;viv.add(ring);
+box(1.2,3,1.2,M(0xF1ECE6),0,1.5,0,viv);box(1,1.4,0.08,M(0xBFD6E6,{metalness:.9,roughness:.08}),0,3.75,0,viv).rotation.y=Math.PI/2;
+viv.position.set(-15.6,0,0);scene.add(viv);tag(viv,4);
+
+// 5 Kshama — south wall, faces north
+panel(panelTex({kick:'05 · Ashok Vatika',title:'Kshama',en:'Forgiveness',storyTitle:'Sita Mata protects the rakshasis',
+  story:'After Ravan’s defeat, Hanumanji asked to punish those who had tormented her. Sita Mata refused and asked him to protect them.',prompt:'Write it. Fold it. Let it go.',
+  art:(c,x,y,w,h)=>{c.fillStyle='#4E7A3A';for(let k=0;k<7;k++){c.beginPath();c.arc(x+w*(k/6),y+h*.35,h*.3,0,7);c.fill()}figure(c,x+w*.5,y+h*.98,h*.36,'#C47A2C')}},6,7),6,7,-10,4.4,9.75,Math.PI,5);
+// Kshama tank: visitors write what they are letting go of, fold it, and drop it through the slot. The tank fills over Diwali. Click it to add notes.
+const tank=new THREE.Group();const TW=3.2,TH=4,TD=1.4,TB=1.5;
+box(TW+.4,TB,TD+.4,M(0x2A1E22),0,TB/2,0,tank);
+const glass=new THREE.Mesh(new THREE.BoxGeometry(TW,TH,TD),new THREE.MeshStandardMaterial({color:0xDDEEF5,transparent:true,opacity:.18,roughness:.05,metalness:.1,depthWrite:false}));
+glass.position.y=TB+TH/2;glass.renderOrder=4;tank.add(glass);
+const edges=new THREE.LineSegments(new THREE.EdgesGeometry(glass.geometry),new THREE.LineBasicMaterial({color:0xBFD6E6}));edges.position.copy(glass.position);tank.add(edges);
+// lid with a drop slot
+const lidM=M(0x2A1E22);box(TW+.1,.12,(TD-.25)/2,lidM,0,TB+TH+.06,-(TD+.25)/4,tank);box(TW+.1,.12,(TD-.25)/2,lidM,0,TB+TH+.06,(TD+.25)/4,tank);
+box(.6,.12,.25,lidM,-(TW/2-.3)+.05,TB+TH+.06,0,tank);box(.6,.12,.25,lidM,(TW/2-.3)-.05,TB+TH+.06,0,tank);
+// folded paper notes, layered bottom to top
+const npos=[],rn=rng(31);
+for(let y=TB+.05;y<TB+TH-.1;y+=.07)for(let x=-TW/2+.2;x<TW/2-.15;x+=.3)for(let z=-TD/2+.15;z<TD/2-.1;z+=.26)npos.push([x+(rn()-.5)*.12,y+(rn()-.5)*.05,z+(rn()-.5)*.1,rn()*Math.PI,(rn()-.5)*.6]);
+npos.sort((a,b)=>a[1]-b[1]);
+const notes=new THREE.InstancedMesh(new THREE.BoxGeometry(.3,.035,.22),M(0xffffff,{roughness:.9}),npos.length);const dm=new THREE.Object3D(),ncol=new THREE.Color();
+const paper=[0xFFF07A,0xFFB3C7,0xA8E0FF,0xB8F5A0,0xFFC98A,0xFFFFFF];
+npos.forEach((q,k)=>{dm.position.set(q[0],q[1],q[2]);dm.rotation.set(q[4],q[3],q[4]*.5);dm.updateMatrix();notes.setMatrixAt(k,dm.matrix);notes.setColorAt(k,ncol.setHex(paper[Math.floor(rn()*paper.length)]))});
+notes.castShadow=true;tank.add(notes);
+const FULL=npos.length;let filled=Math.round(FULL*.38);
+function setNotes(n){filled=Math.min(FULL,Math.max(0,n));notes.count=filled}
+setNotes(filled);
+function addNotes(){if(filled>=FULL){setNotes(Math.round(FULL*.1));return}setNotes(filled+Math.ceil(FULL*.06))}
+// label on the front glass
+const lgTex=canvasTex(640,140,(c,W,H)=>{c.fillStyle='rgba(140,29,58,.92)';c.fillRect(0,0,W,H);c.fillStyle='#fff';c.font='700 46px '+FD;c.textAlign='center';c.fillText('THIS MUCH WAS LET GO',W/2,64);
+  c.fillStyle='#F2B66B';c.font='400 30px '+FB;c.fillText('Write it. Fold it. Drop it in.',W/2,112);});
+const lg=new THREE.Mesh(new THREE.PlaneGeometry(2.6,.57),new THREE.MeshBasicMaterial({map:lgTex}));lg.position.set(0,TB+TH-.45,TD/2+.02);tank.add(lg);
+// writing ledge with note pads and pens
+box(1.8,3.2,1,M(0x2A1E22),-2.8,1.6,.3,tank);box(1.9,.08,1.1,M(0x6B4A2E),-2.8,3.24,.3,tank);
+[[-3.3,0xFFF07A],[-2.8,0xFFB3C7],[-2.3,0xA8E0FF]].forEach(([x,col])=>box(.35,.12,.35,M(col),x,3.34,.3,tank));
+const cup=cyl(.14,.12,.35,M(0x333333),-2.2,3.45,.6,tank,10);
+tank.position.set(-10,0,7.8);tank.rotation.y=Math.PI;scene.add(tank);tag(tank,5);[glass,notes,edges,lg].forEach(m=>m.userData.tank=true);
+
+// 6 Dharma — spine south face + kavad rack
+panel(panelTex({kick:'06 · Shravan',title:'Dharma',en:'Duty',storyTitle:'Shravan carries his parents',
+  story:'Shravan carried his blind parents in two baskets on a kavad to every pilgrimage they wished to see, through sun and rain.',prompt:'Lift the kavad. Feel the weight of love.',
+  art:(c,x,y,w,h)=>{c.strokeStyle='#6B4A2E';c.lineWidth=10;c.beginPath();c.moveTo(x+w*.15,y+h*.35);c.lineTo(x+w*.85,y+h*.35);c.stroke();
+   c.fillStyle='#A9804F';[.18,.82].forEach(f=>{c.beginPath();c.arc(x+w*f,y+h*.72,h*.16,0,Math.PI);c.fill()});figure(c,x+w*.5,y+h*.98,h*.4,'#7A4A2C')}},6,7),6,7,-4,4.4,0.35,0,6);
+const kav=new THREE.Group();const wood=M(0x8A6A43);box(.25,4.4,.25,wood,-2.2,2.2,0,kav);box(.25,4.4,.25,wood,2.2,2.2,0,kav);box(5.2,.15,1.6,wood,0,.08,0,kav);
+const pole=cyl(.12,.12,6.6,M(0xC9A86A),0,4.5,0,kav,12);pole.rotation.z=Math.PI/2;
+[-3,3].forEach(x=>{cyl(.75,.6,.8,M(0xA9804F),x,2.6,0,kav,16);[0,2.1,4.2].forEach(a=>{const rp=cyl(.02,.02,1.6,M(0x5A4630),x+Math.cos(a)*.55,3.65,Math.sin(a)*.55,kav,4);});});
+kav.position.set(-4,0,3.2);scene.add(kav);tag(kav,6);
+
+// 7 Sankalp — bird's eye velcro target on the south wall, throw lane in front
+const tgtTex=canvasTex(1024,1024,(c,W,H)=>{const cx=W/2,cy=H/2;c.clearRect(0,0,W,H);
+  [[500,'#2A1E22','DISTRACTION'],[400,'#5A4A5A','DOUBT'],[300,'#8C1D3A','FEAR'],[200,'#F5E6C8',''],[110,'#D9831C','']].forEach(([r,col,l])=>{c.fillStyle=col;c.beginPath();c.arc(cx,cy,r,0,7);c.fill();
+    if(l){c.fillStyle='#fff';c.font='700 40px '+FD;c.textAlign='center';c.fillText(l,cx,cy-r+62)}});
+  c.fillStyle='#6B4A2E';c.beginPath();c.ellipse(cx-40,cy+30,120,62,-.15,0,7);c.fill();c.beginPath();c.moveTo(cx+60,cy-10);c.lineTo(cx+140,cy+10);c.lineTo(cx+60,cy+30);c.fill();
+  c.fillStyle='#fff';c.beginPath();c.arc(cx,cy,48,0,7);c.fill();c.fillStyle='#111';c.beginPath();c.arc(cx,cy,26,0,7);c.fill();
+  c.fillStyle=MAROON;c.font='700 44px '+FD;c.textAlign='center';c.fillText('SANKALP',cx,cy+170);});
+const tg=new THREE.Group();const disc=new THREE.Mesh(new THREE.CircleGeometry(2,64),M(0xffffff,{map:tgtTex,transparent:true,roughness:.9}));disc.position.z=.1;tg.add(disc);
+cyl(2.05,2.05,.15,M(0x3A2A20),0,0,0,tg,48).rotation.x=Math.PI/2;
+const ballMat=M(0xF2D24B,{roughness:.9});[[.5,.6],[-1.1,-.4],[.2,-1.3],[1.3,.9]].forEach(p=>{const b=new THREE.Mesh(new THREE.SphereGeometry(.13,12,8),ballMat);b.position.set(p[0],p[1],.25);tg.add(b)});
+tg.position.set(2,4.6,9.6);tg.rotation.y=Math.PI;scene.add(tg);tag(tg,7);
+const laneTex=canvasTex(512,768,(c,W,H)=>{c.fillStyle='rgba(140,29,58,.22)';c.fillRect(0,0,W,H);c.strokeStyle=MAROON;c.lineWidth=10;c.strokeRect(5,5,W-10,H-10);
+  c.fillStyle='#fff';c.fillRect(0,H-40,W,24);c.fillRect(0,H*.36,W,18);c.fillStyle=MAROON;c.font='700 40px '+FD;c.textAlign='center';
+  c.fillText('THROW LINE',W/2,H-60);c.fillText('KIDS',W/2,H*.36-16);});
+const lane=new THREE.Mesh(new THREE.PlaneGeometry(4,5.8),M(0xffffff,{map:laneTex,transparent:true}));lane.rotation.x=-Math.PI/2;lane.position.set(2,.035,6.85);lane.receiveShadow=true;scene.add(lane);tag(lane,7);
+[[-0.1,4.2],[4.1,4.2],[-0.1,7.2],[4.1,7.2]].forEach(p=>{cyl(.05,.05,3,M(0x8C7A3A,{metalness:.6,roughness:.3}),p[0],1.5,p[1]);cyl(.35,.35,.08,M(0x333333),p[0],.04,p[1])});
+[-0.1,4.1].forEach(x=>{const rope=cyl(.04,.04,3,M(0x8C1D3A),x,2.7,5.7,scene,6);rope.rotation.x=Math.PI/2});
+cyl(.5,.4,.8,M(0x8C1D3A),4.6,.4,4.2);
+panel(panelTex({kick:'07 · Mahabharat',title:'Sankalp',en:'Purpose & courage',storyTitle:'Arjun sees only the bird’s eye',
+  story:'Dronacharya asked what each student saw. Others saw trees, branches and sky. Arjun saw only the eye, and hit it.',prompt:'Name your goal. Aim. Throw.',lines:5,
+  art:(c,x,y,w,h)=>{c.fillStyle='#4E7A3A';c.beginPath();c.arc(x+w*.7,y+h*.4,h*.32,0,7);c.fill();c.fillStyle='#6B4A2E';c.beginPath();c.ellipse(x+w*.7,y+h*.38,h*.12,h*.06,0,0,7);c.fill();
+   c.fillStyle='#fff';c.beginPath();c.arc(x+w*.74,y+h*.36,h*.025,0,7);c.fill();figure(c,x+w*.25,y+h*.98,h*.38,'#3C6E9E');}},4,7),4,7,6.6,4.4,9.75,Math.PI,7);
+
+// 8 Tyag — sharing table on spine south face
+panel(panelTex({kick:'08 · Bhagavat Puran',title:'Tyag',en:'Sacrifice · first responders',storyTitle:'King Rantidev’s last meal',
+  story:'He gave away his food, then his last cup of water. Today firefighters, EMS crews and service members give their safety for strangers. Thank you.',lines:5,prompt:'Try it on. Feel what they carry.',
+  art:(c,x,y,w,h)=>{figure(c,x+w*.38,y+h*.98,h*.4,'#8C1D3A');figure(c,x+w*.64,y+h*.98,h*.32,'#6B5A4A');c.fillStyle='#F5E6C8';c.beginPath();c.ellipse(x+w*.51,y+h*.55,h*.1,h*.05,0,0,7);c.fill()}},6,7),6,7,10,4.4,0.35,0,8);
+const gear=new THREE.Group();
+// coat rack with firefighter, EMS and army jackets
+box(.12,5.6,.12,M(0x333333),-2.6,2.8,0,gear);box(.12,5.6,.12,M(0x333333),.2,2.8,0,gear);box(2.9,.1,.1,M(0x333333),-1.2,5.55,0,gear);box(3.2,.08,1,M(0x333333),-1.2,.04,0,gear);
+[[-2.2,0xC9A24B,1],[-1.2,0x23395B,0],[-.2,0x5B6B3A,0]].forEach(([x,col,refl])=>{box(.85,2.2,.5,M(col),x,4.3,0,gear);box(1.1,.3,.5,M(col),x,5.25,0,gear);
+  if(refl){box(.87,.12,.52,M(0xE8E36A,{emissive:0x555500}),x,3.6,0,gear);box(.87,.12,.52,M(0xE8E36A,{emissive:0x555500}),x,4.2,0,gear);}});
+// helmets on a shelf
+box(1.8,.1,.7,M(0x6B4A2E),-1.2,2.5,0,gear);
+[[-1.8,0x111111],[-1.2,0xB71C1C],[-.6,0x3A4A2A]].forEach(([x,col])=>{const h=new THREE.Mesh(new THREE.SphereGeometry(.3,16,10,0,Math.PI*2,0,Math.PI/2),M(col,{roughness:.4}));h.position.set(x,2.55,0);h.castShadow=true;gear.add(h);});
+// boots and EMS jump bag on the floor
+[[-2,0],[-1.6,0]].forEach(([x])=>box(.32,.7,.6,M(0x4A3A2A),x,.35,.9,gear));box(1.3,.8,.7,M(0xC62828),-.5,.4,1,gear);box(1.32,.12,.72,M(0xFFFFFF),-.5,.6,1,gear);
+// mannequin in full turnout gear with air pack
+const man=new THREE.Group();cyl(.45,.5,2.8,M(0xC9A24B),0,2.6,0,man,16);[3.1,2.3].forEach(y=>cyl(.46,.51,.12,M(0xE8E36A,{emissive:0x555500}),0,y,0,man,16));
+cyl(.2,.22,1.3,M(0xC9A24B),-.22,.65,0,man,10);cyl(.2,.22,1.3,M(0xC9A24B),.22,.65,0,man,10);
+const hd=new THREE.Mesh(new THREE.SphereGeometry(.36,16,12),M(0x9C8B7A));hd.position.y=4.35;man.add(hd);
+const hm=new THREE.Mesh(new THREE.SphereGeometry(.44,16,10,0,Math.PI*2,0,Math.PI/2),M(0xB71C1C,{roughness:.4}));hm.position.y=4.42;hm.castShadow=true;man.add(hm);
+cyl(.62,.62,.05,M(0xB71C1C),0,4.42,0,man,20);cyl(.2,.2,1.6,M(0xB0B6BA,{metalness:.7,roughness:.3}),0,3,-.55,man,14);
+man.position.set(2.4,0,.4);gear.add(man);
+// bench and mirror for photos
+box(3,1.4,1,M(0x8A6A43),.9,.7,1.9,gear);box(1.6,4.5,.15,M(0x5A1226),3.6,2.6,1.6,gear);
+const mir=new THREE.Mesh(new THREE.PlaneGeometry(1.4,4.2),M(0xBFD6E6,{metalness:.9,roughness:.08}));mir.position.set(3.6,2.6,1.69);gear.add(mir);
+// weight sign
+const wt=canvasTex(512,360,(c,W,H)=>{c.fillStyle=IVORY;c.fillRect(0,0,W,H);c.fillStyle=MAROON;c.fillRect(0,0,W,80);c.fillStyle='#fff';c.font='700 44px '+FD;c.fillText('WHAT THEY CARRY',24,56);
+  c.fillStyle=INK;c.font='600 34px '+FB;[['Firefighter gear','50+ lb'],['EMS jump bag','25–35 lb'],['Army field pack','40+ lb']].forEach((r,k)=>{c.textAlign='left';c.fillText(r[0],24,150+k*70);c.textAlign='right';c.fillText(r[1],W-24,150+k*70)});});
+const ws=new THREE.Group();box(.08,3.6,.08,M(0x333333),0,1.8,0,ws);const wm=new THREE.Mesh(new THREE.PlaneGeometry(1.6,1.12),M(0xffffff,{map:wt}));wm.position.set(0,3.6,.06);ws.add(wm);ws.position.set(-3.6,0,.5);gear.add(ws);
+gear.position.set(10,0,1.3);scene.add(gear);tag(gear,8);
+
+// 9 Diya wall — east wall faces west, plus bridge panel on spine
+const VALS=['Santosh','Aadar','Daya','Vivek','Kshama','Dharma','Sankalp','Tyag'];
+const diyaTex=canvasTex(1536,1344,(c,W,H)=>{c.fillStyle='#2A1418';c.fillRect(0,0,W,H);c.fillStyle='#F2B66B';c.font='600 38px '+FD;c.fillText('BEFORE YOU GO',60,80);
+  c.fillStyle='#fff';c.font='700 96px '+FD;c.fillText('LIGHT YOUR VALUE',60,180);c.fillStyle='#E9D9C6';c.font='400 36px '+FB;c.fillText('Choose one value to carry home. Place a diya on its shelf.',60,240);
+  VALS.forEach((v,k)=>{const cx=(k%4)*(W/4)+W/8,cy=k<4?560:1040;c.fillStyle='#F2B66B';c.font='600 46px '+FD;c.textAlign='center';c.fillText(v.toUpperCase(),cx,cy);c.textAlign='left'});});
+const dw=panel(diyaTex,8,7,19.75,4.4,4.5,-Math.PI/2,9);
+const flame=new THREE.MeshStandardMaterial({color:0xFFC861,emissive:0xFFA531,emissiveIntensity:1.6});
+const r9=rng(3);
+[0,1,2,3,4,5,6,7].forEach(k=>{const lx=-3+(k%4)*2,ly=k<4?0.75:-1.95;box(1.7,.1,.5,M(0x6B4A2E),lx,ly,.3,dw);
+  const n=2+Math.floor(r9()*6);for(let j=0;j<n;j++){const x=lx-.7+(j%5)*.35,z=.18+Math.floor(j/5)*.22;cyl(.11,.08,.08,M(0xC27A2C),x,ly+.1,z,dw,10);
+    const f=new THREE.Mesh(new THREE.SphereGeometry(.06,8,6),flame);f.position.set(x,ly+.2,z);dw.add(f);}});
+const glow=new THREE.PointLight(0xFFB050,0.9,9);glow.position.set(18.5,4,4.5);scene.add(glow);
+panel(panelTex({kick:'Next: Section 6',title:'Lived by a Sant',en:'Mandir, shastras & sant',storyTitle:'Every value in this room, in one life',
+  story:'Contentment, respect, compassion, wisdom, forgiveness, duty, courage and sacrifice are not just ideas. Step through to see how the Sant lives them every day.',prompt:'Continue →',lines:5},4,7),4,7,17,4.4,0.35,0,9);
+
+// story TVs on spine
+function tv(x,z,rotY,txt){const g=new THREE.Group();box(3.4,2,0.18,M(0x111111),0,0,0,g);
+  const st=canvasTex(512,300,(c,W,H)=>{const gr=c.createLinearGradient(0,0,W,H);gr.addColorStop(0,'#2B4F7A');gr.addColorStop(1,'#8C1D3A');c.fillStyle=gr;c.fillRect(0,0,W,H);
+    c.fillStyle='#fff';c.font='600 34px '+FD;c.fillText('30-SECOND STORIES',30,60);c.font='400 24px '+FB;c.fillText(txt,30,100);c.beginPath();c.arc(W/2,H*.64,44,0,7);c.fillStyle='rgba(255,255,255,.9)';c.fill();
+    c.fillStyle='#8C1D3A';c.beginPath();c.moveTo(W/2-14,H*.64-24);c.lineTo(W/2+24,H*.64);c.lineTo(W/2-14,H*.64+24);c.fill();});
+  const s=new THREE.Mesh(new THREE.PlaneGeometry(3.2,1.8),new THREE.MeshBasicMaterial({map:st}));s.position.z=0.1;g.add(s);g.position.set(x,5.6,z);g.rotation.y=rotY;scene.add(g);}
+
+const SCN=[
+ // [value, who, quote-or-headline, isQuote, context, photo note, width units]
+ ['aadar','The Golden Rule','Treat others the way you want to be treated.',true,'Respect is the universal language of dignity: good manners, real listening, and valuing people who see things differently.','neighbors, classmates or coworkers listening to each other',1],
+ ['daya','Harriet Tubman','She went back.',false,'After escaping slavery, she returned to the South about 13 times over ten years and led some 70 people to freedom, facing dogs, cold and the threat of death.','Harriet Tubman portrait (public domain)',1],
+ ['sankalp','Martin Luther King Jr.','The time is always right to do what is right.',true,'Through arrests, threats and fierce opposition, he led the Civil Rights Movement with steady, nonviolent resolve.','Dr. King (licensed or public domain image)',1],
+ ['nishtha','For better or for worse','For better or for worse.',true,'Wedding vows name what faithfulness means: standing by our commitments when life is hard, not only when it is easy.','a couple married many years',1],
+ ['tyag','Those who serve','They run toward danger.',false,'Firefighters, EMS crews and service members give their time, their safety and years away from family so others can be safe.','local fire, EMS or military members (with permission)',1],
+ ['ahimsa','Care for every life','Be kind to all living beings.',true,'Non-violence today looks like protecting animals, caring for the earth, and choosing gentleness with every life.','volunteers planting trees or caring for animals',1],
+ ['shuddhi','Living clean','Clean habits. Clear mind.',false,'Purity of character means living free of addiction, keeping our word, and acting the same whether or not anyone is watching.','young people in sports or service',1],
+ ['every value','Mahant Swami Maharaj','[Approved quote from Mahant Swami Maharaj]',true,'One life that shows every value in this room, every day. Continue to Mandir, Shastras & Sant to see how.','Mahant Swami Maharaj (from BAPS, approved for use)',2]];
+const muralTex=canvasTex(4096,1147,(c,W,H)=>{const PF='Poppins,"Century Gothic",sans-serif';c.fillStyle='#000';c.fillRect(0,0,W,H);
+  c.fillStyle='#fff';c.font='600 76px '+PF;c.fillText('modern day values',70,108);
+  c.fillStyle='#bdbdbd';c.font='400 30px '+PF;c.fillText('The same values, lived by people in our own time.',760,104);
+  c.textAlign='right';c.fillStyle='#F2B66B';c.fillText('read as you walk  →',W-70,104);c.textAlign='left';
+  const unit=(W-140)/9;let x=70;
+  SCN.forEach(([val,who,line,isQ,ctx,photo,u],k)=>{const w=unit*u-30;
+    // photo placeholder
+    c.fillStyle='#1B1B1E';c.fillRect(x,160,w,u===2?560:470);c.setLineDash([14,10]);c.strokeStyle='#5A5A60';c.lineWidth=3;c.strokeRect(x+8,168,w-16,(u===2?560:470)-16);c.setLineDash([]);
+    const cy=160+(u===2?280:235);c.strokeStyle='#8A8A92';c.lineWidth=5;c.strokeRect(x+w/2-46,cy-40,92,66);c.beginPath();c.arc(x+w/2,cy-7,20,0,7);c.stroke();c.fillStyle='#8A8A92';c.fillRect(x+w/2-20,cy-52,40,12);
+    c.textAlign='center';c.font='400 21px '+PF;wrap(c,'Photo: '+photo,x+w/2,cy+70,w-60,28,2);c.textAlign='left';
+    const ty=u===2?760:680;
+    c.font='600 22px '+PF;const tw=c.measureText(val.toUpperCase()).width;c.fillStyle=u===2?'#8C1D3A':'#C9741A';c.fillRect(x,ty-30,tw+28,40);c.fillStyle='#fff';c.fillText(val.toUpperCase(),x+14,ty-2);
+    c.fillStyle='#fff';c.font='600 '+(u===2?44:34)+'px '+PF;c.fillText(who,x,ty+56);
+    c.font=(isQ?'italic ':'')+'400 '+(u===2?34:27)+'px '+PF;c.fillStyle='#FFE7C2';
+    const ql=wrap(c,isQ?'“'+line+'”':line,x,ty+(u===2?110:100),w,u===2?44:36,3);
+    c.fillStyle='#bdbdbd';c.font='400 '+(u===2?24:20)+'px '+PF;wrap(c,ctx,x,ty+(u===2?110:100)+ql*(u===2?44:36)+14,w,u===2?32:27,u===2?3:5);
+    x+=unit*u;});});
+panel(muralTex,25,7,0.9,4.4,-0.4,Math.PI,10);
+
+tv(-9,0.35,0,'Sita Mata · Shravan · Arjun');
+
+
+
+/* ---------- value signs: 8 ft header banners on top of the wall above each station ---------- */
+const SIGNS=[
+ [1,'santosh','(sun-TOHSH) ','संतोष','Santosh is contentment: a quiet, steady happiness that does not depend on having more. Sudama was poor, yet his heart was full, and Krishna honored him without being asked. We live santosh when we stop measuring our lives against others and start noticing what we already have. Name three blessings each day, thank someone who helped you, and let gratitude, not comparison, set the tone of your day.',[9,-9.8],0],
+ [2,'aadar','(AA-dur) ','आदर','Aadar is respect: seeing the worth in every person and letting it shape how we act and speak. When Ram returned from vanvas, He honored Kaikeyi Mata with the same respect He gave every elder. We live aadar when we listen before we answer, speak kindly to parents, teachers and coworkers, and treat people who disagree with us with dignity. Respect is how strong families and communities are built.',[0,-9.8],0],
+ [3,'daya','(DUH-yaa) ','दया','Daya is compassion: feeling another person’s pain and choosing to do something about it. When the halahal poison threatened all creation, Shiv Bhagwan drank it without hesitation and became Neelkanth. We live daya when we notice someone struggling and step in, with a kind word, a helping hand, or our time. True compassion is not only a feeling. It is the courage to act.',[-8.5,-9.8],0],
+ [4,'vivek','(vih-VAYK) ','विवेक','Vivek is wisdom: the ability to tell what truly matters from what only seems important. Asked to circle the world, Kartikeya flew off on his peacock, while Ganeshji walked around Shiv Bhagwan and Parvati Maa and said, “You are my world.” We live vivek when we pause before a decision, ask what really matters, and put people and principles ahead of speed, status and noise.',[-19.8,0],Math.PI/2],
+ [5,'kshama','(kshuh-MAA) ','क्षमा','Kshama is forgiveness: letting go of a wrong even when we have the power to punish. After a year of torment, Sita Mata asked Hanumanji to protect the rakshasis rather than harm them, because no one is entirely free of fault. We live kshama when we stop keeping score, let go of old grudges, and give others the second chance we hope to receive. Forgiveness frees the one who forgives.',[-10,9.8],Math.PI],
+ [6,'dharma','(DHUR-muh) ','धर्म','Dharma is duty: doing what is right and caring for those who depend on us. Shravan carried his blind, elderly parents on a kavad to every pilgrimage they wished to see, through sun and rain, and never treated them as a burden. We live dharma when we honor our parents and elders, keep our responsibilities without being asked, and serve with love. Quiet, steady service is a form of worship.',[-4,0.3],0],
+ [7,'sankalp','(sun-KULP) ','संकल्प','Sankalp is purpose and resolve: choosing a goal and staying with it when it gets hard. When Dronacharya tested his students, the others saw trees, branches and sky. Arjun saw only the bird’s eye, and hit it. We live sankalp when we set a clear goal, push past fear, doubt and distraction, and keep going. Courage is not the absence of fear but the strength to stay committed.',[4.3,9.8],Math.PI],
+ [8,'tyag','(TYAAG) ','त्याग','Tyag is sacrifice: giving up what we need so that others can be safe and whole. After a 48-day fast, King Rantidev gave away his meal and his last cup of water to those in need. Today firefighters, EMS crews and service members give their time and safety for people they have never met. We live tyag when we share what is hard to give, and remember to say thank you.',[10,0.3],0]];
+const SW=8,SH=SW*360/1680,SY=8.25+SH/2;
+SIGNS.forEach(([si,name,pron,deva,para,pos,rot])=>{
+  const t=canvasTex(1680,360,(c,W,H)=>{c.fillStyle='#000';c.fillRect(0,0,W,H);c.fillStyle='#fff';
+    c.font='600 64px Poppins,"Century Gothic",sans-serif';c.fillText(name,72,106);
+    c.font='400 24px Poppins,"Century Gothic",sans-serif';c.fillText(pron,72,145);const pw=c.measureText(pron).width;
+    c.font='400 24px "Noto Sans Devanagari",Poppins,sans-serif';c.fillText(deva,72+pw,145);
+    c.fillStyle='#e8e8e8';c.font='400 15px Poppins,"Century Gothic",sans-serif';wrap(c,para,72,180,620,23.2,7);});
+  const g=new THREE.Group();const mat=new THREE.MeshBasicMaterial({map:t});
+  box(SW+.08,SH+.08,.05,M(0x111111),0,0,0,g);
+  const f1=new THREE.Mesh(new THREE.PlaneGeometry(SW,SH),mat);f1.position.z=.03;g.add(f1);
+  const f2=new THREE.Mesh(new THREE.PlaneGeometry(SW,SH),mat);f2.position.z=-.03;f2.rotation.y=Math.PI;g.add(f2);
+  [-SW/2+.6,SW/2-.6].forEach(x=>box(.1,.5,.1,M(0x222222),x,-SH/2-.1,-.05,g));
+  g.position.set(pos[0],SY,pos[1]);g.rotation.y=rot;scene.add(g);tag(g,si);});
+
+/* ---------- exhibit lighting: gym overheads off, every station lit by its own fixtures ---------- */
+const fixtures=[],beams=[];const WARM=0xFFDDB0,Y=new THREE.Vector3(0,1,0);
+const coneMat=new THREE.MeshBasicMaterial({color:0xFFD9A0,transparent:true,opacity:.05,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide});
+const canMat=M(0x1A1A1A,{roughness:.5}),lensMat=new THREE.MeshBasicMaterial({color:0xFFF1D6});
+function spot(f,t,o){o=o||{};const F=new THREE.Vector3(f[0],f[1],f[2]),T=new THREE.Vector3(t[0],t[1],t[2]),a=o.a||0.5;
+  const L=new THREE.SpotLight(o.color||WARM,o.i||1.6,o.d||18,a,0.6,1.3);L.position.copy(F);L.target.position.copy(T);scene.add(L);scene.add(L.target);fixtures.push(L);
+  const dir=new THREE.Vector3().subVectors(T,F).normalize();
+  const head=new THREE.Group();head.add(new THREE.Mesh(new THREE.CylinderGeometry(.15,.21,.5,14),canMat));
+  const lens=new THREE.Mesh(new THREE.CircleGeometry(.19,14),lensMat);lens.rotation.x=Math.PI/2;lens.position.y=-.26;head.add(lens);
+  head.position.copy(F);head.quaternion.setFromUnitVectors(new THREE.Vector3(0,-1,0),dir);scene.add(head);
+  if(F.y>7){const A=new THREE.Vector3(o.wall?o.wall[0]:t[0],8.05,o.wall?o.wall[1]:t[2]);const len=A.distanceTo(F);
+    const arm=new THREE.Mesh(new THREE.CylinderGeometry(.04,.04,len,6),canMat);arm.position.copy(A).lerp(F,.5);arm.quaternion.setFromUnitVectors(Y,new THREE.Vector3().subVectors(F,A).normalize());scene.add(arm);}
+  if(o.cone!==false){const len=F.distanceTo(T)*.95,r=Math.tan(a)*len*.8;let cm=coneMat;if(o.beam){cm=coneMat.clone();cm.color.setHex(o.beam);cm.opacity=.1}const c=new THREE.Mesh(new THREE.ConeGeometry(r,len,24,1,true),cm);
+    c.position.copy(F).addScaledVector(dir,len/2);c.quaternion.setFromUnitVectors(Y,dir.clone().negate());c.renderOrder=5;scene.add(c);beams.push(c);}}
+// wall-top clamp spots aimed at each panel
+spot([17,8.8,-2.4],[17,4,-0.4],{a:.6});                                   // Welcome
+[-8.5,0.9,10.3].forEach(x=>spot([x,8.8,-2.4],[x,4,-0.4],{a:.62}));        // Ramayan mural
+[6.8,11.2].forEach(x=>spot([x,8.8,-7.7],[x,4,-9.75],{a:.6,color:0x7B3CFF,i:1.1,beam:0x9B5CFF}));            // Santosh gratitude wall
+spot([0,8.8,-7.4],[0,2.45,-9.75],{a:.32,i:.9});                                            // Aadar
+spot([-8.75,8.8,-6.8],[-8.75,4.3,-9.6],{a:.42,i:1.5,color:0xFFD0B0});spot([-8.75,.25,-7.6],[-8.75,4.6,-9.6],{a:.45,i:.9,color:0xFF8A8A,cone:false});                                      // Daya
+[-3.2,3.2].forEach(z=>spot([-17.6,8.8,z],[-19.75,4,z],{a:.62}));          // Vivek word search
+spot([-10,8.8,7.7],[-10,4,9.75],{a:.35,i:1});spot([-10,8.8,5],[-10,3.4,7.8],{a:.42,i:1.3,wall:[-10,9.75]});                                          // Kshama
+spot([-4,8.8,2.3],[-4,4,0.35]);                                            // Dharma panel
+spot([6.6,8.8,7.7],[6.6,4,9.75],{a:.45});                                      // Sankalp panel
+spot([2,8.8,6.2],[2,4.6,9.75],{a:.42,wall:[2,9.75],i:1.4});                   // Sankalp floor maze
+spot([10,8.8,2.3],[10,4,0.35]);                                            // Tyag panel
+spot([17,8.8,2.3],[17,4,0.35],{a:.45});                                    // Bridge panel
+spot([17.8,8.8,4.5],[19.75,4,4.5],{a:.6,i:.7,color:0xFFC88A});             // Diya wall wash
+// floor uplights on the objects people touch
+spot([-4,0.25,5.4],[-4,4.2,3.2],{a:.45,i:1.2});                            // kavad
+spot([12.4,0.25,3.4],[12.4,3.2,1.7],{a:.4,i:1.2});                         // turnout-gear mannequin
+spot([-14,0.25,0],[-15.6,3.6,0],{a:.4,i:1});                               // Vivek mirror plinth
+function setLighting(on){exhibitLit=on;hemi.intensity=on?.13:.78;sun.intensity=on?.05:.72;sun.castShadow=!on;
+  fixtures.forEach(L=>L.visible=on);beams.forEach(b=>b.visible=on);pathMat.opacity=on?1:.85;stageColor();
+  document.getElementById('bLight').setAttribute('aria-pressed',on);}
+
+/* ---------- visitor path ---------- */
+const PATH=[[17,-15],[17,-9],[16,-5.2],[11,-4.4],[2,-3.6],[-6,-4.4],[-11,-4.2],[-14.5,-3.2],[-17.5,-1],[-17.5,1.2],[-14.5,3.4],[-11,4.4],[-6.6,5],[-1.4,4.7],[0,3],[3,2.4],[5.6,3.1],[7.4,4.7],[11,4.6],[15,4.2],[17,6.8],[17,15]];
+const curve=new THREE.CatmullRomCurve3(PATH.map(p=>new THREE.Vector3(p[0],0.06,p[1])),false,'centripetal');
+const pathMat=new THREE.MeshBasicMaterial({color:0xD9831C,transparent:true,opacity:.85});
+const N=260;for(let k=0;k<N;k+=2){const a=curve.getPointAt(k/N),b=curve.getPointAt((k+1)/N);const len=a.distanceTo(b);
+  const seg=new THREE.Mesh(new THREE.PlaneGeometry(.22,len),pathMat);seg.rotation.x=-Math.PI/2;seg.position.copy(a).lerp(b,.5);
+  seg.rotation.z=Math.atan2(b.x-a.x,b.z-a.z);scene.add(seg);}
+const arrowGeo=new THREE.ConeGeometry(.38,.8,3);
+for(let k=1;k<12;k++){const t=k/12,p=curve.getPointAt(t),tg=curve.getTangentAt(t);const ar=new THREE.Mesh(arrowGeo,pathMat);
+  ar.position.set(p.x,0.1,p.z);ar.rotation.x=Math.PI/2;ar.rotation.z=Math.atan2(-tg.x,tg.z);ar.scale.set(1,1,.15);scene.add(ar);}
+
+// people for scale
+const people=[];const skin=[0x8D5A3C,0x6E4630,0xA9744F,0x5C3A28];const cloth=[0xC2185B,0x23395B,0xE0A030,0x2F6B5A,0x7A2E3A,0x444A5A];
+for(let k=0;k<7;k++){const g=new THREE.Group();const h=k===2||k===5?3.8:5+((k*37)%9)/10;
+  cyl(.42*h/5.5,.55*h/5.5,h*.62,M(cloth[k%6]),0,h*.31+.4*h/5.5,0,g,14);cyl(.14,.14,.4*h/5.5,M(0x2A2A2A),0,.2*h/5.5,0,g,8);
+  const hd=new THREE.Mesh(new THREE.SphereGeometry(.38*h/5.5,14,10),M(skin[k%4]));hd.position.y=h*.87;hd.castShadow=true;g.add(hd);
+  scene.add(g);people.push({g,t:k/7+0.01,sp:.012+(k%3)*.002});}
+
+/* ---------- labels ---------- */
+function label(text,num,x,y,z){const t=canvasTex(512,128,(c,W,H)=>{c.fillStyle='rgba(140,29,58,.94)';const r=58;c.beginPath();c.moveTo(r,6);c.lineTo(W-r,6);c.arc(W-r,64,58,-Math.PI/2,Math.PI/2);c.lineTo(r,122);c.arc(r,64,58,Math.PI/2,Math.PI*1.5);c.fill();
+  c.fillStyle='#F2B66B';c.font='600 40px '+FD;c.textAlign='left';c.fillText(num,38,80);c.fillStyle='#fff';c.font='600 50px '+FD;c.fillText(text.toUpperCase(),num.length>2?130:100,82);});
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:t,depthTest:false,transparent:true}));sp.scale.set(5.2,1.3,1);sp.position.set(x,y,z);sp.renderOrder=10;scene.add(sp);labelSprites.push(sp);}
+const LBL=[[17,11.8,-3],[9,11.8,-8],[0,11.8,-6.5],[-8.5,11.8,-8],[-17,11.8,0],[-10,11.8,8],[-4,11.8,3.2],[3,11.8,6],[10,11.8,2],[18,11.8,5],[1,11.8,-1.2]];
+S.forEach((s,i)=>label(s.short,i===0?'IN':i===9?'OUT':i===10?'ART':String(i).padStart(2,'0'),LBL[i][0],LBL[i][1],LBL[i][2]));
+
+// selection marker
+const marker=new THREE.Mesh(new THREE.RingGeometry(1,1.25,48),new THREE.MeshBasicMaterial({color:0xD9831C,transparent:true,opacity:.9,depthWrite:false}));marker.rotation.x=-Math.PI/2;marker.position.y=0.08;scene.add(marker);
+
+/* ---------- camera ---------- */
+let tween=null;
+function aspect(){return host.clientWidth/Math.max(1,host.clientHeight)}
+function flyTo(p,l,dur){const from={p:camera.position.clone(),l:controls.target.clone()};tween={from,to:{p:new THREE.Vector3(...p),l:new THREE.Vector3(...l)},t:0,dur:dur||1.2};}
+function overview(){const a=aspect(),d=Math.max(54,54*1.5/a);const dir=new THREE.Vector3(-.35,.78,.6).normalize().multiplyScalar(d);flyTo([dir.x+1,dir.y,dir.z+1],[1,0,1]);}
+function topView(){const a=aspect(),t=Math.tan(22.5*Math.PI/180);const h=Math.max(25/(t*a),15/t);flyTo([0,h,0.01],[0,0,0]);}
+// Station views pull back and up so the whole station and its neighbours stay in frame, looking down over the walls.
+function stationView(i){const v=S[i].view,a=aspect(),l=v.l;
+  if(i===10){flyTo(a<1.1?[1,20,-9]:[1,15,-7],[1,3.6,0]);return}
+  const k=1.5*(a<1.1?Math.min(1.7,1.1/a):1);
+  flyTo([l[0]+(v.p[0]-l[0])*k,v.p[1]+6+(k-1.5)*4,l[2]+(v.p[2]-l[2])*k],[l[0],l[1]-0.6,l[2]]);}
+let current=0;
+function select(i,fly){current=i;renderDetail(i);marker.position.x=S[i].spot[0];marker.position.z=S[i].spot[1];if(fly){stationView(i);setMode(null)}}
+const bOver=document.getElementById('bOver'),bTop=document.getElementById('bTop'),bWalk=document.getElementById('bWalk'),bWalls=document.getElementById('bWalls'),bLabels=document.getElementById('bLabels');
+function setMode(m){bOver.setAttribute('aria-pressed',m==='over');bTop.setAttribute('aria-pressed',m==='top');}
+bOver.onclick=()=>{stopWalk();setMode('over');overview()};bTop.onclick=()=>{stopWalk();setMode('top');topView()};
+let walking=null;
+function stopWalk(){if(walking){clearInterval(walking);walking=null;bWalk.setAttribute('aria-pressed','false');bWalk.textContent='▶ Walk through'}}
+bWalk.onclick=()=>{if(walking){stopWalk();return}bWalk.setAttribute('aria-pressed','true');bWalk.textContent='❚❚ Pause';const ORDER=[0,10,1,2,3,4,5,6,7,8,9];let i=0;select(0,true);
+  walking=setInterval(()=>{i++;if(i>=ORDER.length){stopWalk();setMode('over');overview();return}select(ORDER[i],true)},5200);};
+function setGhost(on){drapeMat.opacity=on?0.16:1;drapeMat.depthWrite=!on;ghostables.forEach(m=>m.castShadow=!on);bWalls.setAttribute('aria-pressed',on)}
+bWalls.onclick=()=>setGhost(bWalls.getAttribute('aria-pressed')!=='true');
+bLabels.onclick=()=>{const on=bLabels.getAttribute('aria-pressed')!=='true';bLabels.setAttribute('aria-pressed',on);labelSprites.forEach(s=>s.visible=on)};
+setGhost(true);
+document.getElementById('bLight').onclick=()=>setLighting(!exhibitLit);setLighting(true);
+
+// picking
+const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();let down=null;
+renderer.domElement.addEventListener('pointerdown',e=>{down=[e.clientX,e.clientY];if(tween&&!walking)tween=null;});
+renderer.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;const r=renderer.domElement.getBoundingClientRect();
+  ndc.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(ndc,camera);
+  const hit=ray.intersectObjects(pick,false).find(h=>h.object.userData.si!=null);if(hit){if(hit.object.userData.tank){addNotes();if(current===5)return}stopWalk();select(hit.object.userData.si,true)}});
+
+function resize(){const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+new ResizeObserver(resize).observe(host);resize();
+const a0=aspect(),d0=Math.max(54,54*1.5/a0),dir0=new THREE.Vector3(-.35,.78,.6).normalize().multiplyScalar(d0);
+camera.position.set(dir0.x+1,dir0.y,dir0.z+1);controls.target.set(1,0,1);select(0,false);
+document.getElementById('hint').textContent='Drag to orbit · scroll to zoom · click a station';
+
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let last=performance.now();
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
+  if(tween){tween.t+=dt/tween.dur;const k=Math.min(1,tween.t),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+    camera.position.lerpVectors(tween.from.p,tween.to.p,e);controls.target.lerpVectors(tween.from.l,tween.to.l,e);if(k>=1)tween=null;}
+  if(!reduce){people.forEach(p=>{p.t=(p.t+dt*p.sp)%1;const pt=curve.getPointAt(p.t),tg=curve.getTangentAt(p.t);p.g.position.set(pt.x+Math.sin(p.t*40)*.3,0,pt.z);p.g.rotation.y=Math.atan2(tg.x,tg.z)});
+    const s=1+Math.sin(now/300)*.08;marker.scale.set(s,s,1);}
+  else people.forEach(p=>{const pt=curve.getPointAt(p.t);p.g.position.set(pt.x,0,pt.z)});
+  if(!reduce)updateScreen(now);controls.update();renderer.render(scene,camera);requestAnimationFrame(loop);}
+requestAnimationFrame(loop);
+window.__mulyo={select:select,stop:stopWalk};
+}
+})();
+</script>
+
+</body>
+</html>
