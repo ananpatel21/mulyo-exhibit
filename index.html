@@ -217,6 +217,9 @@ td a{color:var(--accent)}
   <section id="drawings">
     <h3>Dimensioned drawings</h3>
     <p class="sec-lede">The plan shows every wall, object, activity zone and walkway to scale. The section cuts across both aisles at the Aadar screen, with wall heights and the view distance to the screen.</p>
+    <h4 id="wallTitle">Wall schedule</h4>
+    <div class="tblwrap"><table id="wallTable"></table></div>
+    <p class="bomnote">All walls are 8′-0″ tall, built from 4 × 8 ft flats (2×4 frame on edge with a ½ in plywood face). The 3D model and plan draw them slightly thinner. Header banners add 1′-8½″ above the walls, from 8′-3″ to 10′-0″. W2 and W4 are short returns that frame the entry and exit openings; they can also be a single 2 ft flat or a pipe-and-drape leg.</p>
     <h4 id="planTitle">Plan</h4>
     <div class="drawing" id="plan"></div>
     <h4 id="secTitle">Section A–A</h4>
@@ -580,6 +583,20 @@ function bomFor(L){const v1=L.id==='v1',Lt=lightsFor(L);
   ['Power strips + 25 ft black extension cords','Along the wall tops, taped down at the base',Math.ceil(lampN/4)+' + '+Math.ceil(lampN/4),'Any heavy-duty, grounded'],
  ],'The LED clamp spots draw roughly 12–15 W each, so the whole room is well within one 15 A circuit. Still, run the north and south aisles on separate circuits, and check with the venue which outlets you can use. Prices and stock change, so check each link before ordering.');
  return {rows,warm,uv,ups};}
+
+/* ---------- wall schedule ---------- */
+function flatsTxt(len){const full=Math.floor(len/4+1e-9),rest=len-full*4;return (full?full+' × 4′-0″':'')+(rest>.01?(full?' + ':'')+'1 × '+fmt(rest):'');}
+function wallsFor(L){const v1=L.id==='v1';const W=[
+ {id:'W1',name:'North wall',len:35,h:8,t:'4″',type:'Single-faced',faces:'Santosh, Aadar, Daya (south face)',tag:[-2.5,-10],rot:0},
+ {id:'W2',name:'North return, east of the entry',len:1,h:8,t:'4″',type:'Single-faced',faces:'Plain; frames the 4′-0″ entry',tag:[19.5,-10],rot:0},
+ {id:'W3',name:'East wall',len:20,h:8,t:'4″',type:'Single-faced',faces:'Diya Wall (west face)',tag:[20,0],rot:1},
+ {id:'W4',name:'South return, east of the exit',len:1,h:8,t:'4″',type:'Single-faced',faces:'Plain; frames the 4′-0″ exit',tag:[19.5,10],rot:0},
+ {id:'W5',name:'South wall',len:35,h:8,t:'4″',type:'Single-faced',faces:'Kshama, Sankalp (north face)',tag:[-2.5,10],rot:0},
+ {id:'W6',name:'West wall',len:20,h:8,t:'4″',type:'Single-faced',faces:'Vivek word search (east face)',tag:[-20,0],rot:1},
+ {id:'W7',name:'Spine (center) wall',len:L.spineLen,h:8,t:'4½″',type:'Double-faced',faces:'North: Welcome, '+(v1?'25 ft':'15.5 ft')+' mural · South: Dharma, Tyag, bridge panel',tag:[(L.spineX0+L.EWF)/2,L.spineZ],rot:0}];
+ if(!v1)W.push({id:'W8',name:'Sankalp target board (freestanding)',len:4.25,h:7.5,t:'4½″',type:'Double-faced, on 2 jacks',faces:'Target on the west face',tag:[9.75,7.6],rot:1});
+ W.forEach(w=>{w.flats=w.id==='W8'?'1 × 4′-3″ (one flat, 7′-6″ tall)':flatsTxt(w.len);});
+ return W;}
 
 /* ================= textures (built once, cached across layout switches) ================= */
 const MAROON='#8C1D3A',SAFF='#D9831C',IVORY='#FBF6EE',INK='#2A1E22';
@@ -1049,6 +1066,10 @@ function buildWorld(L,E){
  dim([L.spineX0,8.75,L.spineZ],[EWF,8.75,L.spineZ],'spine '+fmt(L.spineLen)+' × 6″',{off:[0,.7,0]});
  dim([15,.12,-10.6],[19,.12,-10.6],'entry 4′-0″',{off:[0,.7,0]});dim([15,.12,10.6],[19,.12,10.6],'exit 4′-0″',{off:[0,.7,0]});
  dim([-20.5,0,-10.5],[-20.5,8,-10.5],'walls 8′-0″',{tick:[.35,0,0],off:[0,0,0]});
+ wallsFor(L).forEach(w=>{if(w.len<2)return;const lab=w.id+' · '+fmt(w.len)+' × '+fmt(w.h);let p;
+   if(w.id==='W7')p=[w.tag[0]-6,6.6,w.tag[1]];else if(w.id==='W8')p=[w.tag[0],8.3,w.tag[1]];
+   else if(w.rot)p=[w.tag[0]<0?-20.4:20.4,6.6,w.tag[1]+(w.tag[0]<0?3:-3)];else p=[w.tag[0],6.6,w.tag[1]<0?-10.4:10.4];
+   chipSprite(lab,new THREE.Vector3(...p),.95,'#5B2C83','#FFFFFF',W.dims);});
  dim([4.65,8.25,NWF-.5],[4.65,9.96,NWF-.5],'banners 8′-3″ to 10′-0″',{tick:[.35,0,0],off:[-2.9,0,0]});
  dim([13.35,.9,NWF+.35],[13.35,7.9,NWF+.35],'panels 0′-11″ to 7′-11″',{tick:[.35,0,0],off:[2.9,0,0]});
  if(v1)dim([0,5.25,NWF+.3],[0,5.25,-6.4],'bench 3′-2″ from 85″ screen',{off:[0,.75,0]});
@@ -1119,7 +1140,7 @@ function renderSpace(){const L=LAYOUTS[VER];
   $('spaceTable').innerHTML=h+'</tbody>';}
 
 /* ---------- plan drawing ---------- */
-function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(x+20)*s,Z=z=>oz+(z+10)*s,Wd=ox+40*s+60,Hd=oz+20*s+110,o=[];
+function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(x+20)*s,Z=z=>oz+(z+10)*s,Wd=ox+40*s+60,Hd=oz+20*s+140,o=[];
   const r=(x0,x1,z0,z1,c,extra)=>{const a=Math.min(x0,x1),b=Math.min(z0,z1),w=Math.abs(x1-x0),h=Math.abs(z1-z0);if(w<.01||h<.01)return;o.push('<rect x="'+X(a).toFixed(1)+'" y="'+Z(b).toFixed(1)+'" width="'+(w*s).toFixed(1)+'" height="'+(h*s).toFixed(1)+'" class="'+c+'"'+(extra||'')+'/>');};
   const t=(x,y,txt,c,extra)=>o.push('<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" class="'+c+'"'+(extra||'')+'>'+txt+'</text>');
   const ln=(x1,y1,x2,y2,c)=>o.push('<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" class="'+(c||'sv-dim')+'"/>');
@@ -1141,6 +1162,11 @@ function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(x+20)*s,Z=z
   // walls
   [[-20,15,-10,-9.75],[19,20,-10,-9.75],[-20,15,9.75,10],[19,20,9.75,10],[-20,-19.75,-10,10],[19.75,20,-10,10]].forEach(w=>r(w[0],w[1],w[2],w[3],'sv-wall'));
   r(L.spineX0,L.EWF,L.SN,L.SS,'sv-wall');
+  wallsFor(L).forEach(w=>{const lab=w.id+' · '+fmt(w.len)+(w.id==='W7'?' × 8′-0″':'');if(w.len<2)return;
+    if(w.id==='W7'){t(X(L.spineX0)+8,Z(L.spineZ)+3.2,lab+' · double-faced','sv-halo',' style="fill:#fff;stroke:none;font:600 8.5px var(--f-mono)"');return;}
+    if(w.id==='W8'){t(X(10.3),Z(5.2),lab,'sv-dimt sv-halo');return;}
+    if(w.rot){const x=w.tag[0]<0?X(-20)-8:X(20)+16;o.push('<text x="'+x+'" y="'+Z(0)+'" transform="rotate(-90 '+x+' '+Z(0)+')" class="sv-dimt sv-halo" text-anchor="middle">'+lab+'</text>');return;}
+    t(X(w.tag[0]),w.tag[1]<0?Z(-10)-7:Z(10)+15,lab,'sv-dimt sv-halo',' text-anchor="middle"');});
   // path
   o.push('<polyline class="sv-path" points="'+PATHS[L.id].map(p=>[p[0],Math.max(-10.6,Math.min(10.6,p[1]))]).map(p=>X(p[0]).toFixed(1)+','+Z(p[1]).toFixed(1)).join(' ')+'"/>');
   // lights
@@ -1164,9 +1190,9 @@ function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(x+20)*s,Z=z
   dimH(X(15),X(19),Z(-10)-10,'entry 4′-0″');dimH(X(15),X(19),Z(10)+12,'exit 4′-0″',false);
   t(X(17),oz-52,'↓ from Festival','sv-m',' text-anchor="middle"');
   // scale bar + legend
-  const by=Z(10)+66;[0,5,10].forEach(f=>{ln(X(-20)+f*s,by-4,X(-20)+f*s,by+4);t(X(-20)+f*s,by+17,f+' ft','sv-m',' text-anchor="middle"');});ln(X(-20),by,X(-20)+10*s,by);
+  let by=Z(10)+66;[0,5,10].forEach(f=>{ln(X(-20)+f*s,by-4,X(-20)+f*s,by+4);t(X(-20)+f*s,by+17,f+' ft','sv-m',' text-anchor="middle"');});ln(X(-20),by,X(-20)+10*s,by);
   const lg=[['sv-obj','Object'],['sv-use','People using it'],['sv-view','Viewers'],['sv-ok','Clear 5′+'],['sv-warn','3′-6″–5′'],['sv-bad','Under 3′-6″']];
-  let lx=X(-11.5);lg.forEach(([c,l])=>{o.push('<rect x="'+lx+'" y="'+(by-9)+'" width="12" height="12" class="'+c+'"/>');t(lx+17,by+1,l,'sv-m');lx+=l.length*6+22;});
+  let lx=X(-20);const by0=by;by+=30;lg.forEach(([c,l])=>{o.push('<rect x="'+lx+'" y="'+(by-9)+'" width="12" height="12" class="'+c+'"/>');t(lx+17,by+1,l,'sv-m');lx+=l.length*6+22;});
   o.push('<circle cx="'+lx+'" cy="'+(by-3)+'" r="4" class="sv-warm"/>');t(lx+9,by+1,'Spot','sv-m');lx+=48;
   o.push('<circle cx="'+lx+'" cy="'+(by-3)+'" r="4" class="sv-uvl"/>');t(lx+9,by+1,'UV','sv-m');lx+=40;
   o.push('<line x1="'+lx+'" y1="'+(by-3)+'" x2="'+(lx+22)+'" y2="'+(by-3)+'" class="sv-path"/>');t(lx+28,by+1,'Path','sv-m');
@@ -1229,7 +1255,11 @@ function renderBOM(){const L=LAYOUTS[VER],B=bomFor(L);
   $('bom').innerHTML=B.rows.map(sec=>'<h4>'+sec.title+'</h4><div class="tblwrap"><table><thead><tr>'+sec.cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+
     sec.r.map(row=>'<tr>'+row.map((cell,k)=>'<td'+((sec.cols[k]==='Qty')?' class="num"':'')+'>'+(sec.title==='Lighting'&&k===3?cell:esc(cell))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'+(sec.note?'<p class="bomnote">'+esc(sec.note)+'</p>':'')).join('');}
 
-function renderAll(){EVAL=evaluate(LAYOUTS[VER]);renderIntro();renderList();renderDetail(current);renderSpace();
+function renderWalls(){const L=LAYOUTS[VER],Wl=wallsFor(L);$('wallTitle').textContent='Wall schedule · '+L.name;
+  $('wallTable').innerHTML='<thead><tr><th>Tag</th><th>Wall</th><th>Length</th><th>Height</th><th>Thickness</th><th>Built from 4 ft flats</th><th>What hangs on it</th></tr></thead><tbody>'+
+   Wl.map(w=>'<tr><td class="num"><b>'+w.id+'</b></td><td>'+esc(w.name)+'<br><small>'+esc(w.type)+'</small></td><td class="num">'+fmt(w.len)+'</td><td class="num">'+fmt(w.h)+'</td><td class="num">'+w.t+'</td><td class="num">'+esc(w.flats)+'</td><td>'+esc(w.faces)+'</td></tr>').join('')+
+   '<tr><td class="num"><b>—</b></td><td>Openings</td><td class="num">4′-0″ each</td><td class="num">full height</td><td></td><td></td><td>Entry from Festival (north, between W1 and W2) · exit to Mandir (south, between W5 and W4)</td></tr></tbody>';}
+function renderAll(){EVAL=evaluate(LAYOUTS[VER]);renderIntro();renderList();renderDetail(current);renderSpace();renderWalls();
   const L=LAYOUTS[VER];$('planTitle').textContent='Plan · '+L.name;$('plan').innerHTML=planSVG(L,EVAL);
   $('secTitle').textContent='Section A–A · '+L.name+' · cut across both aisles 1′-6″ east of the Aadar screen center';$('section').innerHTML=sectionSVG(L,EVAL);renderBOM();}
 function setVersion(v){if(v===VER)return;VER=v;renderAll();try{history.replaceState(null,'','#'+v)}catch(e){}if(window.__mulyo)window.__mulyo.rebuild();}
