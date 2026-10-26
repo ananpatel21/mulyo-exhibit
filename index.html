@@ -162,6 +162,7 @@ td a{color:var(--accent)}
     <div class="tabs" role="tablist" aria-label="Layout version">
       <button role="tab" id="tab-v1" data-v="v1" aria-selected="true"><b>Version 1 · Symmetric</b><span>aisles 9′-6″ + 9′-6″</span></button>
       <button role="tab" id="tab-v2" data-v="v2" aria-selected="false"><b>Version 2 · Asymmetric</b><span>aisles 8′-6″ north + 10′-6″ south</span></button>
+      <button role="tab" id="tab-v3" data-v="v3" aria-selected="false"><b>Version 3 · Open hall</b><span>a freestanding wall per value · 21 flats</span></button>
     </div>
     <div class="vsum">
       <div><p id="vintro"></p><ul class="changes" id="vchanges"></ul></div>
@@ -216,10 +217,10 @@ td a{color:var(--accent)}
 
   <section id="drawings">
     <h3>Dimensioned drawings</h3>
-    <p class="sec-lede">The plan shows every wall, object, activity zone and walkway to scale. The section cuts across both aisles at the Aadar screen, with wall heights and the view distance to the screen.</p>
+    <p class="sec-lede">The plan shows every wall, object, activity zone and walkway to scale. The section cuts across the room at the Aadar screen, with wall heights and the view distance to the screen.</p>
     <h4 id="wallTitle">Wall schedule</h4>
     <div class="tblwrap"><table id="wallTable"></table></div>
-    <p class="bomnote">All walls are 8′-0″ tall, built from 4 × 8 ft flats (2×4 frame on edge with a ½ in plywood face). The 3D model and plan draw them slightly thinner. Header banners add 1′-8½″ above the walls, from 8′-3″ to 10′-0″. W2 and W4 are short returns that frame the entry and exit openings; they can also be a single 2 ft flat or a pipe-and-drape leg.</p>
+    <p class="bomnote" id="wallNote">All walls are 8′-0″ tall, built from 4 × 8 ft flats (2×4 frame on edge with a ½ in plywood face). The 3D model and plan draw them slightly thinner. Header banners add 1′-8½″ above the walls, from 8′-3″ to 10′-0″. W2 and W4 are short returns that frame the entry and exit openings; they can also be a single 2 ft flat or a pipe-and-drape leg.</p>
     <h4 id="planTitle">Plan</h4>
     <div class="drawing" id="plan"></div>
     <h4 id="secTitle">Section A–A</h4>
@@ -367,13 +368,23 @@ function mkLayout(o){const L=Object.assign({NWF:-9.75,SWF:9.75,WWF:-19.75,EWF:19
   L.SN=L.spineZ-.25;L.SS=L.spineZ+.25;L.northW=L.SN-L.NWF;L.southW=L.SWF-L.SS;L.turnW=L.spineX0-L.WWF;L.spineLen=L.EWF-L.spineX0;return L;}
 const LAYOUTS={
  v1:mkLayout({id:'v1',name:'Version 1',sub:'Symmetric',spineZ:0,spineX0:-12}),
- v2:mkLayout({id:'v2',name:'Version 2',sub:'Asymmetric',spineZ:-1,spineX0:-11.5})
+ v2:mkLayout({id:'v2',name:'Version 2',sub:'Asymmetric',spineZ:-1,spineX0:-11.5}),
+ v3:mkLayout({id:'v3',name:'Version 3',sub:'Open hall',spineZ:0,spineX0:14.75,NWF:-8.75,SWF:8.75,WWF:-18.75,EWF:19.75,open:true})
 };
 const INTRO={
  v1:'The layout as drawn so far. The spine wall runs down the middle, so both aisles are 9′-6″ wide. With people stopped on both sides of the aisle, several stations leave less than 3′-6″ to walk through.',
+ v3:'Every value gets its own freestanding wall: three along the north side, four along the south and Vivek at the west end. Nothing in the middle, so the center of the room is one open floor and every station has 9 ft or more in front of it. Black pipe-and-drape closes the edges. Builds about 21 wall flats instead of 39.',
  v2:'The spine wall moves 1 ft north. The north aisle holds the stations people view or write at against the wall; the south aisle gets the extra foot for the hands-on ones. Every station now keeps a walkway, with one tight spot at Daya.'
 };
 const CHANGES={
+ v3:[
+  '<b>Walls:</b> 8 value walls, 5 to 10 ft long, each standing on its own T-feet with sandbags. No perimeter walls and no long spine.',
+  '<b>Edges:</b> rented black pipe-and-drape (or the neighboring sections’ walls) closes the room.',
+  '<b>Center:</b> one open floor, about 17′-6″ between the north and south wall faces. Visitors loop west along the north walls and back east along the south walls.',
+  '<b>Welcome + Diya:</b> share one short double-faced wall between the entry and the exit.',
+  '<b>Modern Day Values:</b> a 7′-6″ fabric banner on the drape by the entry.',
+  '<b>Sankalp:</b> 7 ft throw lane along its wall, with the target on a small freestanding stand.'
+ ],
  v1:[],
  v2:[
   '<b>Aisles:</b> north 8′-6″ (Santosh, Aadar, Daya), south 10′-6″ (Kshama, Dharma, Sankalp, Tyag).',
@@ -389,7 +400,7 @@ const CHANGES={
 
 /* ---------- zones: floor taken by objects, users and viewers ----------
    side N/S = which aisle; face = wall (perimeter) or spine; a..b = range along the wall; obj = depth of the object, use = depth of the people using it. */
-function zonesFor(L){const v1=L.id==='v1',Z=[];
+function zonesFor(L){if(L.id==='v3')return zonesV3(L);const v1=L.id==='v1',Z=[];
  const z=(o)=>Z.push(Object.assign({kind:'use'},o));
  if(v1){
   z({st:1,side:'N',face:'wall',a:5,b:13,obj:.1,use:0,label:'Glow wall'});
@@ -430,7 +441,7 @@ function zonesFor(L){const v1=L.id==='v1',Z=[];
  }
  z({st:9,side:'E',face:'wall',a:.5,b:8.5,obj:.6,use:2.5,label:'Diya shelves + visitors'});
  return Z;}
-function checksFor(L){const v1=L.id==='v1';return [
+function checksFor(L){if(L.id==='v3')return checksV3(L);const v1=L.id==='v1';return [
  {st:0,aisle:'N',a:14.4,b:19.6},
  {st:1,aisle:'N',a:5,b:13},
  {st:2,aisle:'N',a:v1?-3.25:-2.75,b:v1?3.25:2.75},
@@ -444,11 +455,12 @@ function checksFor(L){const v1=L.id==='v1';return [
 function depthAt(Z,side,face,x){let m=0,q=null;for(const zz of Z){if(zz.side!==side||zz.face!==face)continue;if(x>zz.a&&x<zz.b){const d=zz.obj+zz.use;if(d>m){m=d;q=zz}}}return [m,q];}
 function evaluate(L){const Z=zonesFor(L),R=[];
  for(const c of checksFor(L)){
-  if(c.aisle==='X'){R.push({st:c.st,aisle:'X',segs:[],min:{clear:c.fixed},status:'ok'});continue;}
+  if(c.aisle==='X'){R.push({st:c.st,aisle:'X',segs:[],min:{clear:c.fixed},status:'ok',note:c.note,label:c.label});continue;}
   const n=Math.max(1,Math.round((c.b-c.a)/.25)),segs=[];let min=null;
   for(let k=0;k<n;k++){const x0=c.a+k*(c.b-c.a)/n,x1=c.a+(k+1)*(c.b-c.a)/n,x=(x0+x1)/2;
    let wD,wZ,sD=0,sZ=null,width;
    if(c.aisle==='W'){[wD,wZ]=depthAt(Z,'W','wall',x);width=L.turnW;}
+   else if(c.aisle==='H'){[wD,wZ]=depthAt(Z,'N','wall',x);[sD,sZ]=depthAt(Z,'S','wall',x);width=L.SWF-L.NWF;}
    else{[wD,wZ]=depthAt(Z,c.aisle,'wall',x);[sD,sZ]=depthAt(Z,c.aisle,'spine',x);width=c.aisle==='N'?L.northW:L.southW;}
    const clear=width-wD-sD,last=segs[segs.length-1];
    if(last&&Math.abs(last.wD-wD)<1e-6&&Math.abs(last.sD-sD)<1e-6)last.x1=x1;else segs.push({x0,x1,wD,sD,clear});
@@ -457,7 +469,7 @@ function evaluate(L){const Z=zonesFor(L),R=[];
  return {Z,R};}
 
 /* ---------- lights ---------- */
-function lightsFor(L){const v1=L.id==='v1',{NWF,SWF,WWF,EWF,SN,SS}=L,Lt=[];
+function lightsFor(L){if(L.id==='v3')return lightsV3(L);const v1=L.id==='v1',{NWF,SWF,WWF,EWF,SN,SS}=L,Lt=[];
  const w=(f,t,o)=>Lt.push(Object.assign({type:'warm',f,t},o||{}));
  w([17,8.8,SN-2.15],[17,4,SN],{a:.6,lbl:'Welcome'});
  (v1?[-8.5,.9,10.3]:[-7.5,1]).forEach(x=>w([x,8.8,SN-2.15],[x,4,SN],{a:.62,lbl:'Mural'}));
@@ -481,7 +493,7 @@ function lightsFor(L){const v1=L.id==='v1',{NWF,SWF,WWF,EWF,SN,SS}=L,Lt=[];
  return Lt;}
 
 /* ---------- header banners: [station, x, z, rotY] on top of the wall above each station ---------- */
-function signsFor(L){const v1=L.id==='v1',N=-9.875,Sz=9.875,P=L.spineZ;return v1?
+function signsFor(L){if(L.id==='v3')return [[1,8.5,-8.915,0],[2,-.25,-8.915,0],[3,-9.75,-8.915,0],[4,-18.915,0,Math.PI/2],[5,-12.5,8.915,Math.PI],[6,-5,8.915,Math.PI],[7,8,8.915,Math.PI],[8,1.25,8.915,Math.PI]];const v1=L.id==='v1',N=-9.875,Sz=9.875,P=L.spineZ;return v1?
  [[1,9,N,0],[2,0,N,0],[3,-8.75,N,0],[4,-19.875,0,Math.PI/2],[5,-10,Sz,Math.PI],[6,-4,P,0],[7,4.3,Sz,Math.PI],[8,10,P,0]]:
  [[1,9,N,0],[2,0,N,0],[3,-8.75,N,0],[4,-19.875,.5,Math.PI/2],[5,-9,Sz,Math.PI],[6,-3,P,0],[7,5.25,Sz,Math.PI],[8,13,P,0]];}
 
@@ -500,6 +512,12 @@ const LBL={
 const PATHS={
  v1:[[17,-15],[17,-9],[16,-5.2],[11,-4.4],[2,-3.6],[-6,-4.4],[-11,-4.2],[-14.5,-3.2],[-17.5,-1],[-17.5,1.2],[-14.5,3.4],[-11,4.4],[-6.6,5],[-1.4,4.7],[0,3],[3,2.4],[5.6,3.1],[7.4,4.7],[11,4.6],[15,4.2],[17,6.8],[17,15]],
  v2:[[17,-15],[17,-10.5],[16.6,-7.4],[13,-4.4],[9,-4],[4,-5.2],[0,-5.8],[-4,-5.6],[-9,-5.2],[-12.6,-4.6],[-14.6,-2.4],[-14.8,.5],[-14.3,3.3],[-12.4,3.6],[-9,2.6],[-6.75,4.2],[-4.5,6.9],[-1.5,7],[.65,4.6],[2.5,2.4],[8.8,2.4],[10.25,4.6],[12,6.6],[15,7.3],[17,8.6],[17,15]]};
+
+VIEWS.v3=[{p:[17.25,5.6,-6.6],l:[17.25,3.8,-.25]},{p:[8.5,5.4,-2.2],l:[8.5,3.6,-8.75]},{p:[-.25,5.4,-2.2],l:[-.25,4.2,-8.75]},{p:[-9.75,5.4,-2.2],l:[-9.75,4,-8.75]},{p:[-12,5.6,0],l:[-18.75,3.8,0]},
+ {p:[-12.5,5.6,2.2],l:[-12.5,3.4,8.5]},{p:[-5,5.4,2.2],l:[-5,3,8.75]},{p:[5,5.8,2.2],l:[8.5,3.6,7]},{p:[1.25,5.4,2.2],l:[1.25,3,8.75]},{p:[17.25,5.6,6.6],l:[17.25,3.8,.25]},{p:[11,8,-5],l:[19.75,5,-5]}];
+SPOTS.v3=[[17.25,-3.2],[8.5,-6],[-.25,-2.2],[-9.75,-6],[-15.6,0],[-12.5,5.5],[-5,5.2],[8,6.5],[1.25,5.2],[17.25,3.2],[17.5,-5]];
+LBL.v3=[[17.25,11.8,-3],[8.5,11.8,-7.5],[-.25,11.8,-7],[-9.75,11.8,-7.5],[-17,11.8,0],[-12.5,11.8,7.5],[-5,11.8,7],[8,11.8,6.5],[1.25,11.8,7],[17.5,11.8,3],[17.5,11.8,-6]];
+PATHS.v3=[[17,-15],[17,-9.9],[16.6,-5.2],[13.5,-4.4],[8.5,-4.4],[2,-3.6],[-3,-3.4],[-9.75,-4.4],[-13.5,-3.8],[-14.8,0],[-13.5,3.4],[-12.5,3.6],[-5,2.4],[1.25,2.4],[3.5,2.6],[8,3.2],[12.4,3.4],[14.2,4.2],[17,4.6],[17.4,8],[17.4,15]];
 const pathLen=(P)=>{let s=0;for(let i=1;i<P.length;i++)s+=Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]);return s;};
 
 /* ---------- materials and lighting ---------- */
@@ -515,7 +533,7 @@ const LINKS={
  dimmer:{t:'Lutron Credenza TTCL-100H plug-in LED dimmer',u:'https://www.crescentelectric.com/product/623381/ttcl-100h-bl-credenza-led-plug-in-lamp-dimmer-single-outlet-100w-led-black'},
  tape:{t:'Glow-in-the-dark floor tape, 2 in × 30 ft',u:'https://www.compliancesigns.com/pd/2-x-30-glow-in-the-dark-solid-tape-15sm911230'}
 };
-function bomFor(L){const v1=L.id==='v1',Lt=lightsFor(L);
+function bomFor(L){if(L.id==='v3')return bomV3(L);const v1=L.id==='v1',Lt=lightsFor(L);
  const cnt=(t)=>Lt.filter(l=>l.type===t).length;
  const warm=cnt('warm'),uv=cnt('uv'),ups=cnt('up');
  // walls: 4 × 8 ft flats
@@ -586,7 +604,7 @@ function bomFor(L){const v1=L.id==='v1',Lt=lightsFor(L);
 
 /* ---------- wall schedule ---------- */
 function flatsTxt(len){const full=Math.floor(len/4+1e-9),rest=len-full*4;return (full?full+' × 4′-0″':'')+(rest>.01?(full?' + ':'')+'1 × '+fmt(rest):'');}
-function wallsFor(L){const v1=L.id==='v1';const W=[
+function wallsFor(L){if(L.id==='v3')return wallsV3(L);const v1=L.id==='v1';const W=[
  {id:'W1',name:'North wall',len:35,h:8,t:'4″',type:'Single-faced',faces:'Santosh, Aadar, Daya (south face)',tag:[-2.5,-10],rot:0},
  {id:'W2',name:'North return, east of the entry',len:1,h:8,t:'4″',type:'Single-faced',faces:'Plain; frames the 4′-0″ entry',tag:[19.5,-10],rot:0},
  {id:'W3',name:'East wall',len:20,h:8,t:'4″',type:'Single-faced',faces:'Diya Wall (west face)',tag:[20,0],rot:1},
@@ -597,6 +615,117 @@ function wallsFor(L){const v1=L.id==='v1';const W=[
  if(!v1)W.push({id:'W8',name:'Sankalp target board (freestanding)',len:4.25,h:7.5,t:'4½″',type:'Double-faced, on 2 jacks',faces:'Target on the west face',tag:[9.75,7.6],rot:1});
  W.forEach(w=>{w.flats=w.id==='W8'?'1 × 4′-3″ (one flat, 7′-6″ tall)':flatsTxt(w.len);});
  return W;}
+
+/* ================= Version 3: open hall, one freestanding wall per value ================= */
+const S3={
+ 0:{where:'Short double-faced wall between the entry and the exit (north face)',foot:'5 ft wall: welcome panel + passport holder'},
+ 1:{where:'Own wall, north side',foot:'8 ft wall: glow tree + 6 ft marker ledge',build:'8 ft freestanding wall (2 flats on T-feet) with black dry-erase vinyl · tree outline in UV-reactive paint · 2 UV wash lights clamped to the wall top plus a UV bar on the floor · 6 ft marker ledge on brackets at 3 ft · 40+ fluorescent markers.'},
+ 2:{where:'Own wall, north side',foot:'6 ft 6 in wall: 75 in screen',act:'Say It With Aadar. A large screen loops a short video: a harsh phrase appears, glitches, and turns into a respectful way of saying the same thing. Visitors watch from the open floor about 7 ft back.',build:'6 ft 6 in freestanding wall (2 flats) with 2×4 blocking for a 75 in TV, screen center at 5 ft 3 in · media player · power run along the drape · 6 × 1.3 ft story strip under the screen.'},
+ 3:{where:'Own wall, north side',foot:'9 ft 6 in wall: rose heart + two stories'},
+ 4:{where:'Own wall, west end',foot:'10 ft wall + 4.4 ft ring in the corner',build:'10 ft freestanding wall (3 flats) with dry-erase vinyl · 9 ft marker tray at 3 ft · mirror plinth and floor ring in the north-west corner.'},
+ 5:{where:'Own wall, south side',foot:'6 ft wall + tank + writing ledge',build:'6 ft freestanding wall (2 flats) · clear acrylic tank about 38 × 48 × 17 in on an 18 in plinth in front of it, locked lid with a drop slot · writing ledge at the west end · sticky-note pads and pens · notes shredded unread after the festival.'},
+ 6:{where:'Own wall, south side',foot:'7 ft wall + kavad rack',build:'7 ft freestanding wall (2 flats) with the 6 × 7 ft panel · kavad rack in front, parallel to the wall · 7 ft bamboo pole, two baskets with about 10 lb each · anti-slip mat.'},
+ 7:{where:'Own wall, south side',foot:'8 ft wall + 7 ft lane + target stand',act:'Bird’s Eye Toss. The lane runs along the Sankalp wall. Visitors step in at the west end, say one goal out loud, and throw three velcro balls at a 4 ft target on a small freestanding stand 7 ft away (kids from 5 ft). A rope keeps the open floor clear.',build:'8 ft freestanding wall (2 flats) carrying the story · 4 ft 3 in × 7 ft 6 in target stand (one flat on two jacks) at the east end of the lane · 8.5 × 4 ft floor decal with throw lines at 7 ft and 5 ft · 4 stanchions and rope · 12 velcro balls.'},
+ 8:{where:'Own wall, south side',foot:'5 ft wall + gear in front',build:'5 ft freestanding wall (2 flats) with a 5 × 7 ft panel · borrowed fire, EMS and military gear with an agreed supervisor · coat rack, mannequin in turnout gear and a freestanding mirror in front · kid-size helmets · wipes.'},
+ 9:{where:'Short double-faced wall, south face, at the exit',foot:'4 ft 9 in × 7 ft panel, 8 shelves',build:'South face of the 5 ft Welcome wall · 4 ft 9 in × 7 ft panel with 8 shelves in two columns · card rack · 300 LED tealights, reset each night.'},
+ 10:{where:'Fabric banner on the east drape, by the entry',foot:'7 ft 6 in × 3 ft 5 in fabric banner',act:'Visitors pass it as they come in, so the room opens with people living these values today. It also covers Nishtha, Ahimsa and Shuddhi, which have no station.',build:'7 ft 6 in × 3 ft 5 in dye-sublimated fabric banner, two rows of tiles, clipped to the pipe-and-drape · photos licensed or public domain; Mahant Swami Maharaj photo and quote from BAPS with approval · 1 clamp spot on the drape pipe.'}
+};
+function zonesV3(L){const Z=[],z=(o)=>Z.push(Object.assign({kind:'use'},o));
+ z({st:3,side:'N',face:'wall',a:-14.5,b:-12,obj:1,use:1.5,label:'Shiv Bhagwan story readers'});
+ z({st:3,side:'N',face:'wall',a:-12,b:-7.5,obj:1,use:0,label:'Rose heart + wall feet'});
+ z({st:3,side:'N',face:'wall',a:-7.5,b:-5,obj:1,use:1.5,label:'Harriet Tubman story readers'});
+ z({st:2,side:'N',face:'wall',a:-3.5,b:3,obj:1,use:0,label:'75 in screen + wall feet'});
+ z({st:1,side:'N',face:'wall',a:4.5,b:12.5,obj:1,use:2.5,label:'Marker ledge + writers'});
+ z({st:0,side:'N',face:'spine',a:15,b:19.5,obj:.5,use:2.5,label:'Welcome panel + passport holder'});
+ z({st:10,side:'E',face:'wall',a:-8.75,b:-1.25,obj:.1,use:2,kind:'view',label:'Values Today banner readers'});
+ z({st:4,side:'W',face:'wall',a:-5,b:5,obj:1,use:2.5,label:'Word search + writers'});
+ z({st:4,side:'W',face:'wall',a:-9.4,b:-5.4,obj:0,use:3.95,label:'Mirror plinth + ring (corner)'});
+ z({st:5,side:'S',face:'wall',a:-16.25,b:-14.35,obj:1.25,use:2.5,label:'Writing ledge'});
+ z({st:5,side:'S',face:'wall',a:-14.3,b:-10.7,obj:1.9,use:2.5,label:'Note tank'});
+ z({st:6,side:'S',face:'wall',a:-8.5,b:-1.5,obj:1.8,use:3,label:'Kavad rack + lifter'});
+ z({st:8,side:'S',face:'wall',a:-1.25,b:3.75,obj:1.8,use:3,label:'Gear + try-on'});
+ z({st:7,side:'S',face:'wall',a:3.75,b:12.75,obj:4.25,use:0,label:'Roped throw lane + target stand'});
+ z({st:9,side:'S',face:'spine',a:14.75,b:19.75,obj:.6,use:2.5,label:'Diya shelves + visitors'});
+ return Z;}
+function checksV3(L){return [
+ {st:0,aisle:'N',a:15,b:19.5},{st:1,aisle:'H',a:4.5,b:12.5},{st:2,aisle:'H',a:-3.5,b:3},{st:3,aisle:'H',a:-14.5,b:-5},
+ {st:4,aisle:'X',fixed:10,label:'West end · open floor',note:'Open floor; nothing stands across from it'},
+ {st:5,aisle:'H',a:-16.25,b:-10.7},{st:6,aisle:'H',a:-8.5,b:-1.5},{st:7,aisle:'H',a:3.75,b:12.75},{st:8,aisle:'H',a:-1.25,b:3.75},
+ {st:9,aisle:'S',a:14.75,b:19.75}];}
+function lightsV3(L){const {NWF,SWF,WWF,SN,SS}=L,Lt=[];
+ const w=(f,t,o)=>Lt.push(Object.assign({type:'warm',f,t},o||{}));
+ w([17.25,8.8,SN-2.15],[17.25,4,SN],{a:.55,lbl:'Welcome'});
+ w([17.75,8.8,-5],[19.75,5.1,-5],{a:.5,wall:[19.85,-5],lbl:'Values Today banner'});
+ w([-.25,8.8,NWF+2.35],[-.25,2.45,NWF],{a:.32,i:.9,wall:[-.25,NWF-.165],lbl:'Aadar strip'});
+ w([-9.75,8.8,NWF+2.95],[-9.75,4.3,NWF+.15],{a:.42,i:1.5,color:0xFFD0B0,wall:[-9.75,NWF-.165],lbl:'Daya heart'});
+ [-2,3].forEach(z=>w([WWF+2.15,8.8,z],[WWF,4,z],{a:.62,wall:[WWF-.165,z],lbl:'Vivek'}));
+ w([-12.5,8.8,SWF-2.05],[-12.5,4,SWF],{a:.35,i:1,wall:[-12.5,SWF+.165],lbl:'Kshama panel'});
+ w([-12.5,8.8,SWF-3.4],[-12.5,3.4,SWF-1],{a:.42,i:1.3,wall:[-12.5,SWF+.165],lbl:'Kshama tank'});
+ w([-5,8.8,SWF-2.05],[-5,4,SWF],{wall:[-5,SWF+.165],lbl:'Dharma'});
+ w([1.25,8.8,SWF-2.05],[1.25,4,SWF],{wall:[1.25,SWF+.165],lbl:'Tyag'});
+ w([9.5,8.8,6.6],[12.2,4.6,6.6],{a:.38,i:1.4,wall:[9.5,SWF+.165],lbl:'Sankalp target'});
+ w([17.25,8.8,SS+2.05],[17.25,4,SS],{a:.5,i:.8,color:0xFFC88A,lbl:'Diya'});
+ [6.5,10.5].forEach(x=>Lt.push({type:'uv',f:[x,8.8,NWF+2.05],t:[x,4,NWF],a:.6,color:0x7B3CFF,i:1.1,beam:0x9B5CFF,wall:[x,NWF-.165],lbl:'Santosh UV'}));
+ const up=(f,t,o)=>Lt.push(Object.assign({type:'up',f,t,a:.42,i:1.1},o||{}));
+ up([-5,.25,SWF-3.6],[-5,4.2,SWF-1],{lbl:'Kavad'});up([2.45,.25,SWF-3],[2.45,3.2,SWF-.8],{lbl:'Mannequin'});up([-15,.25,-6],[-17,3.6,-7.5],{lbl:'Mirror plinth'});
+ up([-9.75,.25,NWF+2.15],[-9.75,4.6,NWF+.15],{color:0xFF8A8A,i:.9,cone:false,lbl:'Daya red uplight'});
+ return Lt;}
+function wallsV3(L){const W=[
+ {id:'W1',name:'Daya wall',len:9.5,h:8,t:'4″',type:'Single-faced, north side',faces:'Rose heart, Shiv Bhagwan and Harriet Tubman stories',tag:[-9.75,-8.915],rot:0},
+ {id:'W2',name:'Aadar wall',len:6.5,h:8,t:'4″',type:'Single-faced, north side',faces:'75 in screen + story strip',tag:[-.25,-8.915],rot:0},
+ {id:'W3',name:'Santosh wall',len:8,h:8,t:'4″',type:'Single-faced, north side',faces:'UV glow tree + marker ledge',tag:[8.5,-8.915],rot:0},
+ {id:'W4',name:'Vivek wall',len:10,h:8,t:'4″',type:'Single-faced, west end',faces:'Word search',tag:[-18.915,0],rot:1},
+ {id:'W5',name:'Kshama wall',len:6,h:8,t:'4″',type:'Single-faced, south side',faces:'Story panel behind the note tank',tag:[-12.5,8.915],rot:0},
+ {id:'W6',name:'Dharma wall',len:7,h:8,t:'4″',type:'Single-faced, south side',faces:'Story panel behind the kavad',tag:[-5,8.915],rot:0},
+ {id:'W7',name:'Tyag wall',len:5,h:8,t:'4″',type:'Single-faced, south side',faces:'Panel behind the gear',tag:[1.25,8.915],rot:0},
+ {id:'W8',name:'Sankalp wall',len:8,h:8,t:'4″',type:'Single-faced, south side',faces:'Arjun story along the throw lane',tag:[8,8.915],rot:0},
+ {id:'W9',name:'Sankalp target stand',len:4.25,h:7.5,t:'4½″',type:'Freestanding, on 2 jacks',faces:'4 ft target (west face)',tag:[12.5,6.6],rot:1},
+ {id:'W10',name:'Welcome / Diya wall',len:5,h:8,t:'4½″',type:'Double-faced, between entry and exit',faces:'North: Welcome + passports · South: Diya shelves',tag:[17.25,0],rot:0}];
+ W.forEach(w=>{w.flats=w.id==='W9'?'1 × 4′-3″ (7′-6″ tall)':flatsTxt(w.len);});return W;}
+function bomV3(L){const Lt=lightsV3(L),cnt=(t)=>Lt.filter(l=>l.type===t).length,warm=cnt('warm'),uv=cnt('uv'),ups=cnt('up');
+ const Wl=wallsV3(L),nf=(w)=>w.id==='W9'?1:Math.ceil(w.len/4-1e-9),flats=Wl.reduce((s,w)=>s+nf(w),0),dbl=Wl.filter(w=>w.t==='4½″').reduce((s,w)=>s+nf(w),0);
+ const ply=flats+dbl,feet=(Wl.length-1)*2,jacks=2,studs=Math.ceil((flats*4+feet*1+jacks*2+6+2)*1.1);
+ const paint=Wl.reduce((s,w)=>s+w.len*w.h*2,0),gal=Math.ceil(paint*2/350),primer=Math.ceil(paint/350);
+ const drape=40+40+20+20-8,rows=[],sec=(title,cols,r,note)=>rows.push({title,cols,r,note});
+ sec('Walls and structure',['Item','Size','Qty','Used for'],[
+  ['Wall flats','4 × 8 ft, ½ in plywood face on a 2×4 frame',flats+' flats','One freestanding wall per value (see the wall schedule), the Welcome/Diya wall and the target stand'],
+  ['Plywood, ½ in (fire-rated if required)','4 × 8 ft sheets',ply+' + '+Math.ceil(ply*.1)+' spare','1 face per flat; both faces painted, the Welcome/Diya wall and target stand faced on both sides'],
+  ['Plywood, ¾ in','4 × 8 ft sheets','7','Heart backer (2), tank plinth (2), mirror plinth (1), kavad rack base (1), Kshama ledge (1)'],
+  ['2×4 studs','8 ft',String(studs),'Flat frames (4 each), T-feet braces, target stand jacks, banner uprights, kavad rack, TV blocking, plus 10%'],
+  ['2×6 boards (T-feet)','12 ft, cut to 3 ft',String(Math.ceil(feet/4)),feet+' T-feet: two under each wall, 1 ft forward and 2 ft back'],
+  ['Sandbags','25 lb',String(feet*2+4),'Two on every T-foot, two per jack'],
+  ['Carriage bolts + wing nuts','⅜ × 4 in, with washers','40','Joining the 2–3 flats in each wall'],
+  ['Screws','3 in construction · 1¼ in wood','1 × 5 lb · 1 × 5 lb','Frames · plywood faces'],
+  ['1×6 pine boards','8 ft','4','Word search tray, Diya shelves, Santosh marker ledge'],
+  ['Paint, matte black','gallons (2 coats)',gal+' gal + '+primer+' gal primer','About '+Math.round(paint).toLocaleString()+' sq ft (both sides of every wall)'],
+  ['Pipe-and-drape, black, 8 ft (rental)','by the running foot','about '+drape+' ft','Closes the room edges; skip any side where the neighboring section already has a wall'],
+ ],'Quantities are planning estimates; have your builder confirm them. Compared with Versions 1 and 2 (39 flats), this layout uses about half the lumber and plywood; the drape is usually rented.');
+ sec('Printing',['Item','Size','Qty'],[
+  ['Welcome panel','4 ft 6 in × 5 ft','1'],['Santosh glow wall','8 × 7 ft black dry-erase vinyl + UV paint tree','1'],['Aadar story strip','6 ft 5 in × 1 ft 4 in','1'],
+  ['Daya backdrop','9 ft 6 in × 7 ft 6 in','1'],['Vivek word search','dry-erase vinyl, 10 × 7 ft','1'],['Kshama, Dharma panels','6 × 7 ft','2'],
+  ['Sankalp story panel','8 × 7 ft','1'],['Sankalp floor decal','anti-slip floor vinyl, 8 ft 6 in × 4 ft','1'],['Tyag panel','5 × 7 ft','1'],
+  ['Diya panel','4 ft 9 in × 7 ft','1'],['Modern Day Values banner','fabric, 7 ft 6 in × 3 ft 5 in','1'],
+  ['Value header banners','8 ft × 1 ft 8½ in, double-sided rigid PVC','8'],['Vivek floor ring','floor vinyl ring, 4 ft 5 in across','1'],
+  ['Passports · value cards','letter sheets, 2 up · 4 × 6 in cardstock','500 sheets · 8 × 150']]);
+ sec('Station builds and props',['Station','Item','Qty'],[
+  ['Welcome','3-pocket acrylic brochure holder · self-inking stamps','1 · 8'],['Santosh','6 ft marker ledge on 3 brackets · fluorescent markers','1 · 40+'],
+  ['Aadar','75 in TV + low-profile mount · USB media player','1 each'],['Daya','Artificial red rose heads, about 3 in','about 450'],
+  ['Vivek','Dry-erase markers + erasers · 12 × 18 in mirror','24 + 6 · 1'],['Kshama','Acrylic tank 38 × 48 × 17 in, locking lid with slot · sticky-note pads · pens','1 · 24 · 24'],
+  ['Dharma','7 ft bamboo pole · baskets · 10 lb weights · 3 × 6 ft anti-slip mat','1 · 2 · 2 · 1'],['Sankalp','4 ft velcro target · velcro balls · stanchions with rope','1 · 12 · 4'],
+  ['Tyag','Coat rack · mannequin · mirror (gear borrowed)','1 each'],['Diya Wall','LED tealights','300']]);
+ const lampN=warm+2;
+ sec('Lighting',['Light','Where','Qty','Product'],[
+  ['Warm clamp spot (lamp + bulb)','Clamped to each wall top on a short arm, 8′-9″ high',warm+' + 2 spare','<a href="'+LINKS.clamp.u+'" target="_blank" rel="noopener">'+LINKS.clamp.t+'</a> × '+Math.ceil(lampN/6)+'<br><small>or </small><a href="'+LINKS.parcan.u+'" target="_blank" rel="noopener">'+LINKS.parcan.t+'</a>'],
+  ['PAR38 LED bulb, 3000K','In every clamp spot',String(lampN),'<a href="'+LINKS.bulb24.u+'" target="_blank" rel="noopener">'+LINKS.bulb24.t+'</a> (1 × 24-pack)'],
+  ['UV wash light','Santosh, on its wall top',String(uv),'<a href="'+LINKS.uvwash.u+'" target="_blank" rel="noopener">'+LINKS.uvwash.t+'</a>'],
+  ['UV LED bar','Santosh, on the floor under the glow wall','1','<a href="'+LINKS.uvbar.u+'" target="_blank" rel="noopener">'+LINKS.uvbar.t+'</a>'],
+  ['Battery uplight','Kavad, mannequin, mirror plinth, Daya heart (set red)',String(ups),'<a href="'+LINKS.uplight.u+'" target="_blank" rel="noopener">'+LINKS.uplight.t+'</a><br><small>Battery, so no cords cross the open floor</small>'],
+  ['LED tealights','Diya shelves','300','<a href="'+LINKS.tealight.u+'" target="_blank" rel="noopener">'+LINKS.tealight.t+'</a> × 3'],
+  ['Plug-in LED dimmer','One per group of up to 6 spots',String(Math.ceil(lampN/6)),'<a href="'+LINKS.dimmer.u+'" target="_blank" rel="noopener">'+LINKS.dimmer.t+'</a>'],
+  ['Glow floor tape','Visitor path arrows',Math.ceil(pathLen(PATHS.v3)/30)+' rolls','<a href="'+LINKS.tape.u+'" target="_blank" rel="noopener">'+LINKS.tape.t+'</a>'],
+  ['Power strips + 25 ft black extension cords','Behind each wall, run along the drape, never across the open floor',Math.ceil(lampN/4)+' + '+(Math.ceil(lampN/4)+2),'Any heavy-duty, grounded'],
+ ],'With freestanding walls, run power behind the walls along the drape line so no cord crosses the open floor. Check with the venue which outlets you can use. Prices and stock change, so check each link before ordering.');
+ return {rows,warm,uv,ups};}
 
 /* ================= textures (built once, cached across layout switches) ================= */
 const MAROON='#8C1D3A',SAFF='#D9831C',IVORY='#FBF6EE',INK='#2A1E22';
@@ -833,6 +962,10 @@ function floorTex(){return tex('floor',()=>{const t=canvasTex(1024,1024,(c,w,h)=
   c.strokeStyle='rgba(90,60,30,.18)';c.lineWidth=2;for(let i=0;i<=1024;i+=64){c.beginPath();c.moveTo(i,0);c.lineTo(i,h);c.stroke();c.beginPath();c.moveTo(0,i);c.lineTo(w,i);c.stroke();}});
   t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(64/16,48/16);return t;});}
 
+const T_diya2=()=>tex('diya2',()=>canvasTex(912,1344,(c,W,H)=>{c.fillStyle='#2A1418';c.fillRect(0,0,W,H);c.fillStyle='#F2B66B';c.font='600 30px '+FD;c.fillText('BEFORE YOU GO',44,64);
+  c.fillStyle='#fff';c.font='700 70px '+FD;c.fillText('LIGHT YOUR',44,140);c.fillText('VALUE',44,210);c.fillStyle='#E9D9C6';c.font='400 26px '+FB;wrap(c,'Choose one value to carry home. Place a diya on its shelf.',44,256,820,34,2);
+  VALS.forEach((v,k)=>{const cx=k%2?W*.74:W*.26,cy=[420,660,900,1140][Math.floor(k/2)];c.fillStyle='#F2B66B';c.font='600 38px '+FD;c.textAlign='center';c.fillText(v.toUpperCase(),cx,cy);c.textAlign='left'});}));
+
 /* ================= world: every object that depends on the layout ================= */
 let G=null;
 const M=(c,o)=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.85},o||{}));
@@ -842,7 +975,7 @@ function chipSprite(txt,pos,h,bg,fg,parent){const t=chipTex(txt,bg,fg);const sp=
   sp.scale.set(h*t.userData.aspect,h,1);sp.position.copy(pos);sp.renderOrder=31;parent.add(sp);return sp;}
 
 function buildWorld(L,E){
- const v1=L.id==='v1',{NWF,SWF,WWF,EWF,SN,SS}=L;
+ const v1=L.id==='v1',v3=L.id==='v3',{NWF,SWF,WWF,EWF,SN,SS}=L;
  const world=new THREE.Group();G=world;
  const W={world,pick:[],labels:[],fixtures:[],beams:[],ghost:[],people:[],dims:new THREE.Group(),zones:new THREE.Group()};
  world.add(W.dims);world.add(W.zones);
@@ -860,58 +993,73 @@ function buildWorld(L,E){
  /* walls: perimeter flats (ghostable) and the double-faced spine */
  const wallMat=M(0x2A2326,{roughness:1,transparent:true,opacity:1});W.wallMat=wallMat;
  const wall=(w,x,z,rot)=>{const m=box(w,8,.25,wallMat,x,4,z);m.rotation.y=rot||0;W.ghost.push(m);};
- wall(35,-2.5,-9.875);wall(1,19.5,-9.875);wall(35,-2.5,9.875);wall(1,19.5,9.875);wall(20,-19.875,0,Math.PI/2);wall(20,19.875,0,Math.PI/2);
+ if(!v3){wall(35,-2.5,-9.875);wall(1,19.5,-9.875);wall(35,-2.5,9.875);wall(1,19.5,9.875);wall(20,-19.875,0,Math.PI/2);wall(20,19.875,0,Math.PI/2);}
+ else{
+  // pipe-and-drape around the edge (ghostable), with the same entry and exit openings
+  const drapeMat=M(0x1E1A1C,{roughness:1,transparent:true,opacity:.55});W.drapeMat=drapeMat;
+  const drape=(w,x,z,rot)=>{const m=box(w,8,.06,drapeMat,x,4,z);m.rotation.y=rot||0;m.castShadow=false;W.ghost.push(m);cyl(.04,.04,w,M(0x888888,{metalness:.7}),x,8,z).rotation.set(0,rot||0,Math.PI/2);};
+  drape(35,-2.5,-9.97);drape(1,19.5,-9.97);drape(35,-2.5,9.97);drape(1,19.5,9.97);drape(20,-19.97,0,Math.PI/2);drape(20,19.97,0,Math.PI/2);
+  // one freestanding wall per value, on T-feet with sandbags
+  const vMat=M(0x2F282B,{roughness:.95});
+  wallsFor(L).forEach(w=>{if(w.id==='W9'||w.id==='W10')return;const g=new THREE.Group();
+    box(w.len,8,.33,vMat,0,4,0,g);box(w.len,.08,.38,M(0x8C1D3A),0,8.04,0,g);
+    [-w.len/2+.45,w.len/2-.45].forEach(fx=>{box(.35,.14,3,M(0x3A3236),fx,.07,.5,g);box(.9,.45,.6,M(0x6E6250),fx,.3,-.6,g);});
+    if(w.rot){g.position.set(WWF-.165,0,w.tag[1]);g.rotation.y=-Math.PI/2;}
+    else if(w.tag[1]<0){g.position.set(w.tag[0],0,NWF-.165);g.rotation.y=Math.PI;}
+    else g.position.set(w.tag[0],0,SWF+.165);
+    world.add(g);});
+ }
  box(L.spineLen,8,.5,M(0x2F282B,{roughness:.95}),L.spineX0+L.spineLen/2,4,L.spineZ);
  box(L.spineLen,.1,.56,M(0x8C1D3A),L.spineX0+L.spineLen/2,8.05,L.spineZ);
 
  /* 0 Welcome: spine north face, facing the entrance */
- panel(T_welcome(),5.2,5.2,17,5.3,SN-.08,Math.PI,0);
+ const wx=v3?17.25:17,ws0=v3?4.5:5.2;panel(T_welcome(),ws0,ws0,wx,v3?5.05:5.3,SN-.08,Math.PI,0);
  const holder=new THREE.Group();box(3.8,1.6,.08,M(0x111111),0,1.95,.08,holder);
  const acr=M(0xDDEEF5,{transparent:true,opacity:.28,roughness:.08});
  [-1.25,0,1.25].forEach(x=>{box(1.05,.95,.04,acr,x,1.75,.42,holder);box(1.05,.04,.34,acr,x,1.28,.26,holder);
    for(let k=0;k<3;k++){const pp=new THREE.Mesh(new THREE.PlaneGeometry(.85,1.1),new THREE.MeshBasicMaterial({map:T_pass()}));pp.position.set(x+(k-1)*.02,1.88,.18+k*.06);pp.rotation.x=-.12;holder.add(pp);}});
- holder.position.set(17,0,SN);holder.rotation.y=Math.PI;world.add(holder);tag(holder,0);
+ holder.position.set(wx,0,SN);holder.rotation.y=Math.PI;world.add(holder);tag(holder,0);
 
  /* 1 Santosh: UV glow tree; v1 table, v2 wall ledge */
- panel(T_glow(),8,7,9,4.4,NWF+.08,0,1,true);
+ const sx0=v3?8.5:9;panel(T_glow(),8,7,sx0,4.4,NWF+.08,0,1,true);
  const markers=(parent,y,z)=>[0x39FF14,0xFF3EA5,0x00E5FF,0xFFE81F,0xFF8C1A].forEach((col,k)=>{cyl(.2,.18,.45,M(0x222222),-2+k,y,z,parent,12);
    for(let j=0;j<3;j++){const mk=cyl(.04,.04,.6,new THREE.MeshBasicMaterial({color:col}),-2+k+(j-1)*.07,y+.33,z,parent,6);mk.rotation.z=(j-1)*.15;}});
  const s1=new THREE.Group();
  if(v1){box(6,2.5,1.6,M(0x161318),0,1.25,0,s1);markers(s1,2.72,.1);s1.position.set(9,0,-8.5);}
- else{box(6,.12,.5,M(0x161318),0,3,0,s1);[-2.6,0,2.6].forEach(x=>box(.08,.4,.4,M(0x333333),x,2.75,-.03,s1));markers(s1,3.22,0);s1.position.set(9,0,NWF+.3);}
+ else{box(6,.12,.5,M(0x161318),0,3,0,s1);[-2.6,0,2.6].forEach(x=>box(.08,.4,.4,M(0x333333),x,2.75,-.03,s1));markers(s1,3.22,0);s1.position.set(sx0,0,NWF+.3);}
  world.add(s1);tag(s1,1);
- box(6,.18,.25,new THREE.MeshBasicMaterial({color:0x8A4DFF}),9,.12,NWF+.45);
+ box(6,.18,.25,new THREE.MeshBasicMaterial({color:0x8A4DFF}),sx0,.12,NWF+.45);
 
  /* 2 Aadar: screen looping the glitch video */
  screenTex();
  const tvW=v1?6.2:5.45,tvH=v1?3.49:3.07;
  const scr=new THREE.Group();box(tvW+.25,tvH+.25,.25,M(0x0A0A0A),0,0,0,scr);const sf=new THREE.Mesh(new THREE.PlaneGeometry(tvW,tvH),new THREE.MeshBasicMaterial({map:scrTex}));sf.position.z=.13;scr.add(sf);
- scr.position.set(0,5.25,NWF+.15);world.add(scr);tag(scr,2);
- panel(T_strip(),6.4,1.3,0,v1?2.45:2.6,NWF+.08,0,2);
+ const ax0=v3?-.25:0;scr.position.set(ax0,5.25,NWF+.15);world.add(scr);tag(scr,2);
+ panel(T_strip(),6.4,1.3,ax0,v1?2.45:2.6,NWF+.08,0,2);
  if(v1){const bench=new THREE.Group();box(5,.3,1.4,M(0x8A6A43),0,1.5,0,bench);[-2.2,2.2].forEach(x=>box(.3,1.5,1.2,M(0x6B4A2E),x,.75,0,bench));bench.position.set(0,0,-6.4);world.add(bench);tag(bench,2);}
- const scrGlow=new THREE.PointLight(0xA9B8FF,.55,10,1.5);scrGlow.position.set(0,5,NWF+1.6);world.add(scrGlow);W.fixtures.push(scrGlow);
+ const scrGlow=new THREE.PointLight(0xA9B8FF,.55,10,1.5);scrGlow.position.set(ax0,5,NWF+1.6);world.add(scrGlow);W.fixtures.push(scrGlow);
 
  /* 3 Daya: black backdrop, rose heart */
- panel(T_daya(),9.5,7.5,-8.75,4.15,NWF+.08,0,3,true);
+ const dyx=v3?-9.75:-8.75;panel(T_daya(),9.5,7.5,dyx,4.15,NWF+.08,0,3,true);
  const heart=new THREE.Group();const hb=[],rh=rng(17),HS=2.2;
  for(let y=-1.25;y<=1.2;y+=.075)for(let x=-1.3;x<=1.3;x+=.075){const X=x*1.05,Y=y+.15;if(Math.pow(X*X+Y*Y-1,3)-X*X*Y*Y*Y>0)continue;
    const r=Math.min(1,Math.hypot(x,y*.9));hb.push([x*HS+(rh()-.5)*.05,y*HS+(rh()-.5)*.05,.06+.55*Math.sqrt(Math.max(0,1-r*r))+(rh()-.5)*.05]);}
  const roses=new THREE.InstancedMesh(new THREE.SphereGeometry(.11,10,8),M(0xffffff,{roughness:.75}),hb.length);const hd3=new THREE.Object3D(),hc=new THREE.Color();
  const reds=[0xB0102A,0xC8143A,0x9A0E22,0xD61E3C,0x8A0B1E,0xE0284A];
  hb.forEach((q,k)=>{hd3.position.set(q[0],q[1],q[2]);const sc=.85+rh()*.4;hd3.scale.set(sc,sc,sc*.7);hd3.updateMatrix();roses.setMatrixAt(k,hd3.matrix);roses.setColorAt(k,hc.setHex(reds[Math.floor(rh()*reds.length)]))});
- roses.castShadow=true;heart.add(roses);heart.position.set(-8.75,4.35,NWF+.15);world.add(heart);tag(heart,3);
+ roses.castShadow=true;heart.add(roses);heart.position.set(dyx,4.35,NWF+.15);world.add(heart);tag(heart,3);
 
  /* 4 Vivek: word search on the west wall, mirror plinth with floor ring */
- const wsw=v1?12:10,wsz=v1?0:.5;
+ const wsw=v1?12:10,wsz=v1||v3?0:.5;
  panel(T_words(wsw),wsw,7,WWF+.08,4.4,wsz,Math.PI/2,4);
  tag(box(.45,.18,wsw-2,M(0x6B4A2E),WWF+.3,3,wsz),4);
- const ringP=v1?[-15.6,0,2.2,2.55]:[-16.8,-7.2,1.9,2.2];
+ const ringP=v1?[-15.6,0,2.2,2.55]:v3?[-17,-7.5,1.9,2.2]:[-16.8,-7.2,1.9,2.2];
  const viv=new THREE.Group();const ring=new THREE.Mesh(new THREE.RingGeometry(ringP[2],ringP[3],64),M(0xD9831C,{roughness:1}));ring.rotation.x=-Math.PI/2;ring.position.y=0.03;viv.add(ring);
  box(1.2,3,1.2,M(0xF1ECE6),0,1.5,0,viv);box(1,1.4,0.08,M(0xBFD6E6,{metalness:.9,roughness:.08}),0,3.75,0,viv).rotation.y=Math.PI/2;
  viv.position.set(ringP[0],0,ringP[1]);world.add(viv);tag(viv,4);
 
  /* 5 Kshama: panel + note tank + writing ledge */
- const kx=v1?-10:-9;
+ const kx=v1?-10:v3?-12.5:-9;
  panel(T_kshama(),6,7,kx,4.4,SWF-.08,Math.PI,5);
  const tank=new THREE.Group();const TW=3.2,TH=4,TD=1.4,TB=1.5;
  box(TW+.4,TB,TD+.4,M(0x2A1E22),0,TB/2,0,tank);
@@ -938,12 +1086,12 @@ function buildWorld(L,E){
  tank.position.set(kx,0,v1?7.8:SWF-.1-(TD+.4)/2);tank.rotation.y=Math.PI;world.add(tank);tag(tank,5);[glass,notes,edges,lg].forEach(m=>m.userData.tank=true);
 
  /* 6 Dharma: panel + kavad rack */
- const dx=v1?-4:-3;
- panel(T_dharma(),6,7,dx,4.4,SS+.08,0,6);
+ const dx=v1?-4:v3?-5:-3;
+ if(v3)panel(T_dharma(),6,7,dx,4.4,SWF-.08,Math.PI,6);else panel(T_dharma(),6,7,dx,4.4,SS+.08,0,6);
  const kav=new THREE.Group();const wood=M(0x8A6A43);box(.25,4.4,.25,wood,-2.2,2.2,0,kav);box(.25,4.4,.25,wood,2.2,2.2,0,kav);box(5.2,.15,1.6,wood,0,.08,0,kav);
  cyl(.12,.12,7,M(0xC9A86A),0,4.5,0,kav,12).rotation.z=Math.PI/2;
  [-3.2,3.2].forEach(x=>{cyl(.75,.6,.8,M(0xA9804F),x,2.6,0,kav,16);[0,2.1,4.2].forEach(a=>cyl(.02,.02,1.6,M(0x5A4630),x+Math.cos(a)*.55,3.65,Math.sin(a)*.55,kav,4));});
- kav.position.set(dx,0,v1?3.2:SS+1);world.add(kav);tag(kav,6);
+ kav.position.set(dx,0,v1?3.2:v3?SWF-1:SS+1);world.add(kav);tag(kav,6);
 
  /* 7 Sankalp */
  const ballMat=M(0xF2D24B,{roughness:.9});
@@ -959,19 +1107,20 @@ function buildWorld(L,E){
   cyl(.5,.4,.8,M(0x8C1D3A),4.6,.4,4.2);
   panel(T_sankalp(),4,7,6.6,4.4,SWF-.08,Math.PI,7);
  }else{
-  const lane=new THREE.Mesh(new THREE.PlaneGeometry(8.5,4),M(0xffffff,{map:T_lane2(),transparent:true}));lane.rotation.x=-Math.PI/2;lane.position.set(5.25,.035,SWF-2);lane.receiveShadow=true;world.add(lane);tag(lane,7);
+  const so=v3?2.75:0;if(v3)panel(T_sankalp(),4,7,8,4.4,SWF-.08,Math.PI,7);
+  const lane=new THREE.Mesh(new THREE.PlaneGeometry(8.5,4),M(0xffffff,{map:T_lane2(),transparent:true}));lane.rotation.x=-Math.PI/2;lane.position.set(5.25+so,.035,SWF-2);lane.receiveShadow=true;world.add(lane);tag(lane,7);
   const bz=SWF-2.125,board=new THREE.Group();box(.5,7.5,4.25,M(0x161318),0,3.75,0,board);
   [-1.5,1.5].forEach(z=>{box(2.2,.15,.3,M(0x5A4630),1.3,.08,z,board);const br=box(.12,3.2,.12,M(0x5A4630),1.1,1.55,z,board);br.rotation.z=.6;});
   const hd=new THREE.Mesh(new THREE.PlaneGeometry(4.25,.75),new THREE.MeshBasicMaterial({map:T_boardHead()}));hd.position.set(-.26,7.05,0);hd.rotation.y=-Math.PI/2;board.add(hd);
-  board.position.set(9.75,0,bz);world.add(board);tag(board,7);
-  const tg=target();tg.position.set(9.45,4.6,bz);tg.rotation.y=-Math.PI/2;world.add(tg);tag(tg,7);
-  const rz=SWF-4;[1.2,3.8,6.4,9].forEach(x=>stanchion(x,rz));rope([1.2,rz],[3.8,rz]);rope([3.8,rz],[6.4,rz]);rope([6.4,rz],[9,rz]);
-  cyl(.5,.4,.8,M(0x8C1D3A),1.7,.4,SWF-.7);
+  board.position.set(9.75+so,0,bz);world.add(board);tag(board,7);
+  const tg=target();tg.position.set(9.45+so,4.6,bz);tg.rotation.y=-Math.PI/2;world.add(tg);tag(tg,7);
+  const rz=SWF-4,sp=[1.2,3.8,6.4,9].map(x=>x+so);sp.forEach(x=>stanchion(x,rz));rope([sp[0],rz],[sp[1],rz]);rope([sp[1],rz],[sp[2],rz]);rope([sp[2],rz],[sp[3],rz]);
+  cyl(.5,.4,.8,M(0x8C1D3A),1.7+so,.4,SWF-.7);
  }
 
  /* 8 Tyag: what they carry */
- const tx=v1?10:13;
- panel(T_tyag(v1?6:5),v1?6:5,7,tx,4.4,SS+.08,0,8);
+ const tx=v1?10:v3?1.25:13;
+ if(v3)panel(T_tyag(5),5,7,tx,4.4,SWF-.08,Math.PI,8);else panel(T_tyag(v1?6:5),v1?6:5,7,tx,4.4,SS+.08,0,8);
  const gear=new THREE.Group();
  const jackets=(ox,oz)=>{box(.12,5.6,.12,M(0x333333),ox-1.4,2.8,oz,gear);box(.12,5.6,.12,M(0x333333),ox+1.4,2.8,oz,gear);box(2.9,.1,.1,M(0x333333),ox,5.55,oz,gear);box(3.2,.08,1,M(0x333333),ox,.04,oz,gear);
    [[-1,0xC9A24B,1],[0,0x23395B,0],[1,0x5B6B3A,0]].forEach(([dx2,col,refl])=>{box(.85,2.2,.5,M(col),ox+dx2,4.3,oz,gear);box(1.1,.3,.5,M(col),ox+dx2,5.25,oz,gear);
@@ -988,23 +1137,24 @@ function buildWorld(L,E){
  if(v1){jackets(-1.2,0);[[-2,.9],[-1.6,.9]].forEach(([x,z])=>box(.32,.7,.6,M(0x4A3A2A),x,.35,z,gear));box(1.3,.8,.7,M(0xC62828),-.5,.4,1,gear);box(1.32,.12,.72,M(0xFFFFFF),-.5,.6,1,gear);
    mannequin(2.4,.4);box(3,1.4,1,M(0x8A6A43),.9,.7,1.9,gear);mirror(3.6,1.6);sign(-3.6,.5);gear.position.set(10,0,1.3);}
  else{jackets(-1.2,.6);[[-2,1.25],[-1.6,1.25]].forEach(([x,z])=>box(.32,.7,.6,M(0x4A3A2A),x,.35,z,gear));box(1.3,.8,.7,M(0xC62828),-.5,.4,1.2,gear);box(1.32,.12,.72,M(0xFFFFFF),-.5,.6,1.2,gear);
-   mannequin(1.2,.8);mirror(2.25,.3);sign(-2.5,.25);gear.position.set(13,0,SS);}
+   mannequin(1.2,.8);mirror(2.25,.3);sign(-2.5,.25);if(v3){gear.position.set(tx,0,SWF);gear.rotation.y=Math.PI;}else gear.position.set(13,0,SS);}
  world.add(gear);tag(gear,8);
 
  /* 9 Diya wall + bridge panel */
- const dw=panel(T_diya(),8,7,EWF-.08,4.4,4.5,-Math.PI/2,9);
+ const dw=v3?panel(T_diya2(),4.75,7,17.25,4.4,SS+.08,0,9):panel(T_diya(),8,7,EWF-.08,4.4,4.5,-Math.PI/2,9);
  const flame=new THREE.MeshStandardMaterial({color:0xFFC861,emissive:0xFFA531,emissiveIntensity:1.6});const r9=rng(3);
- [0,1,2,3,4,5,6,7].forEach(k=>{const lx2=-3+(k%4)*2,ly=k<4?0.75:-1.95;box(1.7,.1,.5,M(0x6B4A2E),lx2,ly,.3,dw);
-   const n=2+Math.floor(r9()*6);for(let j=0;j<n;j++){const x=lx2-.7+(j%5)*.35,z=.18+Math.floor(j/5)*.22;cyl(.11,.08,.08,M(0xC27A2C),x,ly+.1,z,dw,10);
+ [0,1,2,3,4,5,6,7].forEach(k=>{const lx2=v3?(k%2?1.15:-1.15):-3+(k%4)*2,ly=v3?[1.15,-.1,-1.35,-2.6][Math.floor(k/2)]:(k<4?0.75:-1.95);box(v3?1.9:1.7,.1,.5,M(0x6B4A2E),lx2,ly,.3,dw);
+   const n=2+Math.floor(r9()*6);for(let j=0;j<n;j++){const x=lx2-.7+(j%5)*.35*(v3?.8:1),z=.18+Math.floor(j/5)*.22;cyl(.11,.08,.08,M(0xC27A2C),x,ly+.1,z,dw,10);
      const f=new THREE.Mesh(new THREE.SphereGeometry(.06,8,6),flame);f.position.set(x,ly+.2,z);dw.add(f);}});
- const glowL=new THREE.PointLight(0xFFB050,0.9,9);glowL.position.set(18.5,4,4.5);world.add(glowL);W.fixtures.push(glowL);
- panel(T_bridge(),4,7,v1?17:17.6,4.4,SS+.08,0,9);
+ const glowL=new THREE.PointLight(0xFFB050,0.9,9);if(v3)glowL.position.set(17.25,4,SS+1.4);else glowL.position.set(18.5,4,4.5);world.add(glowL);W.fixtures.push(glowL);
+ if(!v3)panel(T_bridge(),4,7,v1?17:17.6,4.4,SS+.08,0,9);
 
  /* story TV (v1 only) */
  if(v1){const g=new THREE.Group();box(3.4,2,0.18,M(0x111111),0,0,0,g);const s=new THREE.Mesh(new THREE.PlaneGeometry(3.2,1.8),new THREE.MeshBasicMaterial({map:T_tv()}));s.position.z=0.1;g.add(s);g.position.set(-9,5.6,SS+.1);world.add(g);}
 
  /* 10 Modern Day Values mural */
  if(v1)panel(T_mural1(),25,7,.9,4.4,SN-.08,Math.PI,10,true);
+ else if(v3)panel(T_mural2(),7.5,3.39,EWF-.12,5.1,-5,-Math.PI/2,10,true);
  else panel(T_mural2(),15.5,7,-3.25,4.4,SN-.08,Math.PI,10,true);
 
  /* value header banners above the walls */
@@ -1060,23 +1210,32 @@ function buildWorld(L,E){
    const mid=A.clone().lerp(B,.5);if(o.off)mid.add(new THREE.Vector3(...o.off));chipSprite(txt,mid,o.h||.85,'#1F1A1C','#FFFFFF',W.dims);};
  dim([-20,.05,-11.2],[20,.05,-11.2],'40′-0″',{off:[0,.7,0]});
  dim([-21.2,.05,-10],[-21.2,.05,10],'20′-0″',{off:[0,.7,0]});
+ if(!v3){
  const ax=13.7;dim([ax,.15,NWF],[ax,.15,SN],'north aisle '+fmt(L.northW),{off:[0,1.0,0]});
  const sx2=v1?4.3:-6.9;dim([sx2,.15,SS],[sx2,.15,SWF],'south aisle '+fmt(L.southW),{off:[0,1.0,0]});
  dim([WWF,.15,L.spineZ],[L.spineX0,.15,L.spineZ],'turn '+fmt(L.turnW),{off:[0,1.0,0]});
  dim([L.spineX0,8.75,L.spineZ],[EWF,8.75,L.spineZ],'spine '+fmt(L.spineLen)+' × 6″',{off:[0,.7,0]});
  dim([15,.12,-10.6],[19,.12,-10.6],'entry 4′-0″',{off:[0,.7,0]});dim([15,.12,10.6],[19,.12,10.6],'exit 4′-0″',{off:[0,.7,0]});
+ }else{
+  dim([13.6,.15,NWF],[13.6,.15,SWF],'open floor, wall face to wall face '+fmt(SWF-NWF),{off:[0,1.0,0]});
+  dim([17.25,.15,SN],[17.25,.15,NWF-1.25],'entry lane '+fmt(SN-NWF+1),{off:[0,.9,0]});
+  dim([15,.12,-10.6],[19,.12,-10.6],'entry 4′-0″',{off:[0,.7,0]});dim([15,.12,10.6],[19,.12,10.6],'exit 4′-0″',{off:[0,.7,0]});
+ }
  dim([-20.5,0,-10.5],[-20.5,8,-10.5],'walls 8′-0″',{tick:[.35,0,0],off:[0,0,0]});
  wallsFor(L).forEach(w=>{if(w.len<2)return;const lab=w.id+' · '+fmt(w.len)+' × '+fmt(w.h);let p;
-   if(w.id==='W7')p=[w.tag[0]-6,6.6,w.tag[1]];else if(w.id==='W8')p=[w.tag[0],8.3,w.tag[1]];
+   if(v3){p=w.rot?(w.id==='W4'?[WWF-.8,6.6,-3.4]:[w.tag[0],8.4,w.tag[1]]):(w.id==='W10'?[w.tag[0],8.6,w.tag[1]]:[w.tag[0],6.6,w.tag[1]+(w.tag[1]<0?-.9:.9)]);}
+   else if(w.id==='W7')p=[w.tag[0]-6,6.6,w.tag[1]];else if(w.id==='W8')p=[w.tag[0],8.3,w.tag[1]];
    else if(w.rot)p=[w.tag[0]<0?-20.4:20.4,6.6,w.tag[1]+(w.tag[0]<0?3:-3)];else p=[w.tag[0],6.6,w.tag[1]<0?-10.4:10.4];
    chipSprite(lab,new THREE.Vector3(...p),.95,'#5B2C83','#FFFFFF',W.dims);});
- dim([4.65,8.25,NWF-.5],[4.65,9.96,NWF-.5],'banners 8′-3″ to 10′-0″',{tick:[.35,0,0],off:[-2.9,0,0]});
- dim([13.35,.9,NWF+.35],[13.35,7.9,NWF+.35],'panels 0′-11″ to 7′-11″',{tick:[.35,0,0],off:[2.9,0,0]});
+ const sL=v3?4.15:4.65,sR=v3?12.85:13.35;
+ dim([sL,8.25,NWF-.5],[sL,9.96,NWF-.5],'banners 8′-3″ to 10′-0″',{tick:[.35,0,0],off:[-2.9,0,0]});
+ dim([sR,.9,NWF+.35],[sR,7.9,NWF+.35],'panels 0′-11″ to 7′-11″',{tick:[.35,0,0],off:[2.9,0,0]});
  if(v1)dim([0,5.25,NWF+.3],[0,5.25,-6.4],'bench 3′-2″ from 85″ screen',{off:[0,.75,0]});
+ else if(v3){dim([-.25,5.25,NWF+.3],[-.25,5.25,NWF+7.3],'viewers 7′-0″ from 75″ screen',{off:[0,.75,0]});dim([-9.75,2,NWF+.8],[-9.75,2,NWF+7.8],'heart viewed from 7′-0″',{off:[0,.75,0]});}
  else dim([0,5.25,NWF+.3],[0,5.25,SN-1],'viewers '+fmt(SN-1-NWF-.3)+' from 75″ screen',{off:[0,.75,0]});
- dim([-8.75,2,NWF+.8],[-8.75,2,SN-1],'heart viewed from '+fmt(SN-1-NWF-.8),{off:[0,.75,0]});
+ if(!v3)dim([-8.75,2,NWF+.8],[-8.75,2,SN-1],'heart viewed from '+fmt(SN-1-NWF-.8),{off:[0,.75,0]});
  if(v1)dim([2,1,SWF-.15],[2,1,SWF-5.5],'throw '+fmt(5.35),{off:[0,.7,0]});
- else{dim([9.45,1.1,7.1],[2.5,1.1,7.1],'throw 7′-0″',{off:[0,.7,0]});dim([9.45,.5,8.6],[4.5,.5,8.6],'kids 5′-0″',{off:[0,.6,0]});}
+ else{const so2=v3?2.75:0;dim([9.45+so2,1.1,7.1],[2.5+so2,1.1,7.1],'throw 7′-0″',{off:[0,.7,0]});dim([9.45+so2,.5,8.6],[4.5+so2,.5,8.6],'kids 5′-0″',{off:[0,.6,0]});}
 
  /* space check overlay: objects, users, viewers and the walkway left */
  const rect=(x0,x1,z0,z1,color,op,y)=>{const w=Math.abs(x1-x0),d=Math.abs(z1-z0);if(w<.01||d<.01)return;const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshBasicMaterial({color,transparent:true,opacity:op,depthWrite:false}));
@@ -1093,19 +1252,20 @@ function buildWorld(L,E){
    r.segs.forEach(sg=>{if(sg.clear<=0)return;const col=SC[status(sg.clear)];
      if(r.aisle==='N')rect(sg.x0,sg.x1,NWF+sg.wD,SN-sg.sD,col,.42,.07);
      if(r.aisle==='S')rect(sg.x0,sg.x1,SS+sg.sD,SWF-sg.wD,col,.42,.07);
-     if(r.aisle==='W')rect(WWF+sg.wD,L.spineX0,sg.x0,sg.x1,col,.42,.07);});
+     if(r.aisle==='W')rect(WWF+sg.wD,L.spineX0,sg.x0,sg.x1,col,.42,.07);
+     if(r.aisle==='H')rect(sg.x0,sg.x1,NWF+sg.wD,SWF-sg.sD,col,.3,.07);});
    const m=r.min;let p;
-   if(r.aisle==='N')p=[m.x,.7,(NWF+m.wD+SN-m.sD)/2];else if(r.aisle==='S')p=[m.x,.7,(SS+m.sD+SWF-m.wD)/2];else p=[(WWF+m.wD+L.spineX0)/2,.7,m.x];
+   if(r.aisle==='N')p=[m.x,.7,(NWF+m.wD+SN-m.sD)/2];else if(r.aisle==='H')p=[m.x,.7,r.st===1||r.st===2||r.st===3?NWF+m.wD+1.2:SWF-m.sD-1.2];else if(r.aisle==='S')p=[m.x,.7,(SS+m.sD+SWF-m.wD)/2];else p=[(WWF+m.wD+L.spineX0)/2,.7,m.x];
    chipSprite(m.clear>0?fmt(m.clear)+' clear':'zones overlap',new THREE.Vector3(...p),.8,SCt[r.status],'#FFFFFF',W.zones);});
  return W;}
 
 /* ================= page UI: tabs, station rail, space table, drawings, materials ================= */
-let VER='v1';try{if(location.hash==='#v2')VER='v2';}catch(e){}
+let VER='v1';try{if(location.hash==='#v2')VER='v2';if(location.hash==='#v3')VER='v3';}catch(e){}
 let EVAL=evaluate(LAYOUTS[VER]);
 let current=0;
 const $=(id)=>document.getElementById(id);
 const esc=(s)=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
-const stText=(i)=>VER==='v2'&&S2[i]?Object.assign({},S[i],S2[i]):S[i];
+const stText=(i)=>VER==='v3'?Object.assign({},S[i],S2[i]||{},S3[i]||{}):VER==='v2'&&S2[i]?Object.assign({},S[i],S2[i]):S[i];
 const resFor=(i)=>EVAL.R.find(r=>r.st===i);
 const DOT={ok:'var(--ok)',warn:'var(--warn)',bad:'var(--bad)'};
 
@@ -1117,6 +1277,7 @@ function renderList(){const el=$('list');el.innerHTML='';
     b.setAttribute('aria-current',i===current?'true':'false');
     b.addEventListener('click',()=>{if(!window.__mulyo){current=i;renderDetail(i);return}window.__mulyo.stop();window.__mulyo.select(i,true)});li.appendChild(b);el.appendChild(li);});}
 function spaceLine(i){const r=resFor(i);if(!r)return '';
+  if(r.aisle==='X'&&r.note)return '<div class="space"><span class="pill ok">open floor</span> '+r.note+'.</div>';
   if(r.aisle==='X')return '<div class="space"><span class="pill ok">4′-0″ exit</span> Visitors at the Diya Wall stand in the exit area; the 4 ft opening to Mandir stays clear.</div>';
   return '<div class="space"><span class="pill '+r.status+'">'+(r.min.clear>0?fmt(r.min.clear):'0′-0″')+' walkway</span> '+STATUS_TXT[r.status]+(r.min.clear>0?'':' (activity zones overlap)')+'</div>';}
 function renderDetail(i){const s=stText(i);
@@ -1126,14 +1287,15 @@ function renderDetail(i){const s=stText(i);
   S.forEach((_,j)=>{const b=$('st'+j);if(b)b.setAttribute('aria-current',j===i?'true':'false')});}
 function renderIntro(){const L=LAYOUTS[VER];$('vintro').textContent=INTRO[VER];$('vchanges').innerHTML=CHANGES[VER].map(c=>'<li>'+c+'</li>').join('');
   const bad=EVAL.R.filter(r=>r.status==='bad').length,warn=EVAL.R.filter(r=>r.status==='warn').length;
-  $('kpis').innerHTML=[['North aisle',fmt(L.northW),''],['South aisle',fmt(L.southW),''],['Pinch points',String(bad),bad?'bad':'ok'],['Tight spots',String(warn),warn?'warn':'ok']]
+  $('kpis').innerHTML=(L.open?[['Open floor',fmt(L.SWF-L.NWF),''],['Wall flats','21','ok']]:[['North aisle',fmt(L.northW),''],['South aisle',fmt(L.southW),'']]).concat([['Pinch points',String(bad),bad?'bad':'ok'],['Tight spots',String(warn),warn?'warn':'ok']])
    .map(k=>'<div class="kpi '+k[2]+'"><small>'+k[0]+'</small><b>'+k[1]+'</b></div>').join('');
   document.querySelectorAll('.tabs [role=tab]').forEach(t=>{const on=t.dataset.v===VER;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;});}
 function renderSpace(){const L=LAYOUTS[VER];
-  const aisleName={N:'North aisle · '+fmt(L.northW),S:'South aisle · '+fmt(L.southW),W:'West turn · '+fmt(L.turnW),X:'Exit'};
+  const aisleName=L.open?{N:'Entry lane · '+fmt(L.northW),S:'Exit lane · '+fmt(L.southW),H:'Open floor · '+fmt(L.SWF-L.NWF),X:'West end'}:{N:'North aisle · '+fmt(L.northW),S:'South aisle · '+fmt(L.southW),W:'West turn · '+fmt(L.turnW),X:'Exit'};
   const zcell=(q,d,fallback)=>q?esc(q.label)+'<br><small>'+fmt(d)+' deep</small>':'<small>'+fallback+'</small>';
   let h='<thead><tr><th>Station</th><th>Aisle</th><th>Outer wall side</th><th>Center wall side</th><th>Walkway left</th><th>Status</th></tr></thead><tbody>';
   EVAL.R.forEach(r=>{const s=stText(r.st);
+    if(r.aisle==='X'&&r.note){h+='<tr><td><b>'+s.short+'</b></td><td>'+aisleName.X+'</td><td>Word search + writers<br><small>3′-6″ deep</small></td><td><small>Nothing; open floor</small></td><td class="num">10′+</td><td><span class="pill ok">Comfortable</span></td></tr>';return;}
     if(r.aisle==='X'){h+='<tr><td><b>'+s.short+'</b></td><td>'+aisleName.X+'</td><td>Diya shelves + visitors<br><small>3′-1″ deep</small></td><td><small>Exit opening to Mandir</small></td><td class="num">4′-0″</td><td><span class="pill ok">Comfortable</span></td></tr>';return;}
     const m=r.min;h+='<tr><td><b>'+s.short+'</b></td><td>'+aisleName[r.aisle]+'</td><td>'+zcell(m.wZ,m.wD,'Nothing')+'</td><td>'+(r.aisle==='W'?'<small>Open (end of the spine)</small>':zcell(m.sZ,m.sD,'Nothing, plain wall'))+'</td>'+
       '<td class="num">'+(m.clear>0?fmt(m.clear):'0′-0″<br><small>zones overlap</small>')+'</td><td><span class="pill '+r.status+'">'+STATUS_TXT[r.status]+'</span></td></tr>';});
@@ -1158,8 +1320,18 @@ function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(x+20)*s,Z=z
     if(q.side==='E')r(L.EWF-d1,L.EWF-d0,q.a,q.b,c);});});
   // walkways
   E.R.forEach(rr=>{if(rr.aisle==='X')return;rr.segs.forEach(sg=>{if(sg.clear<=0)return;const c='sv-'+status(sg.clear);
-    if(rr.aisle==='N')r(sg.x0,sg.x1,L.NWF+sg.wD,L.SN-sg.sD,c);if(rr.aisle==='S')r(sg.x0,sg.x1,L.SS+sg.sD,L.SWF-sg.wD,c);if(rr.aisle==='W')r(L.WWF+sg.wD,L.spineX0,sg.x0,sg.x1,c);});});
+    if(rr.aisle==='N')r(sg.x0,sg.x1,L.NWF+sg.wD,L.SN-sg.sD,c);if(rr.aisle==='S')r(sg.x0,sg.x1,L.SS+sg.sD,L.SWF-sg.wD,c);if(rr.aisle==='W')r(L.WWF+sg.wD,L.spineX0,sg.x0,sg.x1,c);if(rr.aisle==='H')r(sg.x0,sg.x1,L.NWF+sg.wD,L.SWF-sg.sD,c,' fill-opacity=".14"');});});
   // walls
+  if(L.open){[[-20,15,-10],[19,20,-10],[-20,15,10],[19,20,10]].forEach(d=>o.push('<line x1="'+X(d[0])+'" y1="'+Z(d[2])+'" x2="'+X(d[1])+'" y2="'+Z(d[2])+'" class="sv-dim" stroke-dasharray="3 3"/>'));
+    [[-20],[20]].forEach(d=>o.push('<line x1="'+X(d[0])+'" y1="'+Z(-10)+'" x2="'+X(d[0])+'" y2="'+Z(10)+'" class="sv-dim" stroke-dasharray="3 3"/>'));
+    wallsFor(L).forEach(w=>{const lab=w.id+' · '+fmt(w.len);
+      if(w.id==='W10'){r(14.75,19.75,-.25,.25,'sv-wall');t(X(17.25),Z(0)+3.2,lab,'sv-halo',' text-anchor="middle" style="fill:#fff;stroke:none;font:600 8.5px var(--f-mono)"');return;}
+      if(w.id==='W9'){r(12.25,12.75,L.SWF-4.25,L.SWF,'sv-wall');t(X(12.5),Z(L.SWF-4.25)-6,lab,'sv-dimt sv-halo',' text-anchor="middle"');return;}
+      if(w.id==='W4'){r(L.WWF-.33,L.WWF,-5,5,'sv-wall');const x=X(L.WWF)-12;o.push('<text x="'+x+'" y="'+Z(0)+'" transform="rotate(-90 '+x+' '+Z(0)+')" class="sv-dimt sv-halo" text-anchor="middle">'+lab+'</text>');return;}
+      const z0=w.tag[1]<0?L.NWF-.33:L.SWF,z1=w.tag[1]<0?L.NWF:L.SWF+.33;r(w.tag[0]-w.len/2,w.tag[0]+w.len/2,z0,z1,'sv-wall');
+      t(X(w.tag[0]),w.tag[1]<0?Z(L.NWF)-9:Z(L.SWF)+17,lab,'sv-dimt sv-halo',' text-anchor="middle"');});
+    t(X(-20),Z(10)+30,'Dashed line: pipe-and-drape edge','sv-m');}
+  else{
   [[-20,15,-10,-9.75],[19,20,-10,-9.75],[-20,15,9.75,10],[19,20,9.75,10],[-20,-19.75,-10,10],[19.75,20,-10,10]].forEach(w=>r(w[0],w[1],w[2],w[3],'sv-wall'));
   r(L.spineX0,L.EWF,L.SN,L.SS,'sv-wall');
   wallsFor(L).forEach(w=>{const lab=w.id+' · '+fmt(w.len)+(w.id==='W7'?' × 8′-0″':'');if(w.len<2)return;
@@ -1167,26 +1339,28 @@ function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(x+20)*s,Z=z
     if(w.id==='W8'){t(X(10.3),Z(5.2),lab,'sv-dimt sv-halo');return;}
     if(w.rot){const x=w.tag[0]<0?X(-20)-8:X(20)+16;o.push('<text x="'+x+'" y="'+Z(0)+'" transform="rotate(-90 '+x+' '+Z(0)+')" class="sv-dimt sv-halo" text-anchor="middle">'+lab+'</text>');return;}
     t(X(w.tag[0]),w.tag[1]<0?Z(-10)-7:Z(10)+15,lab,'sv-dimt sv-halo',' text-anchor="middle"');});
+  }
   // path
   o.push('<polyline class="sv-path" points="'+PATHS[L.id].map(p=>[p[0],Math.max(-10.6,Math.min(10.6,p[1]))]).map(p=>X(p[0]).toFixed(1)+','+Z(p[1]).toFixed(1)).join(' ')+'"/>');
   // lights
   lightsFor(L).forEach(l=>{const c=l.type==='uv'?'sv-uvl':'sv-warm';o.push('<circle cx="'+X(l.f[0]).toFixed(1)+'" cy="'+Z(l.f[2]).toFixed(1)+'" r="'+(l.type==='up'?3:4)+'" class="'+c+'"'+(l.type==='up'?' fill-opacity=".55"':'')+'/>');});
   // station names
-  const PL={0:[17,L.SN-1.3],1:[9,L.NWF+1.2],2:[0,L.NWF+(v1?2.2:1.2)],3:[-8.75,L.NWF+1.2],4:[-17.6,L.spineZ+(v1?-3:0)],5:[v1?-10:-9,L.SWF-1.2],6:[v1?-4:-3,L.SS+1.2],7:[v1?2:5.5,L.SWF-1.2],8:[v1?10:13,L.SS+1.2],9:[18.1,5],10:[v1?-6.5:-7.6,L.SN-1.2]};
-  Object.keys(PL).forEach(k=>{const i=+k,p=PL[k];t(X(p[0]),Z(p[1])+4,(i===10?'Mural':S[i].short).toUpperCase(),'sv-h sv-halo',' text-anchor="middle" letter-spacing="0.06em"');});
+  const PL=L.open?{0:[17.25,L.SN-1.2],1:[8.5,L.NWF+1.7],2:[-.25,L.NWF+1.5],3:[-9.75,L.NWF+1.5],4:[-17,1.6],5:[-12.5,L.SWF-1.6],6:[-5,L.SWF-1.6],7:[8,L.SWF-1.6],8:[1.25,L.SWF-1.6],9:[17.25,L.SS+1.2],10:[17.6,-7.3]}:{0:[17,L.SN-1.3],1:[9,L.NWF+1.2],2:[0,L.NWF+(v1?2.2:1.2)],3:[-8.75,L.NWF+1.2],4:[-17.6,L.spineZ+(v1?-3:0)],5:[v1?-10:-9,L.SWF-1.2],6:[v1?-4:-3,L.SS+1.2],7:[v1?2:5.5,L.SWF-1.2],8:[v1?10:13,L.SS+1.2],9:[18.1,5],10:[v1?-6.5:-7.6,L.SN-1.2]};
+  Object.keys(PL).forEach(k=>{const i=+k,p=PL[k];t(X(p[0]),Z(p[1])+4,(i===10?(L.open?'Today':'Mural'):S[i].short).toUpperCase(),'sv-h sv-halo',' text-anchor="middle" letter-spacing="0.06em"');});
   // walkway labels at the tightest point
   E.R.forEach(rr=>{if(rr.aisle==='X')return;const m=rr.min;let px,pz;
-    if(rr.aisle==='N'){px=m.x;pz=(L.NWF+m.wD+L.SN-m.sD)/2}else if(rr.aisle==='S'){px=m.x;pz=(L.SS+m.sD+L.SWF-m.wD)/2}else{px=(L.WWF+m.wD+L.spineX0)/2;pz=m.x}
+    if(rr.aisle==='H'){px=m.x;pz=[1,2,3].includes(rr.st)?L.NWF+m.wD+1.3:L.SWF-m.sD-1.3}else if(rr.aisle==='N'){px=m.x;pz=(L.NWF+m.wD+L.SN-m.sD)/2}else if(rr.aisle==='S'){px=m.x;pz=(L.SS+m.sD+L.SWF-m.wD)/2}else{px=(L.WWF+m.wD+L.spineX0)/2;pz=m.x}
     t(X(px),Z(pz)+4,m.clear>0?fmt(m.clear):'overlap','sv-dimt sv-halo sv-'+rr.status+'t',' text-anchor="middle"');});
   // dimensions
   dimH(X(-20),X(20),oz-34,'40′-0″');
   dimV(ox-30,Z(-10),Z(10),'20′-0″');
-  const ax=13.7,sx=v1?4.3:-6.9;
+  if(L.open){dimV(X(13.6),Z(L.NWF),Z(L.SWF),'open floor '+fmt(L.SWF-L.NWF),true);}
+  else{const ax=13.7,sx=v1?4.3:-6.9;
   dimV(X(ax),Z(L.NWF),Z(L.SN),'north '+fmt(L.northW),true);
   dimV(X(sx),Z(L.SS),Z(L.SWF),'south '+fmt(L.southW),true);
   dimH(X(L.WWF),X(L.spineX0),Z(L.spineZ)-8,'turn '+fmt(L.turnW));
   dimH(X(L.spineX0),X(L.EWF),Z(10)+30,'spine '+fmt(L.spineLen)+' × 6″',false);
-  ln(X(L.spineX0),Z(L.SS),X(L.spineX0),Z(10)+36);
+  ln(X(L.spineX0),Z(L.SS),X(L.spineX0),Z(10)+36);}
   dimH(X(15),X(19),Z(-10)-10,'entry 4′-0″');dimH(X(15),X(19),Z(10)+12,'exit 4′-0″',false);
   t(X(17),oz-52,'↓ from Festival','sv-m',' text-anchor="middle"');
   // scale bar + legend
@@ -1199,7 +1373,7 @@ function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(x+20)*s,Z=z
   o.push('</svg>');return o.join('');}
 
 /* ---------- section A–A: across both aisles at x = 1′-6″ (through the Aadar screen and Sankalp) ---------- */
-function sectionSVG(L,E){const v1=L.id==='v1',cx=1.5,s=28,ox=190,oy=64,X=z=>ox+(z+10.5)*s,Y=h=>oy+(10.6-h)*s,Wd=ox+21*s+40,Hd=oy+10.6*s+150,o=[];
+function sectionSVG(L,E){if(L.open)return sectionV3(L,E);const v1=L.id==='v1',cx=1.5,s=28,ox=190,oy=64,X=z=>ox+(z+10.5)*s,Y=h=>oy+(10.6-h)*s,Wd=ox+21*s+40,Hd=oy+10.6*s+150,o=[];
   const r=(z0,z1,h0,h1,c,extra)=>o.push('<rect x="'+X(Math.min(z0,z1)).toFixed(1)+'" y="'+Y(Math.max(h0,h1)).toFixed(1)+'" width="'+(Math.abs(z1-z0)*s).toFixed(1)+'" height="'+(Math.abs(h1-h0)*s).toFixed(1)+'" class="'+c+'"'+(extra||'')+'/>');
   const t=(x,y,txt,c,extra)=>o.push('<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" class="'+c+'"'+(extra||'')+'>'+txt+'</text>');
   const ln=(x1,y1,x2,y2,c,extra)=>o.push('<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" class="'+(c||'sv-dim')+'"'+(extra||'')+'/>');
@@ -1249,22 +1423,53 @@ function sectionSVG(L,E){const v1=L.id==='v1',cx=1.5,s=28,ox=190,oy=64,X=z=>ox+(
   t(X(-10.5),Y(0)+100,'Looking east along the room. Walkway figures in color: green 5′+, amber 3′-6″–5′, red under 3′-6″.','sv-m');
   o.push('</svg>');return o.join('');}
 
+function sectionV3(L,E){const cx=1.25,s=28,ox=190,oy=64,X=z=>ox+(z+10.5)*s,Y=h=>oy+(10.6-h)*s,Wd=ox+21*s+40,Hd=oy+10.6*s+150,o=[];
+  const r=(z0,z1,h0,h1,c,extra)=>o.push('<rect x="'+X(Math.min(z0,z1)).toFixed(1)+'" y="'+Y(Math.max(h0,h1)).toFixed(1)+'" width="'+(Math.abs(z1-z0)*s).toFixed(1)+'" height="'+(Math.abs(h1-h0)*s).toFixed(1)+'" class="'+c+'"'+(extra||'')+'/>');
+  const t=(x,y,txt,c,extra)=>o.push('<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" class="'+c+'"'+(extra||'')+'>'+txt+'</text>');
+  const ln=(x1,y1,x2,y2,c,extra)=>o.push('<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" class="'+(c||'sv-dim')+'"'+(extra||'')+'/>');
+  const person=(z,hgt,label)=>{const k=hgt/5.6;o.push('<circle cx="'+X(z).toFixed(1)+'" cy="'+Y(hgt-.38*k).toFixed(1)+'" r="'+(.38*k*s).toFixed(1)+'" class="sv-ppl"/>');
+    o.push('<path d="M'+X(z-.42*k).toFixed(1)+' '+Y(0).toFixed(1)+' L'+X(z-.5*k).toFixed(1)+' '+Y(hgt*.72).toFixed(1)+' Q'+X(z).toFixed(1)+' '+Y(hgt*.82).toFixed(1)+' '+X(z+.5*k).toFixed(1)+' '+Y(hgt*.72).toFixed(1)+' L'+X(z+.42*k).toFixed(1)+' '+Y(0).toFixed(1)+' Z" class="sv-ppl"/>');
+    if(label)t(X(z),Y(hgt)-8,label,'sv-m sv-halo',' text-anchor="middle"');};
+  o.push('<svg viewBox="0 0 '+Wd+' '+Hd+'" role="img" aria-label="Cross-section of the open hall, Version 3">');
+  const [nD]=depthAt(E.Z,'N','wall',cx),[sD]=depthAt(E.Z,'S','wall',cx),clear=L.SWF-L.NWF-nD-sD;
+  r(L.NWF,L.NWF+nD,0,-.25,'sv-use');r(L.NWF+nD,L.SWF-sD,0,-.25,'sv-'+status(clear));r(L.SWF-sD,L.SWF,0,-.25,'sv-use');
+  ln(X(-10.5),Y(0),X(10.5),Y(0));
+  [-10,10].forEach(z=>ln(X(z),Y(0),X(z),Y(8),'sv-dim',' stroke-dasharray="3 3"'));t(X(-10)+4,Y(8)-6,'drape','sv-m');t(X(10)-4,Y(8)-6,'drape','sv-m',' text-anchor="end"');
+  r(L.NWF-.33,L.NWF,0,8,'sv-wall');r(L.SWF,L.SWF+.33,0,8,'sv-wall');
+  r(L.NWF-2,L.NWF+1,0,.14,'sv-obj');r(L.SWF-1,L.SWF+2,0,.14,'sv-obj');t(X(L.NWF+1)+4,Y(.2)-4,'T-foot','sv-m sv-halo');
+  r(-8.915-.06,-8.915+.06,8.25,9.96,'sv-panel');t(X(-8.9)+6,Y(9.3),'aadar','sv-m sv-halo');
+  r(8.915-.06,8.915+.06,8.25,9.96,'sv-panel');t(X(8.9)-6,Y(9.3),'tyag','sv-m sv-halo',' text-anchor="end"');
+  r(L.NWF,L.NWF+.3,5.25-1.535,5.25+1.535,'sv-panel');r(L.NWF,L.NWF+.12,1.95,3.25,'sv-obj');t(X(L.NWF+.4),Y(6.8)-6,'75″ screen, center 5′-3″','sv-m sv-halo');
+  r(L.SWF-.1,L.SWF,.9,7.9,'sv-panel');r(L.SWF-1.4,L.SWF-.4,0,5.6,'sv-obj');t(X(L.SWF-.9),Y(5.6)-6,'gear rack','sv-m sv-halo',' text-anchor="middle"');
+  const ez=L.NWF+7.3,sz=L.NWF+.3;person(ez,5.6,'viewer');ln(X(ez),Y(5.25),X(sz),Y(6.79),'sv-sight');ln(X(ez),Y(5.25),X(sz),Y(3.71),'sv-sight');
+  const ang=Math.round(2*Math.atan(5.45/2/7)*180/Math.PI);
+  t(X(-10.5),oy-34,'Viewers stand 7′-0″ from the 75″ screen in the open floor: it fills '+ang+'° of view (30–40° is comfortable).','sv-dimt');
+  t(X(-10.5),oy-16,'No center wall: the whole middle of the room is shared walking space.','sv-m');
+  person(1.5,5.4,'walking');person(L.SWF-3,5.5,'');
+  const rx=ox-80;ln(rx,Y(0),rx,Y(10));
+  [[0,'0′-0″',4],[.92,'0′-11″ panel bottom',4],[3.75,'3′-9″ child eye',4],[5.25,'5′-3″ adult eye',4],[8,'8′-0″ wall',10],[8.25,'8′-3″ banner',-3],[10,'10′-0″ banner top',4]].forEach(([h,l,dy])=>{ln(rx-4,Y(h),rx+4,Y(h));t(rx-8,Y(h)+dy,l,'sv-m',' text-anchor="end"');});
+  const chain=(segs,y)=>{segs.forEach(([a,b,label,c])=>{if(b-a<.05)return;ln(X(a),y,X(b),y);ln(X(a),y-5,X(a),y+5);ln(X(b),y-5,X(b),y+5);t(X((a+b)/2),y+16,label,'sv-dimt sv-halo'+(c?' '+c:''),' text-anchor="middle"');});};
+  chain([[L.NWF,L.NWF+nD,fmt(nD)],[L.NWF+nD,L.SWF-sD,fmt(clear)+' open floor','sv-'+status(clear)+'t'],[L.SWF-sD,L.SWF,fmt(sD)]],Y(0)+28);
+  chain([[L.NWF,L.SWF,'wall face to wall face '+fmt(L.SWF-L.NWF)],[-10,L.NWF,'1′-3″'],[L.SWF,10,'1′-3″']],Y(0)+66);
+  t(X(-10.5),Y(0)+100,'Looking east. Walls stand 1′-3″ in from the drape so their back feet and sandbags fit behind them.','sv-m');
+  o.push('</svg>');return o.join('');}
+
 /* ---------- materials ---------- */
 function renderBOM(){const L=LAYOUTS[VER],B=bomFor(L);
   $('bomLede').textContent=L.name+': '+B.warm+' warm clamp spots, '+B.uv+' UV wash lights and '+B.ups+' battery uplights. Quantities follow the layout above.';
   $('bom').innerHTML=B.rows.map(sec=>'<h4>'+sec.title+'</h4><div class="tblwrap"><table><thead><tr>'+sec.cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+
     sec.r.map(row=>'<tr>'+row.map((cell,k)=>'<td'+((sec.cols[k]==='Qty')?' class="num"':'')+'>'+(sec.title==='Lighting'&&k===3?cell:esc(cell))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'+(sec.note?'<p class="bomnote">'+esc(sec.note)+'</p>':'')).join('');}
 
-function renderWalls(){const L=LAYOUTS[VER],Wl=wallsFor(L);$('wallTitle').textContent='Wall schedule · '+L.name;
+function renderWalls(){const L=LAYOUTS[VER],Wl=wallsFor(L);$('wallNote').textContent=L.open?'Every wall is a separate freestanding piece built from 4 × 8 ft flats (2×4 frame on edge with a ½ in plywood face), standing on two 3 ft T-feet with sandbags: 1 ft of foot in front, 2 ft behind. Walls stand 1′-3″ in from the drape line. Header banners add 1′-8½″ above the walls, from 8′-3″ to 10′-0″. The edges are black pipe-and-drape, not built walls.':'All walls are 8′-0″ tall, built from 4 × 8 ft flats (2×4 frame on edge with a ½ in plywood face). The 3D model and plan draw them slightly thinner. Header banners add 1′-8½″ above the walls, from 8′-3″ to 10′-0″. W2 and W4 are short returns that frame the entry and exit openings; they can also be a single 2 ft flat or a pipe-and-drape leg.';$('wallTitle').textContent='Wall schedule · '+L.name;
   $('wallTable').innerHTML='<thead><tr><th>Tag</th><th>Wall</th><th>Length</th><th>Height</th><th>Thickness</th><th>Built from 4 ft flats</th><th>What hangs on it</th></tr></thead><tbody>'+
    Wl.map(w=>'<tr><td class="num"><b>'+w.id+'</b></td><td>'+esc(w.name)+'<br><small>'+esc(w.type)+'</small></td><td class="num">'+fmt(w.len)+'</td><td class="num">'+fmt(w.h)+'</td><td class="num">'+w.t+'</td><td class="num">'+esc(w.flats)+'</td><td>'+esc(w.faces)+'</td></tr>').join('')+
-   '<tr><td class="num"><b>—</b></td><td>Openings</td><td class="num">4′-0″ each</td><td class="num">full height</td><td></td><td></td><td>Entry from Festival (north, between W1 and W2) · exit to Mandir (south, between W5 and W4)</td></tr></tbody>';}
+   (L.open?'<tr><td class="num"><b>—</b></td><td>Pipe-and-drape edge</td><td class="num">about 112 ft</td><td class="num">8′-0″</td><td></td><td>rental</td><td>Entry and exit openings 4′-0″ each, at the east end</td></tr>':'<tr><td class="num"><b>—</b></td><td>Openings</td><td class="num">4′-0″ each</td><td class="num">full height</td><td></td><td></td><td>Entry from Festival (north, between W1 and W2) · exit to Mandir (south, between W5 and W4)</td></tr>')+'</tbody>';}
 function renderAll(){EVAL=evaluate(LAYOUTS[VER]);renderIntro();renderList();renderDetail(current);renderSpace();renderWalls();
   const L=LAYOUTS[VER];$('planTitle').textContent='Plan · '+L.name;$('plan').innerHTML=planSVG(L,EVAL);
-  $('secTitle').textContent='Section A–A · '+L.name+' · cut across both aisles 1′-6″ east of the Aadar screen center';$('section').innerHTML=sectionSVG(L,EVAL);renderBOM();}
+  $('secTitle').textContent='Section A–A · '+L.name+(L.open?' · cut across the room through the Aadar and Tyag walls':' · cut across both aisles 1′-6″ east of the Aadar screen center');$('section').innerHTML=sectionSVG(L,EVAL);renderBOM();}
 function setVersion(v){if(v===VER)return;VER=v;renderAll();try{history.replaceState(null,'','#'+v)}catch(e){}if(window.__mulyo)window.__mulyo.rebuild();}
 document.querySelectorAll('.tabs [role=tab]').forEach(tb=>{tb.addEventListener('click',()=>setVersion(tb.dataset.v));
-  tb.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){const nv=VER==='v1'?'v2':'v1';setVersion(nv);$('tab-'+nv).focus();e.preventDefault();}});});
+  tb.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){const vs=['v1','v2','v3'],nv=vs[(vs.indexOf(VER)+(e.key==='ArrowRight'?1:2))%3];setVersion(nv);$('tab-'+nv).focus();e.preventDefault();}});});
 renderAll();
 
 /* ================= 3D viewer ================= */
