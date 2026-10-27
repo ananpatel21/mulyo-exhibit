@@ -370,7 +370,7 @@ function mkLayout(o){const L=Object.assign({NWF:-9.75,SWF:9.75,WWF:-19.75,EWF:19
 const LAYOUTS={
  v1:mkLayout({id:'v1',name:'Version 1',sub:'Symmetric',spineZ:0,spineX0:-12}),
  v2:mkLayout({id:'v2',name:'Version 2',sub:'Asymmetric',spineZ:-1,spineX0:-11.5}),
- v4:mkLayout({id:'v4',name:'Version 4',sub:'Open aisles',spineZ:-1,spineX0:-11,rope:true}),
+ v4:mkLayout({id:'v4',name:'Version 4',sub:'Open aisles',spineZ:-1,spineX0:-11,rope:true,shift:(x)=>x>10.25&&x<13.75?3.5:0}),
  v3:mkLayout({id:'v3',name:'Version 3',sub:'Open hall',spineZ:0,spineX0:14.75,NWF:-8.75,SWF:8.75,WWF:-18.75,EWF:19.75,open:true})
 };
 const INTRO={
@@ -467,16 +467,16 @@ function checksFor(L){if(L.id==='v3')return checksV3(L);if(L.id==='v4')return ch
 function depthAt(Z,side,face,x){let m=0,q=null;for(const zz of Z){if(zz.side!==side||zz.face!==face)continue;if(x>zz.a&&x<zz.b){const d=zz.obj+zz.use;if(d>m){m=d;q=zz}}}return [m,q];}
 function evaluate(L){const Z=zonesFor(L),R=[];
  for(const c of checksFor(L)){
-  if(c.aisle==='X'){R.push({st:c.st,aisle:'X',segs:[],min:{clear:c.fixed},status:'ok',note:c.note,label:c.label});continue;}
+  if(c.aisle==='X'){R.push({st:c.st,aisle:'X',segs:[],min:{clear:c.fixed},status:status(c.fixed),note:c.note,label:c.label});continue;}
   const n=Math.max(1,Math.round((c.b-c.a)/.25)),segs=[];let min=null;
   for(let k=0;k<n;k++){const x0=c.a+k*(c.b-c.a)/n,x1=c.a+(k+1)*(c.b-c.a)/n,x=(x0+x1)/2;
-   let wD,wZ,sD=0,sZ=null,width;
+   let wD,wZ,sD=0,sZ=null,width;const sh=c.aisle==='N'||c.aisle==='S'?(L.shift?L.shift(x):0):0;
    if(c.aisle==='W'){[wD,wZ]=depthAt(Z,'W','wall',x);width=L.turnW;}
    else if(c.aisle==='H'){[wD,wZ]=depthAt(Z,'N','wall',x);[sD,sZ]=depthAt(Z,'S','wall',x);width=L.SWF-L.NWF;}
-   else{[wD,wZ]=depthAt(Z,c.aisle,'wall',x);[sD,sZ]=depthAt(Z,c.aisle,'spine',x);width=c.aisle==='N'?L.northW:L.southW;}
+   else{[wD,wZ]=depthAt(Z,c.aisle,'wall',x);[sD,sZ]=depthAt(Z,c.aisle,'spine',x);width=c.aisle==='N'?L.northW-sh:L.southW+sh;}
    const clear=width-wD-sD,last=segs[segs.length-1];
-   if(last&&Math.abs(last.wD-wD)<1e-6&&Math.abs(last.sD-sD)<1e-6)last.x1=x1;else segs.push({x0,x1,wD,sD,clear});
-   if(!min||clear<min.clear-1e-9)min={clear,wZ,sZ,wD,sD,x};}
+   if(last&&Math.abs(last.wD-wD)<1e-6&&Math.abs(last.sD-sD)<1e-6&&last.sh===sh)last.x1=x1;else segs.push({x0,x1,wD,sD,clear,sh});
+   if(!min||clear<min.clear-1e-9)min={clear,wZ,sZ,wD,sD,x,sh};}
   R.push({st:c.st,aisle:c.aisle,a:c.a,b:c.b,segs,min,status:status(min.clear)});}
  return {Z,R};}
 
@@ -505,7 +505,7 @@ function lightsFor(L){if(L.id==='v3')return lightsV3(L);if(L.id==='v4')return li
  return Lt;}
 
 /* ---------- header banners: [station, x, z, rotY] on top of the wall above each station ---------- */
-function signsFor(L){if(L.id==='v4')return [[1,8,-9.875,0],[2,-1,-9.875,0],[3,-19.875,0,Math.PI/2],[4,-10,-9.875,0],[5,-14,9.875,Math.PI],[6,-6,9.875,Math.PI],[7,2,9.875,Math.PI],[8,11,9.875,Math.PI]];if(L.id==='v3')return [[1,8.5,-8.915,0],[2,-.25,-8.915,0],[3,-9.75,-8.915,0],[4,-18.915,0,Math.PI/2],[5,-12.5,8.915,Math.PI],[6,-5,8.915,Math.PI],[7,8,8.915,Math.PI],[8,1.25,8.915,Math.PI]];const v1=L.id==='v1',N=-9.875,Sz=9.875,P=L.spineZ;return v1?
+function signsFor(L){if(L.id==='v4')return [[1,6.25,-9.875,0],[2,-1.75,-9.875,0],[3,-19.875,0,Math.PI/2],[4,-10,-9.875,0],[5,-14,9.875,Math.PI],[6,-5.5,9.875,Math.PI],[7,11,9.875,Math.PI],[8,3,9.875,Math.PI]];if(L.id==='v3')return [[1,8.5,-8.915,0],[2,-.25,-8.915,0],[3,-9.75,-8.915,0],[4,-18.915,0,Math.PI/2],[5,-12.5,8.915,Math.PI],[6,-5,8.915,Math.PI],[7,8,8.915,Math.PI],[8,1.25,8.915,Math.PI]];const v1=L.id==='v1',N=-9.875,Sz=9.875,P=L.spineZ;return v1?
  [[1,9,N,0],[2,0,N,0],[3,-8.75,N,0],[4,-19.875,0,Math.PI/2],[5,-10,Sz,Math.PI],[6,-4,P,0],[7,4.3,Sz,Math.PI],[8,10,P,0]]:
  [[1,9,N,0],[2,0,N,0],[3,-8.75,N,0],[4,-19.875,.5,Math.PI/2],[5,-9,Sz,Math.PI],[6,-3,P,0],[7,5.25,Sz,Math.PI],[8,13,P,0]];}
 
@@ -748,16 +748,17 @@ const S4={
  3:{where:'West wall, at the turn',act:'No activity: a quiet stop at the turn. The rose heart stands out from a black wall, with Shiv Bhagwan’s story on one side and Harriet Tubman’s on the other. People see it straight ahead as they reach the end of the north aisle.'},
  4:{where:'North wall',foot:'6 × 7 ft story panel',act:'No activity. A story panel tells how Ganeshji circled his parents and said, “You are my world,” with the header banner above.',build:'6 × 7 ft panel on the north wall flats · header banner above · one clamp spot.'},
  8:{foot:'4.5 × 7 ft story panel',act:'No activity. A story panel pairs King Rantidev’s last meal with a thank-you to firefighters, EMS crews and service members.',build:'4.5 × 7 ft panel on the south wall flats · header banner above · one clamp spot.'},
+ 7:{where:'South wall, east end',foot:'4 ft target on the wall + 8.5 ft roped lane',act:'Bird’s Eye Toss. The 4 ft target hangs on the south wall. Visitors step into the roped lane, say one goal out loud, and throw three velcro balls from the 7 ft line (kids from 5 ft). The red-rope center line bends north around the lane, so walkers pass behind the throwers with room to spare.',build:'4 ft velcro target mounted to the south wall flats, center at 4 ft 7 in, on a ¾ in plywood backer · 3.5 × 8.5 ft floor decal with throw lines at 7 ft and 5 ft · 6 stanchions with red rope along both sides of the lane · 12 velcro balls · the Arjun story is on the header banner above.'},
  9:{short:'MSM Mural',name:'Values in Mahant Swami Maharaj',en:'Every value, lived in one life',where:'East wall, at the exit',foot:'8 × 7 ft mural (placeholder)',
   story:'Placeholder for an approved mural showing how Mahant Swami Maharaj lives each of the eight values: one tile per value with a photo and a short quote or prasang.',
   act:'No activity. A final look before visitors step into Mandir, Shastras & Sant, which picks up the same thread.',
   build:'8 × 7 ft print on the east wall flats · photos, quotes and prasangs from BAPS with approval · 2 clamp spots · card rack for the take-home value cards beside the exit.',take:'Every value in this room, lived in one life.'}
 };
 function zonesV4(L){const Z=[],z=(o)=>Z.push(Object.assign({kind:'use'},o));
- z({st:1,side:'N',face:'wall',a:4,b:12,obj:.1,use:0,label:'Glow wall'});
- z({st:1,side:'N',face:'wall',a:5,b:11,obj:.6,use:2.5,label:'Marker ledge + writers'});
- z({st:2,side:'N',face:'wall',a:-3.75,b:1.75,obj:.4,use:0,label:'75 in screen'});
- z({st:2,side:'N',face:'spine',a:-4.5,b:2.5,obj:.1,use:2,kind:'view',label:'Screen viewers at the rope line'});
+ z({st:1,side:'N',face:'wall',a:2.25,b:10.25,obj:.1,use:0,label:'Glow wall'});
+ z({st:1,side:'N',face:'wall',a:3.25,b:9.25,obj:.6,use:2.5,label:'Marker ledge + writers'});
+ z({st:2,side:'N',face:'wall',a:-4.5,b:1,obj:.4,use:0,label:'75 in screen'});
+ z({st:2,side:'N',face:'spine',a:-5.25,b:1.75,obj:.1,use:2,kind:'view',label:'Screen viewers at the rope line'});
  z({st:4,side:'N',face:'wall',a:-13,b:-7,obj:.1,use:2.5,label:'Vivek story panel readers'});
  z({st:0,side:'N',face:'spine',a:15.25,b:19.25,obj:.1,use:2.5,label:'Main sign + passport holder'});
  z({st:3,side:'W',face:'wall',a:-4.75,b:-2.25,obj:.1,use:1.5,label:'Shiv Bhagwan story readers'});
@@ -765,63 +766,64 @@ function zonesV4(L){const Z=[],z=(o)=>Z.push(Object.assign({kind:'use'},o));
  z({st:3,side:'W',face:'wall',a:2.25,b:4.75,obj:.1,use:1.5,label:'Harriet Tubman story readers'});
  z({st:5,side:'S',face:'wall',a:-17.75,b:-15.85,obj:1.25,use:2.5,label:'Writing ledge'});
  z({st:5,side:'S',face:'wall',a:-15.8,b:-12.2,obj:1.9,use:2.5,label:'Note tank'});
- z({st:6,side:'S',face:'wall',a:-9.5,b:-2.5,obj:1.8,use:3,label:'Kavad rack + lifter'});
- z({st:7,side:'S',face:'wall',a:-1.25,b:7.75,obj:4.25,use:0,label:'Roped throw lane + target board'});
- z({st:8,side:'S',face:'wall',a:8.75,b:13.25,obj:.1,use:2.5,label:'Tyag story panel readers'});
+ z({st:6,side:'S',face:'wall',a:-9,b:-2,obj:1.8,use:3,label:'Kavad rack + lifter'});
+ z({st:8,side:'S',face:'wall',a:.75,b:5.25,obj:.1,use:2.5,label:'Tyag story panel readers'});
+ z({st:7,side:'S',face:'wall',a:10.25,b:13.75,obj:8.5,use:0,label:'Target on the wall + roped throw lane (7 ft throw, standing room)'});
  z({st:9,side:'E',face:'wall',a:.5,b:8.5,obj:.1,use:2,kind:'view',label:'Mural readers'});
  return Z;}
 function checksV4(L){return [
- {st:0,aisle:'N',a:15.25,b:19.25},{st:1,aisle:'N',a:4,b:12},{st:2,aisle:'N',a:-3.75,b:1.75},{st:3,aisle:'W',a:-4.75,b:4.75},{st:4,aisle:'N',a:-13,b:-7},
- {st:5,aisle:'S',a:-17.75,b:-12.2},{st:6,aisle:'S',a:-9.5,b:-2.5},{st:7,aisle:'S',a:-1.25,b:7.75},{st:8,aisle:'S',a:8.75,b:13.25},
- {st:9,aisle:'X',fixed:4,label:'Exit',note:'Mural readers stand by the east wall; the 4 ft exit stays clear'}];}
+ {st:0,aisle:'N',a:15.25,b:19.25},{st:1,aisle:'N',a:2.25,b:10.25},{st:2,aisle:'N',a:-4.5,b:1},{st:3,aisle:'W',a:-4.75,b:4.75},{st:4,aisle:'N',a:-13,b:-7},
+ {st:5,aisle:'S',a:-17.75,b:-12.2},{st:6,aisle:'S',a:-9,b:-2},{st:7,aisle:'S',a:10.25,b:13.75},{st:8,aisle:'S',a:.75,b:5.25},
+ {st:9,aisle:'X',fixed:3.9,label:'Exit',note:'Between the Sankalp lane rope and the mural readers, 3′-11″ leads to the 4 ft exit'}];}
 function lightsV4(L){const {NWF,SWF,WWF,EWF,SN}=L,Lt=[];
  const w=(f,t,o)=>Lt.push(Object.assign({type:'warm',f,t},o||{}));
  w([17.25,8.8,SN-2.4],[17.25,4.6,SN],{a:.45,wall:[17.25,SN+.165],lbl:'Main sign'});
- w([-1,8.8,NWF+2.35],[-1,2.45,NWF],{a:.32,i:.9,lbl:'Aadar strip'});
+ w([-1.75,8.8,NWF+2.35],[-1.75,2.45,NWF],{a:.32,i:.9,lbl:'Aadar strip'});
  w([-10,8.8,NWF+2.05],[-10,4,NWF],{a:.5,lbl:'Vivek panel'});
  w([WWF+2.95,8.8,0],[WWF+.15,4.3,0],{a:.42,i:1.5,color:0xFFD0B0,lbl:'Daya heart'});
  w([-14,8.8,SWF-2.05],[-14,4,SWF],{a:.35,i:1,lbl:'Kshama panel'});
  w([-14,8.8,SWF-3.4],[-14,3.4,SWF-1],{a:.42,i:1.3,wall:[-14,SWF],lbl:'Kshama tank'});
- w([-6,8.8,SWF-2.05],[-6,4,SWF],{lbl:'Dharma'});
- w([4.25,8.8,7.75],[7.2,4.6,7.75],{a:.38,i:1.4,wall:[4.25,SWF],lbl:'Sankalp target'});
- w([11,8.8,SWF-2.05],[11,4,SWF],{a:.45,lbl:'Tyag panel'});
+ w([-5.5,8.8,SWF-2.05],[-5.5,4,SWF],{lbl:'Dharma'});
+ w([12,8.8,SWF-2.6],[12,4.6,SWF],{a:.36,i:1.4,lbl:'Sankalp target'});
+ w([3,8.8,SWF-2.05],[3,4,SWF],{a:.45,lbl:'Tyag panel'});
  [2.5,6.5].forEach(z=>w([EWF-2.15,8.8,z],[EWF,4,z],{a:.55,lbl:'MSM mural'}));
- [6,10].forEach(x=>Lt.push({type:'uv',f:[x,8.8,NWF+2.05],t:[x,4,NWF],a:.6,color:0x7B3CFF,i:1.1,beam:0x9B5CFF,lbl:'Santosh UV'}));
- Lt.push({type:'up',f:[-6,.25,SWF-3.6],t:[-6,4.2,SWF-1],a:.42,i:1.1,lbl:'Kavad'});
+ [4.25,8.25].forEach(x=>Lt.push({type:'uv',f:[x,8.8,NWF+2.05],t:[x,4,NWF],a:.6,color:0x7B3CFF,i:1.1,beam:0x9B5CFF,lbl:'Santosh UV'}));
+ Lt.push({type:'up',f:[-5.5,.25,SWF-3.6],t:[-5.5,4.2,SWF-1],a:.42,i:1.1,lbl:'Kavad'});
  Lt.push({type:'up',f:[WWF+2.15,.25,0],t:[WWF+.15,4.6,0],a:.42,color:0xFF8A8A,i:.9,cone:false,lbl:'Daya red uplight'});
  return Lt;}
-const ROPE4=[-11,-4.4,2.2,8.7,15.25];
+const ROPE4=[[-11,-1],[-4.4,-1],[2.2,-1],[9.25,-1],[10.25,-4.5],[13.75,-4.5],[15.25,-1.1]];
+const LANE4=[[10.25,9.4],[10.25,5.3],[10.25,1.25],[13.75,9.4],[13.75,5.3],[13.75,1.25]];
 function wallsV4(L){const W=[
  {id:'W1',name:'North wall',len:35,h:8,t:'4″',type:'Single-faced',faces:'Vivek panel, Aadar screen, Santosh glow wall',tag:[-2.5,-10],rot:0},
  {id:'W2',name:'North return, east of the entry',len:1,h:8,t:'4″',type:'Single-faced',faces:'Frames the 4′-0″ entry',tag:[19.5,-10],rot:0},
  {id:'W3',name:'East wall',len:20,h:8,t:'4″',type:'Single-faced',faces:'Mahant Swami Maharaj mural (placeholder) by the exit',tag:[20,0],rot:1},
  {id:'W4',name:'South return, east of the exit',len:1,h:8,t:'4″',type:'Single-faced',faces:'Frames the 4′-0″ exit',tag:[19.5,10],rot:0},
- {id:'W5',name:'South wall',len:35,h:8,t:'4″',type:'Single-faced',faces:'Kshama, Dharma, Sankalp, Tyag panel',tag:[-2.5,10],rot:0},
+ {id:'W5',name:'South wall',len:35,h:8,t:'4″',type:'Single-faced',faces:'Kshama, Dharma, Tyag panel, Sankalp target',tag:[-2.5,10],rot:0},
  {id:'W6',name:'West wall',len:20,h:8,t:'4″',type:'Single-faced',faces:'Daya rose heart and stories',tag:[-20,0],rot:1},
  {id:'W7',name:'Entrance wall (main sign)',len:4,h:8,t:'4″',type:'Freestanding, on T-feet',faces:'Main sign + passport holder, facing the entrance',tag:[17.25,-1.085],rot:0},
- {id:'W8',name:'Sankalp target board',len:4.25,h:7.5,t:'4½″',type:'Freestanding, on 2 jacks',faces:'4 ft target (west face)',tag:[7.5,7.6],rot:1}];
- W.forEach(w=>{w.flats=w.id==='W8'?'1 × 4′-3″ (7′-6″ tall)':flatsTxt(w.len);});return W;}
+];
+ W.forEach(w=>{w.flats=flatsTxt(w.len);});return W;}
 function bomV4(L){const Lt=lightsV4(L),cnt=(t)=>Lt.filter(l=>l.type===t).length,warm=cnt('warm'),uv=cnt('uv'),ups=cnt('up');
- const perim=[35,1,35,1,20,20],perimFlats=perim.reduce((s,l)=>s+Math.ceil(l/4),0),perimLen=perim.reduce((s,l)=>s+l,0),frames=perimFlats+2;
- const jacks=Math.ceil(perimLen/8)+2,ply=perimFlats+1+2,studs=Math.ceil((frames*4+jacks*2+6+2+2)*1.1);
- const paint=perimLen*8+4*8*2+4.25*7.5*2,gal=Math.ceil(paint*2/350),primer=Math.ceil(paint/350);
+ const perim=[35,1,35,1,20,20],perimFlats=perim.reduce((s,l)=>s+Math.ceil(l/4),0),perimLen=perim.reduce((s,l)=>s+l,0),frames=perimFlats+1;
+ const jacks=Math.ceil(perimLen/8),ply=perimFlats+1,studs=Math.ceil((frames*4+jacks*2+6+2+2)*1.1);
+ const paint=perimLen*8+4*8*2,gal=Math.ceil(paint*2/350),primer=Math.ceil(paint/350);
  const rows=[],sec=(title,cols,r,note)=>rows.push({title,cols,r,note});
  sec('Walls and structure',['Item','Size','Qty','Used for'],[
-  ['Wall flats','4 × 8 ft, ½ in plywood face on a 2×4 frame',frames+' flats',perimFlats+' around the perimeter ('+perimLen+' ft run), 1 entrance wall, 1 Sankalp target board'],
-  ['Plywood, ½ in (fire-rated if required)','4 × 8 ft sheets',ply+' + '+Math.ceil(ply*.1)+' spare','1 per flat, 2 for the target board'],
-  ['Plywood, ¾ in','4 × 8 ft sheets','6','Heart backer (2), tank plinth (2), kavad rack base (1), Kshama ledge (1)'],
+  ['Wall flats','4 × 8 ft, ½ in plywood face on a 2×4 frame',frames+' flats',perimFlats+' around the perimeter ('+perimLen+' ft run), 1 entrance wall'],
+  ['Plywood, ½ in (fire-rated if required)','4 × 8 ft sheets',ply+' + '+Math.ceil(ply*.1)+' spare','1 per flat'],
+  ['Plywood, ¾ in','4 × 8 ft sheets','7','Heart backer (2), tank plinth (2), kavad rack base (1), Kshama ledge (1), target backer (1)'],
   ['2×4 studs','8 ft',String(studs),'Flat frames (4 each), wall jacks, banner uprights, kavad rack, TV blocking, plus 10%'],
   ['2×6 boards (T-feet)','12 ft, cut to 3 ft','1','Two T-feet under the entrance wall'],
-  ['Wall jacks + sandbags','jack 7 ft tall · 25 lb bags',jacks+' jacks · '+(jacks*2+4)+' bags','Perimeter every 8 ft, the target board, and the entrance wall feet'],
+  ['Wall jacks + sandbags','jack 7 ft tall · 25 lb bags',jacks+' jacks · '+(jacks*2+4)+' bags','Perimeter every 8 ft, plus the entrance wall feet'],
   ['Carriage bolts + wing nuts','⅜ × 4 in, with washers','100','3 per flat-to-flat joint'],
   ['Screws','3 in construction · 1¼ in wood','2 × 5 lb · 1 × 5 lb','Frames · plywood faces'],
   ['1×6 pine boards','8 ft','1','Santosh marker ledge'],
   ['Paint, matte black','gallons (2 coats)',gal+' gal + '+primer+' gal primer','About '+Math.round(paint).toLocaleString()+' sq ft of wall faces'],
- ],'Quantities are planning estimates; have your builder confirm them. Without the center wall this uses 32 flats instead of 39.');
+ ],'Quantities are planning estimates; have your builder confirm them. Without the center wall this uses 31 flats instead of 39.');
  sec('Printing',['Item','Size','Qty'],[
   ['Main sign','3 ft 10 in square','1'],['Santosh glow wall','8 × 7 ft black dry-erase vinyl + UV paint tree','1'],['Aadar story strip','6 ft 5 in × 1 ft 4 in','1'],
   ['Daya backdrop','9 ft 6 in × 7 ft 6 in','1'],['Vivek story panel','6 × 7 ft','1'],['Kshama, Dharma panels','6 × 7 ft','2'],
-  ['Sankalp board header','4 ft 3 in × 9 in','1'],['Sankalp floor decal','anti-slip floor vinyl, 8 ft 6 in × 4 ft','1'],['Tyag story panel','4 ft 6 in × 7 ft','1'],
+  ['Sankalp floor decal','anti-slip floor vinyl, 3 ft 6 in × 8 ft 6 in, throw lines at 7 ft and 5 ft','1'],['Tyag story panel','4 ft 6 in × 7 ft','1'],
   ['Mahant Swami Maharaj mural (placeholder)','8 × 7 ft','1'],['Value header banners','8 ft × 1 ft 8½ in, double-sided rigid PVC','8'],
   ['Passports · value cards','letter sheets, 2 up · 4 × 6 in cardstock','500 sheets · 8 × 150']]);
  sec('Station builds and props',['Station','Item','Qty'],[
@@ -829,8 +831,8 @@ function bomV4(L){const Lt=lightsV4(L),cnt=(t)=>Lt.filter(l=>l.type===t).length,
   ['Aadar','75 in TV + low-profile mount · USB media player','1 each'],['Daya','Artificial red rose heads, about 3 in','about 450'],
   ['Kshama','Acrylic tank 38 × 48 × 17 in, locking lid with slot · sticky-note pads · pens','1 · 24 · 24'],
   ['Dharma','7 ft bamboo pole · baskets · 10 lb weights · 3 × 6 ft anti-slip mat','1 · 2 · 2 · 1'],
-  ['Sankalp','4 ft velcro target · velcro balls','1 · 12'],
-  ['Flow','Stanchion posts with red rope: 5 down the center (4 ropes), 4 along the Sankalp lane (3 ropes)','9 posts · 7 ropes'],
+  ['Sankalp','4 ft velcro target mounted on the south wall, center at 4 ft 7 in · velcro balls','1 · 12'],
+  ['Flow','Stanchion posts with red rope: 7 down the center, bending north around the throw lane (6 ropes), 6 along both sides of the lane (4 ropes)','13 posts · 10 ropes'],
   ['Exit','Card rack for the take-home value cards','1']]);
  const lampN=warm+2;
  sec('Lighting',['Light','Where','Qty','Product'],[
@@ -839,17 +841,17 @@ function bomV4(L){const Lt=lightsV4(L),cnt=(t)=>Lt.filter(l=>l.type===t).length,
   ['UV wash light','Santosh, on the north wall top',String(uv),'<a href="'+LINKS.uvwash.u+'" target="_blank" rel="noopener">'+LINKS.uvwash.t+'</a>'],
   ['UV LED bar','Santosh, on the floor under the glow wall','1','<a href="'+LINKS.uvbar.u+'" target="_blank" rel="noopener">'+LINKS.uvbar.t+'</a>'],
   ['Battery uplight','Kavad, Daya heart (set red)',String(ups),'<a href="'+LINKS.uplight.u+'" target="_blank" rel="noopener">'+LINKS.uplight.t+'</a>'],
-  ['Stanchions with red rope','Center line and Sankalp lane','9 posts · 7 ropes','<a href="'+LINKS.stanchion.u+'" target="_blank" rel="noopener">'+LINKS.stanchion.t+'</a><br><small>or </small><a href="'+LINKS.stanchion2.u+'" target="_blank" rel="noopener">'+LINKS.stanchion2.t+'</a>'],
+  ['Stanchions with red rope','Center line and Sankalp lane','13 posts · 10 ropes','<a href="'+LINKS.stanchion.u+'" target="_blank" rel="noopener">'+LINKS.stanchion.t+'</a><br><small>or </small><a href="'+LINKS.stanchion2.u+'" target="_blank" rel="noopener">'+LINKS.stanchion2.t+'</a>'],
   ['Plug-in LED dimmer','One per group of up to 6 spots',String(Math.ceil(lampN/6)),'<a href="'+LINKS.dimmer.u+'" target="_blank" rel="noopener">'+LINKS.dimmer.t+'</a>'],
   ['Glow floor tape','Visitor path arrows',Math.ceil(pathLen(PATHS.v4)/30)+' rolls','<a href="'+LINKS.tape.u+'" target="_blank" rel="noopener">'+LINKS.tape.t+'</a>'],
   ['Power strips + 25 ft black extension cords','Along the wall tops, taped down at the base',Math.ceil(lampN/4)+' + '+Math.ceil(lampN/4),'Any heavy-duty, grounded'],
  ],'Stanchions are also easy to rent from party-rental companies. Prices and stock change, so check each link before ordering.');
  return {rows,warm,uv,ups};}
-VIEWS.v4=[{p:[17.25,5.6,-7.8],l:[17.25,3.8,-1.25]},{p:[8,5.4,-3.2],l:[8,3.6,-9.75]},{p:[-1,5.4,-3.2],l:[-1,4.2,-9.75]},{p:[-12.5,5.6,0],l:[-19.75,3.8,0]},{p:[-10,5.4,-3.2],l:[-10,3.6,-9.75]},
- {p:[-14,5.6,2.6],l:[-14,3.4,9.2]},{p:[-6,5.4,2.6],l:[-6,3,9.75]},{p:[0,5.8,2.2],l:[4.25,3.6,8]},{p:[11,5.4,2.6],l:[11,3.6,9.75]},{p:[12.5,5.6,4.5],l:[19.75,3.8,4.5]},{p:[12.5,5.6,4.5],l:[19.75,3.8,4.5]}];
-SPOTS.v4=[[17.25,-4],[8,-7.2],[-1,-6.4],[-17,0],[-10,-7.2],[-14,6.6],[-6,6.4],[2.5,7.75],[11,7.4],[17.5,4.5],[17.5,4.5]];
-LBL.v4=[[17.25,11.8,-4],[8,11.8,-8],[-1,11.8,-7],[-17,11.8,0],[-10,11.8,-8],[-14,11.8,8],[-6,11.8,8],[3,11.8,7.5],[11,11.8,8],[18,11.8,4.5],[0,11.8,0]];
-PATHS.v4=[[17,-15],[17,-10.5],[16.4,-6.6],[12,-5.6],[8,-5.3],[-1,-5.4],[-10,-5.5],[-14,-4.2],[-15.5,-1],[-14.6,2.2],[-13.5,3.2],[-9,3.3],[-2,3.3],[4,3.3],[8.5,3.8],[13,5.2],[15.8,6.4],[17,8.4],[17,15]];
+VIEWS.v4=[{p:[17.25,5.6,-7.8],l:[17.25,3.8,-1.25]},{p:[6.25,5.4,-3.2],l:[6.25,3.6,-9.75]},{p:[-1.75,5.4,-3.2],l:[-1.75,4.2,-9.75]},{p:[-12.5,5.6,0],l:[-19.75,3.8,0]},{p:[-10,5.4,-3.2],l:[-10,3.6,-9.75]},
+ {p:[-14,5.6,2.6],l:[-14,3.4,9.2]},{p:[-5.5,5.4,2.6],l:[-5.5,3,9.75]},{p:[12,6,-2.5],l:[12,3.6,9.75]},{p:[3,5.4,2.6],l:[3,3.6,9.75]},{p:[12.5,5.6,4.5],l:[19.75,3.8,4.5]},{p:[12.5,5.6,4.5],l:[19.75,3.8,4.5]}];
+SPOTS.v4=[[17.25,-4],[6.25,-7.2],[-1.75,-6.4],[-17,0],[-10,-7.2],[-14,6.6],[-5.5,6.4],[12,3.5],[3,7.4],[17.5,4.5],[17.5,4.5]];
+LBL.v4=[[17.25,11.8,-4],[6.25,11.8,-8],[-1.75,11.8,-7],[-17,11.8,0],[-10,11.8,-8],[-14,11.8,8],[-5.5,11.8,8],[12,11.8,5],[3,11.8,8],[18,11.8,4.5],[0,11.8,0]];
+PATHS.v4=[[17,-15],[17,-10.5],[16.4,-6.8],[12,-6.8],[8,-5.3],[-1.75,-5.4],[-10,-5.5],[-14,-4.2],[-15.5,-1],[-14.6,2.2],[-13.5,3.2],[-9,3.3],[-2,3.3],[4,3.3],[8.5,2.2],[10.2,-1.6],[13.8,-1.6],[15.6,2.5],[16.2,6.5],[17,9.2],[17,15]];
 
 /* ================= textures (built once, cached across layout switches) ================= */
 const MAROON='#8C1D3A',SAFF='#D9831C',IVORY='#FBF6EE',INK='#2A1E22';
@@ -1101,6 +1103,10 @@ const T_msm=()=>tex('msm',()=>canvasTex(1536,1344,(c,W,H)=>{c.fillStyle='#000';c
   vals.forEach((v,k)=>{const x=m+(k%4)*(cw+g),y=340+Math.floor(k/4)*(ch+g);photoBox(c,x,y,cw,ch*.55,'approved photo',18);
     c.fillStyle='#fff';c.font='600 32px '+PF;c.fillText(v,x,y+ch*.55+46);c.fillStyle='#bdbdbd';c.font='italic 300 20px '+PF;wrap(c,'[approved quote or prasang]',x,y+ch*.55+82,cw,26,2);});}));
 
+const T_lane4=()=>tex('lane4',()=>canvasTex(420,1020,(c,W,H)=>{const u=H/8.5;c.fillStyle='rgba(140,29,58,.2)';c.fillRect(0,0,W,H);c.strokeStyle=MAROON;c.lineWidth=10;c.strokeRect(5,5,W-10,H-10);
+  c.fillStyle='#fff';c.fillRect(0,1.5*u-10,W,20);c.fillRect(0,3.5*u-8,W,16);c.fillStyle=MAROON;c.font='700 36px '+FD;c.textAlign='center';
+  c.fillText('THROW · 7 FT',W/2,1.5*u-22);c.fillText('KIDS · 5 FT',W/2,3.5*u-20);c.font='600 30px '+FD;c.fillText('STEP IN',W/2,u*.6);}));
+
 /* ================= world: every object that depends on the layout ================= */
 let G=null;
 const M=(c,o)=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.85},o||{}));
@@ -1157,7 +1163,7 @@ function buildWorld(L,E){
  holder.position.set(wx,0,SN);holder.rotation.y=Math.PI;world.add(holder);tag(holder,0);
 
  /* 1 Santosh: UV glow tree; v1 table, v2 wall ledge */
- const sx0=v3?8.5:v4?8:9;panel(T_glow(),8,7,sx0,4.4,NWF+.08,0,1,true);
+ const sx0=v3?8.5:v4?6.25:9;panel(T_glow(),8,7,sx0,4.4,NWF+.08,0,1,true);
  const markers=(parent,y,z)=>[0x39FF14,0xFF3EA5,0x00E5FF,0xFFE81F,0xFF8C1A].forEach((col,k)=>{cyl(.2,.18,.45,M(0x222222),-2+k,y,z,parent,12);
    for(let j=0;j<3;j++){const mk=cyl(.04,.04,.6,new THREE.MeshBasicMaterial({color:col}),-2+k+(j-1)*.07,y+.33,z,parent,6);mk.rotation.z=(j-1)*.15;}});
  const s1=new THREE.Group();
@@ -1170,7 +1176,7 @@ function buildWorld(L,E){
  screenTex();
  const tvW=v1?6.2:5.45,tvH=v1?3.49:3.07;
  const scr=new THREE.Group();box(tvW+.25,tvH+.25,.25,M(0x0A0A0A),0,0,0,scr);const sf=new THREE.Mesh(new THREE.PlaneGeometry(tvW,tvH),new THREE.MeshBasicMaterial({map:scrTex}));sf.position.z=.13;scr.add(sf);
- const ax0=v3?-.25:v4?-1:0;scr.position.set(ax0,5.25,NWF+.15);world.add(scr);tag(scr,2);
+ const ax0=v3?-.25:v4?-1.75:0;scr.position.set(ax0,5.25,NWF+.15);world.add(scr);tag(scr,2);
  panel(T_strip(),6.4,1.3,ax0,v1?2.45:2.6,NWF+.08,0,2);
  if(v1){const bench=new THREE.Group();box(5,.3,1.4,M(0x8A6A43),0,1.5,0,bench);[-2.2,2.2].forEach(x=>box(.3,1.5,1.2,M(0x6B4A2E),x,.75,0,bench));bench.position.set(0,0,-6.4);world.add(bench);tag(bench,2);}
  const scrGlow=new THREE.PointLight(0xA9B8FF,.55,10,1.5);scrGlow.position.set(ax0,5,NWF+1.6);world.add(scrGlow);W.fixtures.push(scrGlow);
@@ -1224,7 +1230,7 @@ function buildWorld(L,E){
  tank.position.set(kx,0,v1?7.8:SWF-.1-(TD+.4)/2);tank.rotation.y=Math.PI;world.add(tank);tag(tank,5);[glass,notes,edges,lg].forEach(m=>m.userData.tank=true);
 
  /* 6 Dharma: panel + kavad rack */
- const dx=v1?-4:v3?-5:v4?-6:-3;
+ const dx=v1?-4:v3?-5:v4?-5.5:-3;
  if(v3||v4)panel(T_dharma(),6,7,dx,4.4,SWF-.08,Math.PI,6);else panel(T_dharma(),6,7,dx,4.4,SS+.08,0,6);
  const kav=new THREE.Group();const wood=M(0x8A6A43);box(.25,4.4,.25,wood,-2.2,2.2,0,kav);box(.25,4.4,.25,wood,2.2,2.2,0,kav);box(5.2,.15,1.6,wood,0,.08,0,kav);
  cyl(.12,.12,7,M(0xC9A86A),0,4.5,0,kav,12).rotation.z=Math.PI/2;
@@ -1238,7 +1244,12 @@ function buildWorld(L,E){
    [[.5,.6],[-1.1,-.4],[.2,-1.3],[1.3,.9]].forEach(p=>{const b=new THREE.Mesh(new THREE.SphereGeometry(.13,12,8),ballMat);b.position.set(p[0],p[1],.25);tg.add(b)});return tg;};
  const stanchion=(x,z)=>{cyl(.05,.05,3,M(0x8C7A3A,{metalness:.6,roughness:.3}),x,1.5,z);cyl(.35,.35,.08,M(0x333333),x,.04,z);};
  const rope=(a,b)=>{const len=Math.hypot(b[0]-a[0],b[1]-a[1]);const r=cyl(.045,.045,len,M(0xB3121F),(a[0]+b[0])/2,2.7,(a[1]+b[1])/2,world,6);r.rotation.z=Math.PI/2;r.rotation.y=-Math.atan2(b[1]-a[1],b[0]-a[0]);};
- if(v1){
+ if(v4){
+  const tg=target();tg.position.set(12,4.6,SWF-.15);tg.rotation.y=Math.PI;world.add(tg);tag(tg,7);
+  const lane=new THREE.Mesh(new THREE.PlaneGeometry(3.5,8.5),M(0xffffff,{map:T_lane4(),transparent:true}));lane.rotation.x=-Math.PI/2;lane.position.set(12,.035,SWF-4.25);lane.receiveShadow=true;world.add(lane);tag(lane,7);
+  LANE4.forEach(p=>stanchion(p[0],p[1]));[[0,1],[1,2],[3,4],[4,5]].forEach(([a,b])=>rope(LANE4[a],LANE4[b]));
+  cyl(.5,.4,.8,M(0x8C1D3A),14.4,.4,1.6);
+ }else if(v1){
   const tg=target();tg.position.set(2,4.6,SWF-.15);tg.rotation.y=Math.PI;world.add(tg);tag(tg,7);
   const lane=new THREE.Mesh(new THREE.PlaneGeometry(4,5.8),M(0xffffff,{map:T_lane1(),transparent:true}));lane.rotation.x=-Math.PI/2;lane.position.set(2,.035,SWF-2.9);lane.receiveShadow=true;world.add(lane);tag(lane,7);
   [[-0.1,4.2],[4.1,4.2],[-0.1,7.2],[4.1,7.2]].forEach(p=>stanchion(p[0],p[1]));rope([-0.1,4.2],[-0.1,7.2]);rope([4.1,4.2],[4.1,7.2]);
@@ -1257,7 +1268,7 @@ function buildWorld(L,E){
  }
 
  /* 8 Tyag */
- if(v4)panel(T_tyag(4.5),4.5,7,11,4.4,SWF-.08,Math.PI,8);else{
+ if(v4)panel(T_tyag(4.5),4.5,7,3,4.4,SWF-.08,Math.PI,8);else{
  const tx=v1?10:v3?1.25:13;
  if(v3)panel(T_tyag(5),5,7,tx,4.4,SWF-.08,Math.PI,8);else panel(T_tyag(v1?6:5),v1?6:5,7,tx,4.4,SS+.08,0,8);
  const gear=new THREE.Group();
@@ -1283,7 +1294,7 @@ function buildWorld(L,E){
  /* 9 Diya wall + bridge panel (v4: Mahant Swami Maharaj mural) */
  if(v4){panel(T_msm(),8,7,EWF-.08,4.4,4.5,-Math.PI/2,9,true);
   // red-rope stanchion line down the center, continuing from the entrance wall
-  ROPE4.forEach(x=>stanchion(x,L.spineZ));for(let k=1;k<ROPE4.length;k++)rope([ROPE4[k-1],L.spineZ],[ROPE4[k],L.spineZ]);}
+  ROPE4.forEach(p=>stanchion(p[0],p[1]));for(let k=1;k<ROPE4.length;k++)rope(ROPE4[k-1],ROPE4[k]);}
  else{
  const dw=v3?panel(T_diya2(),4.75,7,17.25,4.4,SS+.08,0,9):panel(T_diya(),8,7,EWF-.08,4.4,4.5,-Math.PI/2,9);
  const flame=new THREE.MeshStandardMaterial({color:0xFFC861,emissive:0xFFA531,emissiveIntensity:1.6});const r9=rng(3);
@@ -1360,7 +1371,7 @@ function buildWorld(L,E){
  const ax=13.7;dim([ax,.15,NWF],[ax,.15,SN],'north aisle '+fmt(L.northW),{off:[0,1.0,0]});
  const sx2=v1?4.3:v4?-10.85:-6.9;dim([sx2,.15,SS],[sx2,.15,SWF],'south aisle '+fmt(L.southW),{off:[0,1.0,0]});
  dim([WWF,.15,L.spineZ],[L.spineX0,.15,L.spineZ],'turn '+fmt(L.turnW),{off:[0,1.0,0]});
- if(v4)dim([L.spineX0,3.4,L.spineZ],[15.25,3.4,L.spineZ],'stanchion line '+fmt(26.25),{off:[0,.7,0]});else dim([L.spineX0,8.75,L.spineZ],[EWF,8.75,L.spineZ],'spine '+fmt(L.spineLen)+' × 6″',{off:[0,.7,0]});
+ if(v4)dim([-11,3.4,L.spineZ],[9.25,3.4,L.spineZ],'red-rope line, bends north around Sankalp',{off:[0,.7,0]});else dim([L.spineX0,8.75,L.spineZ],[EWF,8.75,L.spineZ],'spine '+fmt(L.spineLen)+' × 6″',{off:[0,.7,0]});
  dim([15,.12,-10.6],[19,.12,-10.6],'entry 4′-0″',{off:[0,.7,0]});dim([15,.12,10.6],[19,.12,10.6],'exit 4′-0″',{off:[0,.7,0]});
  }else{
   dim([13.6,.15,NWF],[13.6,.15,SWF],'open floor, wall face to wall face '+fmt(SWF-NWF),{off:[0,1.0,0]});
@@ -1369,21 +1380,22 @@ function buildWorld(L,E){
  }
  dim([-20.5,0,-10.5],[-20.5,8,-10.5],'walls 8′-0″',{tick:[.35,0,0],off:[0,0,0]});
  wallsFor(L).forEach(w=>{if(w.len<2)return;const lab=w.id+' · '+fmt(w.len)+' × '+fmt(w.h);let p;
-   if(v4&&(w.id==='W7'||w.id==='W8')){p=w.id==='W7'?[17.25,8.6,-1.1]:[7.5,8.3,7.6];}
+   if(v4&&w.id==='W7'){p=[17.25,8.6,-1.1];}
    else if(v3){p=w.rot?(w.id==='W4'?[WWF-.8,6.6,-3.4]:[w.tag[0],8.4,w.tag[1]]):(w.id==='W10'?[w.tag[0],8.6,w.tag[1]]:[w.tag[0],6.6,w.tag[1]+(w.tag[1]<0?-.9:.9)]);}
    else if(w.id==='W7')p=[w.tag[0]-6,6.6,w.tag[1]];else if(w.id==='W8')p=[w.tag[0],8.3,w.tag[1]];
    else if(w.rot)p=[w.tag[0]<0?-20.4:20.4,6.6,w.tag[1]+(w.tag[0]<0?3:-3)];else p=[w.tag[0],6.6,w.tag[1]<0?-10.4:10.4];
    chipSprite(lab,new THREE.Vector3(...p),.95,'#5B2C83','#FFFFFF',W.dims);});
- const sL=v3?4.15:v4?3.65:4.65,sR=v3?12.85:v4?12.35:13.35;
+ const sL=v3?4.15:v4?1.9:4.65,sR=v3?12.85:v4?10.6:13.35;
  dim([sL,8.25,NWF-.5],[sL,9.96,NWF-.5],'banners 8′-3″ to 10′-0″',{tick:[.35,0,0],off:[-2.9,0,0]});
  dim([sR,.9,NWF+.35],[sR,7.9,NWF+.35],'panels 0′-11″ to 7′-11″',{tick:[.35,0,0],off:[2.9,0,0]});
  if(v1)dim([0,5.25,NWF+.3],[0,5.25,-6.4],'bench 3′-2″ from 85″ screen',{off:[0,.75,0]});
  else if(v3){dim([-.25,5.25,NWF+.3],[-.25,5.25,NWF+7.3],'viewers 7′-0″ from 75″ screen',{off:[0,.75,0]});dim([-9.75,2,NWF+.8],[-9.75,2,NWF+7.8],'heart viewed from 7′-0″',{off:[0,.75,0]});}
- else if(v4){dim([-1,5.25,NWF+.3],[-1,5.25,SN-1],'viewers '+fmt(SN-1-NWF-.3)+' from 75″ screen',{off:[0,.75,0]});dim([WWF+.8,2,0],[WWF+7.8,2,0],'heart viewed from 7′-0″',{off:[0,.75,0]});}
+ else if(v4){dim([-1.75,5.25,NWF+.3],[-1.75,5.25,SN-1],'viewers '+fmt(SN-1-NWF-.3)+' from 75″ screen',{off:[0,.75,0]});dim([WWF+.8,2,0],[WWF+7.8,2,0],'heart viewed from 7′-0″',{off:[0,.75,0]});}
  else dim([0,5.25,NWF+.3],[0,5.25,SN-1],'viewers '+fmt(SN-1-NWF-.3)+' from 75″ screen',{off:[0,.75,0]});
  if(!v3&&!v4)dim([-8.75,2,NWF+.8],[-8.75,2,SN-1],'heart viewed from '+fmt(SN-1-NWF-.8),{off:[0,.75,0]});
  if(v1)dim([2,1,SWF-.15],[2,1,SWF-5.5],'throw '+fmt(5.35),{off:[0,.7,0]});
- else{const so2=v3?2.75:v4?-2.25:0;dim([9.45+so2,1.1,7.1],[2.5+so2,1.1,7.1],'throw 7′-0″',{off:[0,.7,0]});dim([9.45+so2,.5,8.6],[4.5+so2,.5,8.6],'kids 5′-0″',{off:[0,.6,0]});}
+ else if(v4){dim([12,1.1,SWF-.15],[12,1.1,SWF-7],'throw 7′-0″',{off:[0,.7,0]});dim([12.9,.5,SWF-.15],[12.9,.5,SWF-5],'kids 5′-0″',{off:[0,.6,0]});dim([12,.2,-4.5],[12,.2,1.25],'walkway behind throwers '+fmt(5.75),{off:[0,.7,0]});}
+ else{const so2=v3?2.75:0;dim([9.45+so2,1.1,7.1],[2.5+so2,1.1,7.1],'throw 7′-0″',{off:[0,.7,0]});dim([9.45+so2,.5,8.6],[4.5+so2,.5,8.6],'kids 5′-0″',{off:[0,.6,0]});}
 
  /* space check overlay: objects, users, viewers and the walkway left */
  const rect=(x0,x1,z0,z1,color,op,y)=>{const w=Math.abs(x1-x0),d=Math.abs(z1-z0);if(w<.01||d<.01)return;const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshBasicMaterial({color,transparent:true,opacity:op,depthWrite:false}));
@@ -1398,12 +1410,12 @@ function buildWorld(L,E){
  const SC={ok:0x3FA568,warn:0xE8A317,bad:0xD9483B},SCt={ok:'#2E7D4F',warn:'#8F5B00',bad:'#B3261E'};
  E.R.forEach(r=>{if(r.aisle==='X')return;
    r.segs.forEach(sg=>{if(sg.clear<=0)return;const col=SC[status(sg.clear)];
-     if(r.aisle==='N')rect(sg.x0,sg.x1,NWF+sg.wD,SN-sg.sD,col,.42,.07);
-     if(r.aisle==='S')rect(sg.x0,sg.x1,SS+sg.sD,SWF-sg.wD,col,.42,.07);
+     if(r.aisle==='N')rect(sg.x0,sg.x1,NWF+sg.wD,SN-sg.sD-(sg.sh||0),col,.42,.07);
+     if(r.aisle==='S')rect(sg.x0,sg.x1,SS+sg.sD-(sg.sh||0),SWF-sg.wD,col,.42,.07);
      if(r.aisle==='W')rect(WWF+sg.wD,L.spineX0,sg.x0,sg.x1,col,.42,.07);
      if(r.aisle==='H')rect(sg.x0,sg.x1,NWF+sg.wD,SWF-sg.sD,col,.3,.07);});
    const m=r.min;let p;
-   if(r.aisle==='N')p=[m.x,.7,(NWF+m.wD+SN-m.sD)/2];else if(r.aisle==='H')p=[m.x,.7,r.st===1||r.st===2||r.st===3?NWF+m.wD+1.2:SWF-m.sD-1.2];else if(r.aisle==='S')p=[m.x,.7,(SS+m.sD+SWF-m.wD)/2];else p=[(WWF+m.wD+L.spineX0)/2,.7,m.x];
+   if(r.aisle==='N')p=[m.x,.7,(NWF+m.wD+SN-m.sD-(m.sh||0))/2];else if(r.aisle==='S'&&m.sh)p=[m.x,.7,(SS-m.sh+SWF-m.wD)/2];else if(r.aisle==='H')p=[m.x,.7,r.st===1||r.st===2||r.st===3?NWF+m.wD+1.2:SWF-m.sD-1.2];else if(r.aisle==='S')p=[m.x,.7,(SS+m.sD+SWF-m.wD)/2];else p=[(WWF+m.wD+L.spineX0)/2,.7,m.x];
    chipSprite(m.clear>0?fmt(m.clear)+' clear':'zones overlap',new THREE.Vector3(...p),.8,SCt[r.status],'#FFFFFF',W.zones);});
  return W;}
 
@@ -1469,7 +1481,7 @@ function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(x+20)*s,Z=z
     if(q.side==='E')r(L.EWF-d1,L.EWF-d0,q.a,q.b,c);});});
   // walkways
   E.R.forEach(rr=>{if(rr.aisle==='X')return;rr.segs.forEach(sg=>{if(sg.clear<=0)return;const c='sv-'+status(sg.clear);
-    if(rr.aisle==='N')r(sg.x0,sg.x1,L.NWF+sg.wD,L.SN-sg.sD,c);if(rr.aisle==='S')r(sg.x0,sg.x1,L.SS+sg.sD,L.SWF-sg.wD,c);if(rr.aisle==='W')r(L.WWF+sg.wD,L.spineX0,sg.x0,sg.x1,c);if(rr.aisle==='H')r(sg.x0,sg.x1,L.NWF+sg.wD,L.SWF-sg.sD,c,' fill-opacity=".14"');});});
+    if(rr.aisle==='N')r(sg.x0,sg.x1,L.NWF+sg.wD,L.SN-sg.sD-(sg.sh||0),c);if(rr.aisle==='S')r(sg.x0,sg.x1,L.SS+sg.sD-(sg.sh||0),L.SWF-sg.wD,c);if(rr.aisle==='W')r(L.WWF+sg.wD,L.spineX0,sg.x0,sg.x1,c);if(rr.aisle==='H')r(sg.x0,sg.x1,L.NWF+sg.wD,L.SWF-sg.sD,c,' fill-opacity=".14"');});});
   // walls
   if(L.open){[[-20,15,-10],[19,20,-10],[-20,15,10],[19,20,10]].forEach(d=>o.push('<line x1="'+X(d[0])+'" y1="'+Z(d[2])+'" x2="'+X(d[1])+'" y2="'+Z(d[2])+'" class="sv-dim" stroke-dasharray="3 3"/>'));
     [[-20],[20]].forEach(d=>o.push('<line x1="'+X(d[0])+'" y1="'+Z(-10)+'" x2="'+X(d[0])+'" y2="'+Z(10)+'" class="sv-dim" stroke-dasharray="3 3"/>'));
@@ -1482,11 +1494,10 @@ function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(x+20)*s,Z=z
     t(X(-20),Z(10)+30,'Dashed line: pipe-and-drape edge','sv-m');}
   else{
   [[-20,15,-10,-9.75],[19,20,-10,-9.75],[-20,15,9.75,10],[19,20,9.75,10],[-20,-19.75,-10,10],[19.75,20,-10,10]].forEach(w=>r(w[0],w[1],w[2],w[3],'sv-wall'));
-  if(L.rope){o.push('<polyline points="'+ROPE4.map(x=>X(x)+','+Z(L.spineZ)).join(' ')+'" fill="none" stroke="#B3121F" stroke-width="2.5"/>');ROPE4.forEach(x=>o.push('<circle cx="'+X(x)+'" cy="'+Z(L.spineZ)+'" r="4" fill="#8C7A3A"/>'));r(15.25,19.25,L.SN,L.SN+.33,'sv-wall');}
+  if(L.rope){o.push('<polyline points="'+ROPE4.map(p=>X(p[0])+','+Z(p[1])).join(' ')+'" fill="none" stroke="#B3121F" stroke-width="2.5"/>');[[0,1,2],[3,4,5]].forEach(q=>o.push('<polyline points="'+q.map(k=>X(LANE4[k][0])+','+Z(LANE4[k][1])).join(' ')+'" fill="none" stroke="#B3121F" stroke-width="2"/>'));ROPE4.concat(LANE4).forEach(p=>o.push('<circle cx="'+X(p[0])+'" cy="'+Z(p[1])+'" r="3.5" fill="#8C7A3A"/>'));r(10.25,13.75,L.SWF-.15,L.SWF,'sv-panel');r(15.25,19.25,L.SN,L.SN+.33,'sv-wall');}
   else r(L.spineX0,L.EWF,L.SN,L.SS,'sv-wall');
   wallsFor(L).forEach(w=>{const lab=w.id+' · '+fmt(w.len)+(w.id==='W7'?' × 8′-0″':'');if(w.len<2)return;
     if(L.rope&&w.id==='W7'){t(X(17.25),Z(L.SN)-6,lab,'sv-dimt sv-halo',' text-anchor="middle"');return;}
-    if(L.rope&&w.id==='W8'){t(X(7.5),Z(5.2),lab,'sv-dimt sv-halo',' text-anchor="middle"');return;}
     if(w.id==='W7'){t(X(L.spineX0)+8,Z(L.spineZ)+3.2,lab+' · double-faced','sv-halo',' style="fill:#fff;stroke:none;font:600 8.5px var(--f-mono)"');return;}
     if(w.id==='W8'){t(X(10.3),Z(5.2),lab,'sv-dimt sv-halo');return;}
     if(w.rot){const x=w.tag[0]<0?X(-20)-8:X(20)+16;o.push('<text x="'+x+'" y="'+Z(0)+'" transform="rotate(-90 '+x+' '+Z(0)+')" class="sv-dimt sv-halo" text-anchor="middle">'+lab+'</text>');return;}
@@ -1497,11 +1508,11 @@ function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(x+20)*s,Z=z
   // lights
   lightsFor(L).forEach(l=>{const c=l.type==='uv'?'sv-uvl':'sv-warm';o.push('<circle cx="'+X(l.f[0]).toFixed(1)+'" cy="'+Z(l.f[2]).toFixed(1)+'" r="'+(l.type==='up'?3:4)+'" class="'+c+'"'+(l.type==='up'?' fill-opacity=".55"':'')+'/>');});
   // station names
-  const PL=L.rope?{0:[17.25,L.SN-3.2],1:[8,L.NWF+1.2],2:[-1,L.NWF+1.2],3:[-17.6,-5.6],4:[-10,L.NWF+1.2],5:[-14,L.SWF-1.2],6:[-6,L.SWF-1.2],7:[2.5,L.SWF-1.2],8:[11,L.SWF-1.2],9:[17.4,1.4]}:L.open?{0:[17.25,L.SN-1.2],1:[8.5,L.NWF+1.7],2:[-.25,L.NWF+1.5],3:[-9.75,L.NWF+1.5],4:[-17,1.6],5:[-12.5,L.SWF-1.6],6:[-5,L.SWF-1.6],7:[8,L.SWF-1.6],8:[1.25,L.SWF-1.6],9:[17.25,L.SS+1.2],10:[17.6,-7.3]}:{0:[17,L.SN-1.3],1:[9,L.NWF+1.2],2:[0,L.NWF+(v1?2.2:1.2)],3:[-8.75,L.NWF+1.2],4:[-17.6,L.spineZ+(v1?-3:0)],5:[v1?-10:-9,L.SWF-1.2],6:[v1?-4:-3,L.SS+1.2],7:[v1?2:5.5,L.SWF-1.2],8:[v1?10:13,L.SS+1.2],9:[18.1,5],10:[v1?-6.5:-7.6,L.SN-1.2]};
+  const PL=L.rope?{0:[17.25,L.SN-3.2],1:[6.25,L.NWF+1.2],2:[-1.75,L.NWF+1.2],3:[-17.6,-5.6],4:[-10,L.NWF+1.2],5:[-14,L.SWF-1.2],6:[-5.5,L.SWF-1.2],7:[12,L.SWF-1.2],8:[3,L.SWF-1.2],9:[17.4,1.4]}:L.open?{0:[17.25,L.SN-1.2],1:[8.5,L.NWF+1.7],2:[-.25,L.NWF+1.5],3:[-9.75,L.NWF+1.5],4:[-17,1.6],5:[-12.5,L.SWF-1.6],6:[-5,L.SWF-1.6],7:[8,L.SWF-1.6],8:[1.25,L.SWF-1.6],9:[17.25,L.SS+1.2],10:[17.6,-7.3]}:{0:[17,L.SN-1.3],1:[9,L.NWF+1.2],2:[0,L.NWF+(v1?2.2:1.2)],3:[-8.75,L.NWF+1.2],4:[-17.6,L.spineZ+(v1?-3:0)],5:[v1?-10:-9,L.SWF-1.2],6:[v1?-4:-3,L.SS+1.2],7:[v1?2:5.5,L.SWF-1.2],8:[v1?10:13,L.SS+1.2],9:[18.1,5],10:[v1?-6.5:-7.6,L.SN-1.2]};
   Object.keys(PL).forEach(k=>{const i=+k,p=PL[k];t(X(p[0]),Z(p[1])+4,(i===10?(L.open?'Today':'Mural'):i===9&&L.rope?'MSM mural':S[i].short).toUpperCase(),'sv-h sv-halo',' text-anchor="middle" letter-spacing="0.06em"');});
   // walkway labels at the tightest point
   E.R.forEach(rr=>{if(rr.aisle==='X')return;const m=rr.min;let px,pz;
-    if(rr.aisle==='H'){px=m.x;pz=[1,2,3].includes(rr.st)?L.NWF+m.wD+1.3:L.SWF-m.sD-1.3}else if(rr.aisle==='N'){px=m.x;pz=(L.NWF+m.wD+L.SN-m.sD)/2}else if(rr.aisle==='S'){px=m.x;pz=(L.SS+m.sD+L.SWF-m.wD)/2}else{px=(L.WWF+m.wD+L.spineX0)/2;pz=m.x}
+    if(rr.aisle==='H'){px=m.x;pz=[1,2,3].includes(rr.st)?L.NWF+m.wD+1.3:L.SWF-m.sD-1.3}else if(rr.aisle==='N'){px=m.x;pz=(L.NWF+m.wD+L.SN-m.sD-(m.sh||0))/2}else if(rr.aisle==='S'&&m.sh){px=m.x;pz=(L.SS-m.sh+L.SWF-m.wD)/2}else if(rr.aisle==='S'){px=m.x;pz=(L.SS+m.sD+L.SWF-m.wD)/2}else{px=(L.WWF+m.wD+L.spineX0)/2;pz=m.x}
     t(X(px),Z(pz)+4,m.clear>0?fmt(m.clear):'overlap','sv-dimt sv-halo sv-'+rr.status+'t',' text-anchor="middle"');});
   // dimensions
   dimH(X(-20),X(20),oz-34,'40′-0″');
@@ -1511,7 +1522,7 @@ function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(x+20)*s,Z=z
   dimV(X(ax),Z(L.NWF),Z(L.SN),'north '+fmt(L.northW),true);
   dimV(X(sx),Z(L.SS),Z(L.SWF),'south '+fmt(L.southW),true);
   dimH(X(L.WWF),X(L.spineX0),Z(L.spineZ)-8,'turn '+fmt(L.turnW));
-  if(L.rope)dimH(X(L.spineX0),X(15.25),Z(10)+30,'stanchion line '+fmt(26.25),false);else dimH(X(L.spineX0),X(L.EWF),Z(10)+30,'spine '+fmt(L.spineLen)+' × 6″',false);
+  if(L.rope)dimH(X(L.spineX0),X(15.25),Z(10)+30,'red-rope line, about 31 ft',false);else dimH(X(L.spineX0),X(L.EWF),Z(10)+30,'spine '+fmt(L.spineLen)+' × 6″',false);
   ln(X(L.spineX0),Z(L.SS),X(L.spineX0),Z(10)+36);}
   dimH(X(15),X(19),Z(-10)-10,'entry 4′-0″');dimH(X(15),X(19),Z(10)+12,'exit 4′-0″',false);
   t(X(17),oz-52,'↓ from Festival','sv-m',' text-anchor="middle"');
@@ -1560,7 +1571,8 @@ function sectionSVG(L,E){if(L.open)return sectionV3(L,E);const v1=L.id==='v1',cx
   person((L.NWF+nwD+L.SN-nsD)/2+(v1?.6:.2),5.4,'sv-ppl','walking');
   person((L.SS+ssD+L.SWF-swD)/2,5.4,'sv-ppl','walking');
   // south side at the cut
-  if(v1){r(L.SWF-.15,L.SWF,2.6,6.6,'sv-panel');t(X(L.SWF)-6,Y(6.6)-6,'target','sv-m sv-halo',' text-anchor="end"');r(3.95,L.SWF,0,.04,'sv-obj');person(3.6,5.5,'sv-ppl','thrower');}
+  if(L.rope){r(L.SWF-.1,L.SWF,.9,7.9,'sv-panel');t(X(L.SWF)-6,Y(7.9)+14,'tyag panel','sv-m sv-halo',' text-anchor="end"');person(L.SWF-1.3,5.5,'sv-ppl','reader');}
+  else if(v1){r(L.SWF-.15,L.SWF,2.6,6.6,'sv-panel');t(X(L.SWF)-6,Y(6.6)-6,'target','sv-m sv-halo',' text-anchor="end"');r(3.95,L.SWF,0,.04,'sv-obj');person(3.6,5.5,'sv-ppl','thrower');}
   else{r(5.7,5.8,0,3,'sv-obj');t(X(5.75),Y(3)-6,'rope','sv-m sv-halo',' text-anchor="middle"');person(7.9,5.5,'sv-ppl','thrower');
     o.push('<rect x="'+X(5.5).toFixed(1)+'" y="'+Y(7.5).toFixed(1)+'" width="'+(4.25*s).toFixed(1)+'" height="'+(7.5*s).toFixed(1)+'" fill="none" class="sv-dim" stroke-dasharray="4 4"/>');t(X(7.6),Y(7.5)-6,'target board beyond','sv-m sv-halo',' text-anchor="middle"');}
   if(!L.rope)r(L.SS,L.SS+.1,.9,7.9,'sv-panel');
