@@ -156,7 +156,7 @@ td a{color:var(--accent)}
       <button role="tab" id="tab-v2" data-v="v2" aria-selected="false"><b>Version 2 · Asymmetric</b><span>aisles 8′-6″ north + 10′-6″ south</span></button>
       <button role="tab" id="tab-v3" data-v="v3" aria-selected="false"><b>Version 3 · Open hall</b><span>a freestanding wall per value · 21 flats</span></button>
       <button role="tab" id="tab-v4" data-v="v4" aria-selected="false"><b>Version 4 · Open aisles</b><span>no center wall · red-rope stanchions</span></button>
-      <button role="tab" id="tab-v5" data-v="v5" aria-selected="false"><b>Version 5 · Separate walls</b><span>v4 layout · one wall per station</span></button>
+      <button role="tab" id="tab-v5" data-v="v5" aria-selected="false"><b>Version 5 · FINAL</b><span>separate walls · one per station</span></button>
     </div>
     <div class="vsum">
       <div><p id="vintro"></p><ul class="changes" id="vchanges"></ul></div>
@@ -219,6 +219,16 @@ td a{color:var(--accent)}
     <div class="drawing" id="plan"></div>
     <h4 id="secTitle">Section A–A</h4>
     <div class="drawing" id="section"></div>
+  </section>
+
+  <section id="review">
+    <h3>Review package · Version 5 (Final)</h3>
+    <p class="sec-lede">Everything to send for review in one place: the size of every part, where each light goes, and where the tour guides stand. Positions are measured from the north-west corner of the 40 × 20 footprint: <b>E</b> is feet east of the west edge, <b>S</b> is feet south of the north edge (the Festival side).</p>
+    <h4>1 · Walls</h4><div class="tblwrap"><table id="rvWalls"></table></div>
+    <h4>2 · Printed parts, screens and props</h4><div class="tblwrap"><table id="rvParts"></table></div>
+    <h4>3 · Spotlights</h4><div class="tblwrap"><table id="rvLights"></table></div><p class="bomnote" id="rvLightNote"></p>
+    <h4>4 · Tour guides (volunteers)</h4><div class="tblwrap"><table id="rvGuides"></table></div>
+    <h4>5 · Walkway check</h4><div class="tblwrap"><table id="rvWalk"></table></div>
   </section>
 
   <section id="materials">
@@ -364,7 +374,7 @@ const LAYOUTS={
  v1:mkLayout({id:'v1',name:'Version 1',sub:'Symmetric',spineZ:0,spineX0:-12}),
  v2:mkLayout({id:'v2',name:'Version 2',sub:'Asymmetric',spineZ:-1,spineX0:-11.5}),
  v4:mkLayout({id:'v4',name:'Version 4',sub:'Open aisles',spineZ:-1,spineX0:-11,rope:true,sk:12,bump:3.5,lane:8.5,throw:7,kids:5,laneRope:true,shift:(x)=>x>10.25&&x<13.75?3.5:0}),
- v5:mkLayout({id:'v5',name:'Version 5',sub:'Separate walls',spineZ:-1,spineX0:-11,rope:true,free:true,NWF:-8.75,SWF:8.75,WWF:-18.75,EWF:18.75,sk:11,bump:0,lane:4.5,throw:3.5,kids:2.5,laneRope:false,shift:()=>0}),
+ v5:mkLayout({id:'v5',name:'Version 5 (Final)',sub:'Separate walls',spineZ:-1,spineX0:-11,rope:true,free:true,NWF:-8.75,SWF:8.75,WWF:-18.75,EWF:18.75,sk:11,bump:0,lane:4.5,throw:3.5,kids:2.5,laneRope:false,shift:()=>0}),
  v3:mkLayout({id:'v3',name:'Version 3',sub:'Open hall',spineZ:0,spineX0:14.75,NWF:-8.75,SWF:8.75,WWF:-18.75,EWF:19.75,open:true})
 };
 const INTRO={
@@ -758,8 +768,13 @@ const S4={
 };
 // 2 ft value posters sit to the right of each station (as you face it)
 function postersFor(L){return [[1,'N',5.25],[2,'N',-8.5],[3,'W',-6],[5,'S',-15.5],[6,'S',-3.25],[7,'S',L.sk-3]];}
-const S5={0:{where:'4 ft wall facing the entrance'},1:{where:'Own 11 ft wall, north side'},2:{where:'Own 9 ft wall, north side'},3:{where:'Own 12 ft wall, west end, at the turn'},
- 5:{where:'Own 9 ft 6 in wall, south side'},6:{where:'Own 9 ft 6 in wall, south side'},7:{where:'Own 6 ft 6 in wall, south side, east end',act:'Bird’s Eye Toss. The 4 ft target hangs on the Sankalp wall. Visitors step onto the floor decal, say one goal out loud, and throw three velcro balls from the 3 ft 6 in line (kids from 2 ft 6 in). The red-rope line runs straight past, with a 5 ft walkway behind the throwers.',build:'4 ft velcro target mounted to the Sankalp wall, center at 4 ft 7 in, on a ¾ in plywood backer · 3.5 × 4.5 ft floor decal with throw lines at 3 ft 6 in and 2 ft 6 in, no ropes · 12 velcro balls · 2 × 7 ft value poster on the same wall, to the left of the lane (to the right as you face it).'},
+const S5={3:{where:'Own 12 ft wall, west end, at the turn',foot:'9 ft 6 in × 7 ft 6 in photo collage + rose heart',
+  story:'Compassion is something you do. The rose heart sits in the middle of a collage of photos from BAPS Charities and BAPS humanitarian work around the world: disaster relief, medical camps, food drives, blood drives, education and environmental projects. No words, just the work.',
+  act:'No activity. A quiet stop at the turn: people see the heart and the photos straight ahead as they reach the end of the north aisle.',
+  build:'9 ft 6 in × 7 ft 6 in printed collage backdrop on the Daya wall (photos from BAPS Charities, with approval; keep the center clear for the heart) · rose heart about 4 ft 7 in wide on a ¾ in plywood backer, center at 4 ft 4 in · 2 × 7 ft value poster to its right · one clamp spot on the heart, one on the poster, one red battery uplight on the floor.',
+  take:'Compassion is not just feeling someone’s pain; it is doing something about it.'},
+ 0:{where:'4 ft wall facing the entrance'},1:{where:'Own 11 ft wall, north side',build:'8 × 7 ft black writing surface (black dry-erase vinyl or chalkboard paint) on the Santosh wall · tree outline in UV-reactive paint · 2 UV LED wash lights on arms off the wall top (no floor lights) · 6 ft marker ledge, 6 in deep, on shelf brackets at 3 ft · 40+ fluorescent markers · tour guide stands at the west end of the wall.'},2:{where:'Own 9 ft wall, north side'},3:{where:'Own 12 ft wall, west end, at the turn'},
+ 5:{where:'Own 9 ft 6 in wall, south side'},6:{where:'Own 9 ft 6 in wall, south side',build:'6 × 7 ft story panel on the Dharma wall · 7 ft bamboo kavad on a rack with two baskets and 10 lb weights · 3 × 6 ft anti-slip mat · lit from the wall top only (no floor uplight) · tour guide stands just west of the wall, beside the poster, to hand the kavad over and spot lifters.'},7:{where:'Own 6 ft 6 in wall, south side, east end',act:'Bird’s Eye Toss. The 4 ft target hangs on the Sankalp wall. Visitors step onto the floor decal, say one goal out loud, and throw three velcro balls from the 3 ft 6 in line (kids from 2 ft 6 in). The red-rope line runs straight past, with a 5 ft walkway behind the throwers.',build:'4 ft velcro target mounted to the Sankalp wall, center at 4 ft 7 in, on a ¾ in plywood backer · 3.5 × 4.5 ft floor decal with throw lines at 3 ft 6 in and 2 ft 6 in, no ropes · 12 velcro balls · tour guide stands at the west edge of the decal, by the throw line, to hand out balls and keep the line moving · 2 × 7 ft value poster on the same wall, to the left of the lane (to the right as you face it).'},
  9:{where:'Own 8 ft 6 in wall, east end, at the exit',build:'8 × 7 ft print on its own 8 ft 6 in freestanding wall · photos, quotes and prasangs from BAPS with approval · 2 clamp spots · card rack for the take-home value cards beside the exit.'}};
 function zonesV4(L){const Z=[],z=(o)=>Z.push(Object.assign({kind:'use'},o));
  z({st:2,side:'N',face:'wall',a:-15.625,b:-10.175,obj:.4,use:0,label:'75 in screen'});
@@ -767,9 +782,11 @@ function zonesV4(L){const Z=[],z=(o)=>Z.push(Object.assign({kind:'use'},o));
  z({st:1,side:'N',face:'wall',a:-4,b:4,obj:.1,use:0,label:'Glow wall'});
  z({st:1,side:'N',face:'wall',a:-3,b:3,obj:.6,use:2.5,label:'Marker ledge + writers'});
  z({st:0,side:'N',face:'spine',a:15.25,b:19.25,obj:.1,use:2.5,label:'Main sign + passport holder'});
- z({st:3,side:'W',face:'wall',a:-4.75,b:-2.25,obj:.1,use:1.5,label:'Shiv Bhagwan story readers'});
+ if(L.free)z({st:3,side:'W',face:'wall',a:-4.75,b:4.75,obj:.8,use:1.5,kind:'view',label:'Rose heart + BAPS Charities photo collage viewers'});
+ else{z({st:3,side:'W',face:'wall',a:-4.75,b:-2.25,obj:.1,use:1.5,label:'Shiv Bhagwan story readers'});
  z({st:3,side:'W',face:'wall',a:-2.25,b:2.25,obj:.8,use:0,label:'Rose heart'});
- z({st:3,side:'W',face:'wall',a:2.25,b:4.75,obj:.1,use:1.5,label:'Harriet Tubman story readers'});
+ z({st:3,side:'W',face:'wall',a:2.25,b:4.75,obj:.1,use:1.5,label:'Harriet Tubman story readers'});}
+ if(L.free)GUIDES5(L).forEach(g=>z({st:g.st,side:g.side,face:'wall',a:g.c-.6,b:g.c+.6,obj:0,use:g.d+.6,label:'Tour guide (volunteer)'}));
  z({st:5,side:'S',face:'wall',a:-14.25,b:-12.35,obj:1.25,use:2.5,label:'Writing ledge'});
  z({st:5,side:'S',face:'wall',a:-12.3,b:-8.7,obj:1.9,use:2.5,label:'Note tank'});
  z({st:6,side:'S',face:'wall',a:-2,b:5,obj:1.8,use:3,label:'Kavad rack + lifter'});
@@ -791,9 +808,9 @@ function lightsV4(L){const {NWF,SWF,WWF,EWF,SN}=L,Lt=[];
  w([1.5,8.8,SWF-2.05],[1.5,4,SWF],{lbl:'Dharma'});
  w([L.sk,8.8,SWF-2.6],[L.sk,4.6,SWF],{a:.36,i:1.4,lbl:'Sankalp target'});
  [2.5,6.5].forEach(z=>w([EWF-2.15,8.8,z],[EWF,4,z],{a:.55,lbl:'MSM mural'}));
- postersFor(L).forEach(([st,side,c])=>{if(side==='N')w([c,8.8,NWF+1.8],[c,4.4,NWF],{a:.28,i:1.1,lbl:'Value poster'});else if(side==='S')w([c,8.8,SWF-1.8],[c,4.4,SWF],{a:.28,i:1.1,lbl:'Value poster'});else w([WWF+1.8,8.8,c],[WWF,4.4,c],{a:.28,i:1.1,wall:[WWF,c],lbl:'Value poster'});});
+ postersFor(L).forEach(([st,side,c])=>{if(side==='N')w([c,8.8,NWF+1.8],[c,4.4,NWF],{a:.28,i:1.1,lbl:'Value poster · '+stName(st)});else if(side==='S')w([c,8.8,SWF-1.8],[c,4.4,SWF],{a:.28,i:1.1,lbl:'Value poster · '+stName(st)});else w([WWF+1.8,8.8,c],[WWF,4.4,c],{a:.28,i:1.1,wall:[WWF,c],lbl:'Value poster · '+stName(st)});});
  [-2,2].forEach(x=>Lt.push({type:'uv',f:[x,8.8,NWF+2.05],t:[x,4,NWF],a:.6,color:0x7B3CFF,i:1.1,beam:0x9B5CFF,lbl:'Santosh UV'}));
- Lt.push({type:'up',f:[1.5,.25,SWF-3.6],t:[1.5,4.2,SWF-1],a:.42,i:1.1,lbl:'Kavad'});
+ if(!L.free)Lt.push({type:'up',f:[1.5,.25,SWF-3.6],t:[1.5,4.2,SWF-1],a:.42,i:1.1,lbl:'Kavad'});
  Lt.push({type:'up',f:[WWF+2.15,.25,0],t:[WWF+.15,4.6,0],a:.42,color:0xFF8A8A,i:.9,cone:false,lbl:'Daya red uplight'});
  return Lt;}
 function ropeFor(L){const z=L.spineZ,k=L.sk,b=z-L.bump;if(!L.bump)return [[-11,z],[-4.4,z],[2.2,z],[8.8,z],[15.25,z-.1]];return [[-11,z],[-4.4,z],[2.2,z],[k-2.75,z],[k-1.75,b],[k+1.75,b],[15.25,z-.1]];}
@@ -867,7 +884,7 @@ PATHS.v5=[[17,-15],[17,-10.5],[16.4,-6.6],[12,-6.6],[8,-5],[0,-5],[-12.9,-5],[-1
 function wallsV5(L){const n=L.NWF-.165,s=L.SWF+.165,w=L.WWF-.165,e=L.EWF+.165;const W=[
  {id:'W1',name:'Aadar wall',len:9,h:8,t:'4″',type:'Single-faced, north side, on 2 T-feet',faces:'Story strip under the 75 in screen + value poster',tag:[-11.75,n],rot:0,x0:-16.25},
  {id:'W2',name:'Santosh wall',len:11,h:8,t:'4″',type:'Single-faced, north side, on 3 T-feet',faces:'8 × 7 ft glow wall + value poster; marker ledge below',tag:[1.25,n],rot:0,x0:-4.25},
- {id:'W3',name:'Daya wall',len:12,h:8,t:'4″',type:'Single-faced, west end, on 3 T-feet',faces:'Value poster + 9 ft 6 in rose-heart backdrop with both stories',tag:[w,-1.25],rot:1,x0:-7.25},
+ {id:'W3',name:'Daya wall',len:12,h:8,t:'4″',type:'Single-faced, west end, on 3 T-feet',faces:'Value poster + 9 ft 6 in BAPS Charities photo collage with the rose heart at its center',tag:[w,-1.25],rot:1,x0:-7.25},
  {id:'W4',name:'Kshama wall',len:9.5,h:8,t:'4″',type:'Single-faced, south side, on 2 T-feet',faces:'Value poster + 6 × 7 ft story panel behind the ledge and note tank',tag:[-12,s],rot:0,x0:-16.75},
  {id:'W5',name:'Dharma wall',len:9.5,h:8,t:'4″',type:'Single-faced, south side, on 2 T-feet',faces:'Value poster + 6 × 7 ft story panel behind the kavad',tag:[.25,s],rot:0,x0:-4.5},
  {id:'W6',name:'Sankalp wall',len:6.5,h:8,t:'4″',type:'Single-faced, south side, on 2 T-feet',faces:'Value poster + 4 ft target at the head of the lane',tag:[10,s],rot:0,x0:6.75},
@@ -894,8 +911,19 @@ function bomV5(L){const B=bomV4(L),Wl=wallsV5(L);
    .replace('4 ft velcro target mounted on the south wall','4 ft velcro target mounted on the Sankalp wall')
    .replace('Stanchion posts with red rope: 7 down the center, bending north around the throw lane (6 ropes), 6 along both sides of the lane (4 ropes)','Stanchion posts with red rope: 5 in a straight line down the center (no ropes on the lane)')
    .replace('13 posts · 10 ropes','5 posts · 4 ropes').replace('Center line and Sankalp lane','Center line');
+ B.rows.forEach(sec=>{sec.r=sec.r.filter(row=>row[0]!=='UV LED bar');sec.r=sec.r.map(row=>row[0]==='Battery uplight'?[row[0],'Daya heart only (set red). No floor lights at activity stations',row[2],row[3]]:row);});
+ B.rows.forEach(sec=>{sec.r=sec.r.map(row=>row[0]==='Daya'?['Daya','Artificial red rose heads, about 3 in · printed BAPS Charities photo collage 9 ft 6 in × 7 ft 6 in','about 450 · 1']:row);});
+ B.rows.forEach(sec=>{sec.r=sec.r.map(row=>row[0]==='Daya backdrop'?['Daya photo collage backdrop','9 ft 6 in × 7 ft 6 in, BAPS Charities photos, center left clear for the heart','1']:row);});
+ B.rows.push({title:'Tour guides (volunteers)',cols:['Station','Where they stand','Qty'],r:GUIDES5(L).map(g=>[stName(g.st),g.where,'1 per shift'])});
  B.rows.forEach(sec=>{sec.r=sec.r.map(row=>row.map(fix));});
  return B;}
+
+/* tour guides (volunteers), Version 5 */
+function GUIDES5(L){return [
+ {st:1,side:'N',c:-5.75,d:1.1,x:-5.75,z:L.NWF+1.1,where:'Gap between the Aadar and Santosh walls, at the west end of the glow wall',job:'Invites people to write one thing they are grateful for, hands out markers, and tells the Krishna and Sudama story in 30 seconds.'},
+ {st:6,side:'S',c:-5.9,d:1.1,x:-5.9,z:L.SWF-1.1,where:'Gap between the Kshama and Dharma walls, beside the Dharma poster',job:'Tells Shravan’s story, hands over the kavad, spots each lifter and resets the baskets.'},
+ {st:7,side:'S',c:8.6,d:3.9,x:8.6,z:L.SWF-3.9,where:'West edge of the Sankalp floor decal, level with the throw line',job:'Asks each thrower to say one goal out loud, hands out three balls, collects them, and keeps the walkway behind the throwers clear.'}];}
+function stName(i){return Object.assign({},S[i],S4[i]||{}).short;}
 
 /* ================= textures (built once, cached across layout switches) ================= */
 const MAROON='#8C1D3A',SAFF='#D9831C',IVORY='#FBF6EE',INK='#2A1E22';
@@ -1161,6 +1189,22 @@ function T_laneD(L){return tex('laneD'+L.id,()=>canvasTex(420,Math.round(120*L.l
   const a=(L.lane-L.throw)*u,b=(L.lane-L.kids)*u;c.fillStyle='#fff';c.fillRect(0,a-10,W,20);c.fillRect(0,b-8,W,16);c.fillStyle=MAROON;c.font='700 36px '+FD;c.textAlign='center';
   c.fillText('THROW · '+fmt(L.throw).replace('′-0″',' FT'),W/2,a-22);c.fillText('KIDS · '+fmt(L.kids).replace('′-0″',' FT'),W/2,b-20);c.font='600 30px '+FD;c.fillText('STEP IN',W/2,Math.min(u*.6,a-70));}));}
 
+// Daya, Version 5: photo collage placeholders around a clear center for the rose heart (no words)
+const T_dayaCollage=()=>tex('dayaCol',()=>canvasTex(1900,1500,(c,W,H)=>{c.fillStyle='#000';c.fillRect(0,0,W,H);const r=rng(41);
+  const COLS=10,ROWS=8,cw=W/COLS,ch=H/ROWS,used=new Set();
+  const pals=[['#7FA7C9','#C9B48A','#5A4632'],['#9CC3D9','#6F8F4E','#3C4A2A'],['#E3B77A','#B5733E','#5B3420'],['#C7CCD1','#8B9097','#3E4247'],['#F0D9A8','#D48F4A','#6A3A22'],['#A8C6A0','#5F8455','#2E3F2A']];
+  const photo=(x,y,w,h)=>{const p=pals[Math.floor(r()*pals.length)];const g=c.createLinearGradient(0,y,0,y+h);g.addColorStop(0,p[0]);g.addColorStop(.55,p[1]);g.addColorStop(1,p[2]);
+    c.fillStyle=g;c.fillRect(x,y,w,h);const hz=y+h*(.5+r()*.15);c.fillStyle='rgba(0,0,0,.18)';c.fillRect(x,hz,w,y+h-hz);
+    if(r()<.4){c.fillStyle='rgba(255,255,255,.55)';const tw=w*(.25+r()*.2);c.fillRect(x+w*(.1+r()*.5),hz-h*.22,tw,h*.22);}
+    const n=2+Math.floor(r()*4);for(let k=0;k<n;k++){const px=x+w*(.12+.76*(k+.5)/n),s=h*(.16+r()*.1);const col=['#2B2420','#7A2E3A','#E0A030','#23395B','#F4F1EA'][Math.floor(r()*5)];
+      c.fillStyle='#5C3A28';c.beginPath();c.arc(px,hz-s*1.25,s*.28,0,7);c.fill();c.fillStyle=col;c.beginPath();c.moveTo(px-s*.42,hz+s*.25);c.quadraticCurveTo(px,hz-s*1.25,px+s*.42,hz+s*.25);c.fill();}
+    c.strokeStyle='#f4f1ea';c.lineWidth=6;c.strokeRect(x+3,y+3,w-6,h-6);};
+  const center=(cx,cy)=>cx>=3&&cx<=6&&cy>=1&&cy<=6;
+  for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){if(used.has(x+','+y)||center(x,y))continue;
+    let w=1,h=1;if(r()<.45&&x+1<COLS&&!used.has((x+1)+','+y)&&!center(x+1,y))w=2;if(r()<.35&&y+1<ROWS&&!center(x,y+1)&&(w===1||!center(x+1,y+1)))h=2;
+    for(let dy=0;dy<h;dy++)for(let dx=0;dx<w;dx++)used.add((x+dx)+','+(y+dy));
+    const pad=8;photo(x*cw+pad,y*ch+pad,w*cw-2*pad,h*ch-2*pad);}}));
+
 /* ================= world: every object that depends on the layout ================= */
 let G=null;
 const M=(c,o)=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.85},o||{}));
@@ -1225,7 +1269,7 @@ function buildWorld(L,E){
  if(v1){box(6,2.5,1.6,M(0x161318),0,1.25,0,s1);markers(s1,2.72,.1);s1.position.set(9,0,-8.5);}
  else{box(6,.12,.5,M(0x161318),0,3,0,s1);[-2.6,0,2.6].forEach(x=>box(.08,.4,.4,M(0x333333),x,2.75,-.03,s1));markers(s1,3.22,0);s1.position.set(sx0,0,NWF+.3);}
  world.add(s1);tag(s1,1);
- box(6,.18,.25,new THREE.MeshBasicMaterial({color:0x8A4DFF}),sx0,.12,NWF+.45);
+ if(!v5)box(6,.18,.25,new THREE.MeshBasicMaterial({color:0x8A4DFF}),sx0,.12,NWF+.45);
 
  /* 2 Aadar: screen looping the glitch video */
  screenTex();
@@ -1237,7 +1281,7 @@ function buildWorld(L,E){
  const scrGlow=new THREE.PointLight(0xA9B8FF,.55,10,1.5);scrGlow.position.set(ax0,5,NWF+1.6);world.add(scrGlow);W.fixtures.push(scrGlow);
 
  /* 3 Daya: black backdrop, rose heart */
- const dyx=v3?-9.75:-8.75;if(v4)panel(T_daya(),9.5,7.5,WWF+.08,4.15,0,Math.PI/2,3,true);else panel(T_daya(),9.5,7.5,dyx,4.15,NWF+.08,0,3,true);
+ const dyx=v3?-9.75:-8.75;if(v4)panel(v5?T_dayaCollage():T_daya(),9.5,7.5,WWF+.08,4.15,0,Math.PI/2,3,true);else panel(T_daya(),9.5,7.5,dyx,4.15,NWF+.08,0,3,true);
  const heart=new THREE.Group();const hb=[],rh=rng(17),HS=2.2;
  for(let y=-1.25;y<=1.2;y+=.075)for(let x=-1.3;x<=1.3;x+=.075){const X=x*1.05,Y=y+.15;if(Math.pow(X*X+Y*Y-1,3)-X*X*Y*Y*Y>0)continue;
    const r=Math.min(1,Math.hypot(x,y*.9));hb.push([x*HS+(rh()-.5)*.05,y*HS+(rh()-.5)*.05,.06+.55*Math.sqrt(Math.max(0,1-r*r))+(rh()-.5)*.05]);}
@@ -1405,10 +1449,18 @@ function buildWorld(L,E){
  for(let k=1;k<14;k++){const t=k/14,p=curve.getPointAt(t),tg=curve.getTangentAt(t);const ar=new THREE.Mesh(arrowGeo,pathMat);
    ar.position.set(p.x,0.1,p.z);ar.rotation.x=Math.PI/2;ar.rotation.z=Math.atan2(-tg.x,tg.z);ar.scale.set(1,1,.15);world.add(ar);}
  const skin=[0x8D5A3C,0x6E4630,0xA9744F,0x5C3A28],cloth=[0xC2185B,0x23395B,0xE0A030,0x2F6B5A,0x7A2E3A,0x444A5A];
- for(let k=0;k<7;k++){const g=new THREE.Group();const h=k===2||k===5?3.8:5+((k*37)%9)/10;
+ for(let k=0;k<(v5?0:7);k++){const g=new THREE.Group();const h=k===2||k===5?3.8:5+((k*37)%9)/10;
    cyl(.42*h/5.5,.55*h/5.5,h*.62,M(cloth[k%6]),0,h*.31+.4*h/5.5,0,g,14);cyl(.14,.14,.4*h/5.5,M(0x2A2A2A),0,.2*h/5.5,0,g,8);
    const hdp=new THREE.Mesh(new THREE.SphereGeometry(.38*h/5.5,14,10),M(skin[k%4]));hdp.position.y=h*.87;hdp.castShadow=true;g.add(hdp);
    world.add(g);W.people.push({g,t:k/7+0.01,sp:.012+(k%3)*.002});}
+
+ /* tour guides (volunteers), Version 5 */
+ if(v5)GUIDES5(L).forEach(gd=>{const g=new THREE.Group(),h=5.6;
+   cyl(.4,.5,h*.62,M(0x2A2D3A),0,h*.31+.4,0,g,14);cyl(.43,.52,h*.34,M(0xF07A1A,{roughness:.6}),0,h*.47+.4,0,g,14);
+   cyl(.14,.14,.4,M(0x2A2A2A),0,.2,0,g,8);const hd=new THREE.Mesh(new THREE.SphereGeometry(.38,14,10),M(0x8D5A3C));hd.position.y=h*.87;hd.castShadow=true;g.add(hd);
+   box(.32,.42,.04,M(0xFFFFFF),0,h*.6,.5,g);
+   g.position.set(gd.x,0,gd.z);g.rotation.y=gd.side==='N'?0:Math.PI;world.add(g);tag(g,gd.st);
+   chipSprite('GUIDE',new THREE.Vector3(gd.x,6.4,gd.z),.7,'#F07A1A','#FFFFFF',world);});
 
  /* station labels and the selection ring */
  S.forEach((s,i)=>{if((HIDE[L.id]||[]).includes(i))return;const num=i===0?'IN':i===9?'OUT':i===10?'ART':String(i).padStart(2,'0');const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:stationLabelTex(v4&&i===9?'MSM Mural':s.short,num),depthTest:false,transparent:true}));
@@ -1480,7 +1532,7 @@ function buildWorld(L,E){
  return W;}
 
 /* ================= page UI: tabs, station rail, space table, drawings, materials ================= */
-let VER='v1';try{if(location.hash==='#v2')VER='v2';if(location.hash==='#v3')VER='v3';if(location.hash==='#v4')VER='v4';if(location.hash==='#v5')VER='v5';}catch(e){}
+let VER='v5';try{if(location.hash==='#v1')VER='v1';if(location.hash==='#v2')VER='v2';if(location.hash==='#v3')VER='v3';if(location.hash==='#v4')VER='v4';if(location.hash==='#v5')VER='v5';}catch(e){}
 let EVAL=evaluate(LAYOUTS[VER]);
 let current=0;
 const $=(id)=>document.getElementById(id);
@@ -1500,11 +1552,52 @@ function spaceLine(i){const r=resFor(i);if(!r)return '';
   if(r.aisle==='X'&&r.note)return '<div class="space"><span class="pill ok">'+(LAYOUTS[VER].rope?'4′-0″ exit':'open floor')+'</span> '+r.note+'.</div>';
   if(r.aisle==='X')return '<div class="space"><span class="pill ok">4′-0″ exit</span> Visitors at the Diya Wall stand in the exit area; the 4 ft opening to Mandir stays clear.</div>';
   return '<div class="space"><span class="pill '+r.status+'">'+(r.min.clear>0?fmt(r.min.clear):'0′-0″')+' walkway</span> '+STATUS_TXT[r.status]+(r.min.clear>0?'':' (activity zones overlap)')+'</div>';}
+/* ---------- review package (always Version 5, the final layout) ---------- */
+const EN=(x)=>'E '+fmt(x+20),SO=(z)=>'S '+fmt(z+10);
+const PARTS5=[
+ ['Entrance (W8)','Main sign','3′-10″ × 3′-10″','Center 5′-5″ above the floor'],
+ ['Entrance (W8)','Passport holder, 3 pockets','about 3′-10″ wide','Pockets at 2′-0″ to 3′-0″'],
+ ['Santosh (W2)','Glow wall: black dry-erase vinyl + UV paint tree','8′-0″ × 7′-0″','0′-11″ to 7′-11″'],
+ ['Santosh (W2)','Marker ledge, 6″ deep','6′-0″ long','Top at 3′-0″'],
+ ['Aadar (W1)','75″ TV, low-profile mount','about 5′-5½″ × 3′-1″','Center 5′-3″'],
+ ['Aadar (W1)','Story strip under the screen','6′-5″ × 1′-4″','Center 2′-7″'],
+ ['Daya (W3)','BAPS Charities photo collage backdrop (no text; center left clear)','9′-6″ × 7′-6″','0′-5″ to 7′-11″'],
+ ['Daya (W3)','Rose heart on ¾″ plywood backer, about 450 roses','about 4′-7″ wide × 4′-11″ tall, 7″ deep','Center 4′-4″'],
+ ['Kshama (W4)','Story panel','6′-0″ × 7′-0″','0′-11″ to 7′-11″'],
+ ['Kshama (W4)','Writing ledge + acrylic note tank','ledge 1′-11″ wide · tank 38 × 48 × 17 in','In front of the panel, west half'],
+ ['Dharma (W5)','Story panel','6′-0″ × 7′-0″','0′-11″ to 7′-11″'],
+ ['Dharma (W5)','Kavad rack, bamboo pole, 2 baskets, anti-slip mat','7′-0″ wide · mat 3 × 6 ft','On the floor in front of the panel'],
+ ['Sankalp (W6)','Velcro target on ¾″ backer','4′-0″ diameter','Center 4′-7″'],
+ ['Sankalp (W6)','Floor decal, throw lines at 3′-6″ and 2′-6″','3′-6″ × 4′-6″','On the floor in front of the target, no ropes'],
+ ['MSM mural (W7)','Mahant Swami Maharaj mural (placeholder)','8′-0″ × 7′-0″','0′-11″ to 7′-11″'],
+ ['Each station wall','Value poster, black, name + pronunciation + paragraph','2′-0″ × 7′-0″ (× 6)','0′-11″ to 7′-11″, right of each station as you face it'],
+ ['Center','Stanchions with red rope, straight line','5 posts · 4 ropes, about 26 ft','Rope at about 2′-9″'],
+ ['Exit','Card rack for the take-home value cards','about 1′-6″ wide','Beside the exit, by the mural']];
+function wallOf(x,z){let best=null,bd=1.6;wallsV5(LAYOUTS.v5).forEach(w=>{const s0=w.x0!=null?w.x0:w.tag[0]-w.len/2;
+  if(w.rot){if(z<s0-.5||z>s0+w.len+.5)return;const d=Math.abs(x-w.tag[0]);if(d<bd){bd=d;best=w;}}
+  else{const a=w.entrance?w.tag[0]-w.len/2:s0;if(x<a-.5||x>a+w.len+.5)return;const d=Math.abs(z-w.tag[1]);if(d<bd){bd=d;best=w;}}});return best;}
+function renderReview(){const L=LAYOUTS.v5,Wl=wallsV5(L);const row=(c)=>'<tr>'+c.map((v,k)=>'<td'+(k===0?' class="num"':'')+'>'+v+'</td>').join('')+'</tr>';
+  $('rvWalls').innerHTML='<thead><tr><th>Tag</th><th>Wall</th><th>Size (W × H × T)</th><th>Built from 4 ft flats</th><th>T-feet</th><th>Centerline</th><th>Carries</th></tr></thead><tbody>'+
+   Wl.map(w=>{const pos=w.rot?(EN(w.tag[0])+' · '+SO(w.x0)+' to '+SO(w.x0+w.len)):(w.entrance?(EN(w.tag[0]-2)+' to '+EN(w.tag[0]+2)+' · '+SO(w.tag[1])):(EN(w.x0)+' to '+EN(w.x0+w.len)+' · '+SO(w.tag[1])));
+    return row(['<b>'+w.id+'</b>',esc(w.name),fmt(w.len)+' × '+fmt(w.h)+' × '+w.t,esc(w.flats),String(w.feet||2),pos,esc(w.faces)]);}).join('')+
+   row(['<b>—</b>','Pipe-and-drape edge','about 112 ft × 8′-0″','rental','—','Along the 40 × 20 line','Closes the edges and the gaps between walls; 4′-0″ entry and exit left open'])+'</tbody>';
+  $('rvParts').innerHTML='<thead><tr><th>Where</th><th>Part</th><th>Size</th><th>Mounting height</th></tr></thead><tbody>'+PARTS5.map(p=>'<tr><td>'+p.map(esc).join('</td><td>')+'</td></tr>').join('')+'</tbody>';
+  const Lt=lightsFor(L),TY={warm:'Warm clamp spot, PAR38 3000K',uv:'UV LED wash',up:'Battery uplight (red)'};
+  $('rvLights').innerHTML='<thead><tr><th>#</th><th>Station / aims at</th><th>Fixture</th><th>Mounted</th><th>Fixture position</th><th>Aim point</th></tr></thead><tbody>'+
+   Lt.map((o,k)=>{const w=o.f[1]>7?wallOf(o.wall?o.wall[0]:o.t[0],o.wall?o.wall[1]:o.t[2]):null;
+    const mount=o.type==='up'?'On the floor, battery':'Short arm off the top of '+(w?w.id+' ('+esc(w.name)+')':'the wall');
+    return row([String(k+1),esc(o.lbl||''),TY[o.type],mount,EN(o.f[0])+' · '+SO(o.f[2])+' · '+fmt(o.f[1])+' high',EN(o.t[0])+' · '+SO(o.t[2])+' · '+fmt(o.t[1])+' high']);}).join('')+'</tbody>';
+  const wc=Lt.filter(o=>o.type==='warm').length,uc=Lt.filter(o=>o.type==='uv').length,upc=Lt.filter(o=>o.type==='up').length;
+  $('rvLightNote').textContent=wc+' warm spots, '+uc+' UV washes and '+upc+' floor uplight ('+Lt.length+' fixtures). No floor lights at stations with an activity (Santosh, Kshama, Dharma, Sankalp); the only floor light is the red uplight under the Daya heart. Every spot hangs on a short arm off a wall top at 8′-9″, so no stands or cords sit on the floor.';
+  $('rvGuides').innerHTML='<thead><tr><th>#</th><th>Station</th><th>Standing spot</th><th>Where</th><th>What they do</th></tr></thead><tbody>'+
+   GUIDES5(L).map((g,k)=>row([String(k+1),'<b>'+esc(stName(g.st))+'</b>',EN(g.x)+' · '+SO(g.z),esc(g.where),esc(g.job)])).join('')+'</tbody>';
+  const E5=evaluate(L);$('rvWalk').innerHTML='<thead><tr><th>Station</th><th>Narrowest walkway</th><th>Status</th></tr></thead><tbody>'+
+   E5.R.map(r=>'<tr><td>'+esc(stName(r.st))+'</td><td class="num">'+fmt(r.min.clear)+'</td><td><span class="pill '+r.status+'">'+STATUS_TXT[r.status]+'</span></td></tr>').join('')+'</tbody>';}
 const WALLRUN={v5:{
  0:['W8 entrance wall','4′-0″ wide × 8′-0″ high, 2 T-feet','Main sign + passport holder on the whole face'],
  1:['W2 Santosh wall','11′-0″ wide × 8′-0″ high, 3 T-feet','3″ + 8′-0″ × 7′-0″ glow wall + 3″ gap + 2′-0″ × 7′-0″ poster + 6″; 6′-0″ marker ledge below'],
  2:['W1 Aadar wall','9′-0″ wide × 8′-0″ high, 2 T-feet','2″ + 6′-5″ story strip under the 75″ screen + 2″ gap + 2′-0″ × 7′-0″ poster + 3″'],
- 3:['W3 Daya wall','12′-0″ wide × 8′-0″ high, 3 T-feet','3″ + 2′-0″ × 7′-0″ poster + 3″ gap + 9′-6″ × 7′-6″ rose-heart backdrop with both stories'],
+ 3:['W3 Daya wall','12′-0″ wide × 8′-0″ high, 3 T-feet','3″ + 2′-0″ × 7′-0″ poster + 3″ gap + 9′-6″ × 7′-6″ BAPS Charities photo collage with the rose heart at its center'],
  5:['W4 Kshama wall','9′-6″ wide × 8′-0″ high, 2 T-feet','3″ + 2′-0″ × 7′-0″ poster + 1′-0″ + 6′-0″ × 7′-0″ panel + 3″; ledge and note tank stand in front'],
  6:['W5 Dharma wall','9′-6″ wide × 8′-0″ high, 2 T-feet','3″ + 2′-0″ × 7′-0″ poster + 9″ + 6′-0″ × 7′-0″ panel + 6″; kavad rack in front'],
  7:['W6 Sankalp wall','6′-6″ wide × 8′-0″ high, 2 T-feet','3″ + 2′-0″ × 7′-0″ poster + 3″ + 3′-6″ for the 4′-0″ target (it overhangs the lane slightly) + 6″; 4′-6″ lane in front'],
@@ -1598,6 +1691,7 @@ function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(x+20)*s,Z=z
   o.push('<polyline class="sv-path" points="'+PATHS[L.id].map(p=>[p[0],Math.max(-10.6,Math.min(10.6,p[1]))]).map(p=>X(p[0]).toFixed(1)+','+Z(p[1]).toFixed(1)).join(' ')+'"/>');
   // lights
   lightsFor(L).forEach(l=>{const c=l.type==='uv'?'sv-uvl':'sv-warm';o.push('<circle cx="'+X(l.f[0]).toFixed(1)+'" cy="'+Z(l.f[2]).toFixed(1)+'" r="'+(l.type==='up'?3:4)+'" class="'+c+'"'+(l.type==='up'?' fill-opacity=".55"':'')+'/>');});
+  if(L.free)GUIDES5(L).forEach(g=>{o.push('<circle cx="'+X(g.x).toFixed(1)+'" cy="'+Z(g.z).toFixed(1)+'" r="7" fill="#F07A1A" stroke="#fff" stroke-width="1.5"/>');t(X(g.x),Z(g.z)+3.5,'G','',' text-anchor="middle" style="fill:#fff;font:700 9.5px var(--f-mono)"');});
   // station names
   const PL=L.rope?{0:[17.25,L.SN-3.2],1:[0,L.NWF+1.2],2:[-12.9,L.NWF+1.2],3:[L.WWF+2.35,-1.6],5:[-10.5,L.SWF-1.2],6:[1.5,L.SWF-1.2],7:[L.sk,L.SWF-1.2],9:[L.EWF-2.35,1.4]}:L.open?{0:[17.25,L.SN-1.2],1:[8.5,L.NWF+1.7],2:[-.25,L.NWF+1.5],3:[-9.75,L.NWF+1.5],4:[-17,1.6],5:[-12.5,L.SWF-1.6],6:[-5,L.SWF-1.6],7:[8,L.SWF-1.6],8:[1.25,L.SWF-1.6],9:[17.25,L.SS+1.2],10:[17.6,-7.3]}:{0:[17,L.SN-1.3],1:[9,L.NWF+1.2],2:[0,L.NWF+(v1?2.2:1.2)],3:[-8.75,L.NWF+1.2],4:[-17.6,L.spineZ+(v1?-3:0)],5:[v1?-10:-9,L.SWF-1.2],6:[v1?-4:-3,L.SS+1.2],7:[v1?2:5.5,L.SWF-1.2],8:[v1?10:13,L.SS+1.2],9:[18.1,5],10:[v1?-6.5:-7.6,L.SN-1.2]};
   Object.keys(PL).forEach(k=>{const i=+k,p=PL[k];t(X(p[0]),Z(p[1])+4,(i===10?(L.open?'Today':'Mural'):i===9&&L.rope?'MSM mural':S[i].short).toUpperCase(),'sv-h sv-halo',' text-anchor="middle" letter-spacing="0.06em"');});
@@ -1624,6 +1718,7 @@ function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(x+20)*s,Z=z
   o.push('<circle cx="'+lx+'" cy="'+(by-3)+'" r="4" class="sv-warm"/>');t(lx+9,by+1,'Spot','sv-m');lx+=48;
   o.push('<circle cx="'+lx+'" cy="'+(by-3)+'" r="4" class="sv-uvl"/>');t(lx+9,by+1,'UV','sv-m');lx+=40;
   o.push('<line x1="'+lx+'" y1="'+(by-3)+'" x2="'+(lx+22)+'" y2="'+(by-3)+'" class="sv-path"/>');t(lx+28,by+1,'Path','sv-m');
+  if(L.free){lx+=70;o.push('<circle cx="'+lx+'" cy="'+(by-3)+'" r="6" fill="#F07A1A"/>');t(lx+11,by+1,'Tour guide','sv-m');}
   o.push('</svg>');return o.join('');}
 
 /* ---------- section A–A: across both aisles at x = 1′-6″ (through the Aadar screen and Sankalp) ---------- */
@@ -1719,7 +1814,7 @@ function renderWalls(){const L=LAYOUTS[VER],Wl=wallsFor(L);$('wallNote').textCon
   $('wallTable').innerHTML='<thead><tr><th>Tag</th><th>Wall</th><th>Length</th><th>Height</th><th>Thickness</th><th>Built from 4 ft flats</th><th>What hangs on it</th></tr></thead><tbody>'+
    Wl.map(w=>'<tr><td class="num"><b>'+w.id+'</b></td><td>'+esc(w.name)+'<br><small>'+esc(w.type)+'</small></td><td class="num">'+fmt(w.len)+'</td><td class="num">'+fmt(w.h)+'</td><td class="num">'+w.t+'</td><td class="num">'+esc(w.flats)+'</td><td>'+esc(w.faces)+'</td></tr>').join('')+
    (L.free?'<tr><td class="num"><b>—</b></td><td>Pipe-and-drape edge</td><td class="num">about 112 ft</td><td class="num">8′-0″</td><td></td><td>rental</td><td>Along the 40 × 20 line, closing the gaps between walls · entry 4′-0″ from Festival (north-east) and exit 4′-0″ to Mandir (south-east) left open</td></tr>':(L.open?'<tr><td class="num"><b>—</b></td><td>Pipe-and-drape edge</td><td class="num">about 112 ft</td><td class="num">8′-0″</td><td></td><td>rental</td><td>Entry and exit openings 4′-0″ each, at the east end</td></tr>':'<tr><td class="num"><b>—</b></td><td>Openings</td><td class="num">4′-0″ each</td><td class="num">full height</td><td></td><td></td><td>Entry from Festival (north, between W1 and W2) · exit to Mandir (south, between W5 and W4)</td></tr>'))+'</tbody>';}
-function renderAll(){EVAL=evaluate(LAYOUTS[VER]);renderIntro();renderList();renderDetail(current);renderSpace();renderWalls();
+function renderAll(){renderReview();EVAL=evaluate(LAYOUTS[VER]);renderIntro();renderList();renderDetail(current);renderSpace();renderWalls();
   const L=LAYOUTS[VER];$('planTitle').textContent='Plan · '+L.name;$('plan').innerHTML=planSVG(L,EVAL);
   $('secTitle').textContent='Section A–A · '+L.name+(L.open?' · cut across the room through the Aadar and Tyag walls':L.rope?' · cut across both aisles through the Aadar screen center':' · cut across both aisles 1′-6″ east of the Aadar screen center');$('section').innerHTML=sectionSVG(L,EVAL);renderBOM();}
 function setVersion(v){if(v===VER)return;VER=v;renderAll();try{history.replaceState(null,'','#'+v)}catch(e){}if(window.__mulyo)window.__mulyo.rebuild();}
