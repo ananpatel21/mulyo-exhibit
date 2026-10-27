@@ -364,7 +364,7 @@ const LAYOUTS={
  v1:mkLayout({id:'v1',name:'Version 1',sub:'Symmetric',spineZ:0,spineX0:-12}),
  v2:mkLayout({id:'v2',name:'Version 2',sub:'Asymmetric',spineZ:-1,spineX0:-11.5}),
  v4:mkLayout({id:'v4',name:'Version 4',sub:'Open aisles',spineZ:-1,spineX0:-11,rope:true,sk:12,bump:3.5,lane:8.5,throw:7,kids:5,laneRope:true,shift:(x)=>x>10.25&&x<13.75?3.5:0}),
- v5:mkLayout({id:'v5',name:'Version 5',sub:'Separate walls',spineZ:-1,spineX0:-11,rope:true,free:true,NWF:-8.75,SWF:8.75,WWF:-18.75,EWF:18.75,sk:11,bump:2.5,lane:6.75,throw:5.5,kids:4,laneRope:false,shift:(x)=>x>9.25&&x<12.75?2.5:0}),
+ v5:mkLayout({id:'v5',name:'Version 5',sub:'Separate walls',spineZ:-1,spineX0:-11,rope:true,free:true,NWF:-8.75,SWF:8.75,WWF:-18.75,EWF:18.75,sk:11,bump:0,lane:4.5,throw:3.5,kids:2.5,laneRope:false,shift:()=>0}),
  v3:mkLayout({id:'v3',name:'Version 3',sub:'Open hall',spineZ:0,spineX0:14.75,NWF:-8.75,SWF:8.75,WWF:-18.75,EWF:19.75,open:true})
 };
 const INTRO={
@@ -379,7 +379,7 @@ const CHANGES={
   '<b>Walls:</b> no perimeter walls. 8 freestanding walls, 4 to 12 ft long, one per station plus the entrance wall and the mural wall. Sizes are in the wall schedule below.',
   '<b>Edges:</b> black pipe-and-drape along the 40 × 20 line closes the room and the gaps between walls.',
   '<b>Aisles:</b> walls stand 1′-3″ in from the edge for their T-feet: north aisle 7′-6″, south aisle 9′-6″, west turn 7′-9″.',
-  '<b>Sankalp:</b> moves 1 ft west so the exit keeps 3′-11″ beside the mural wall. The lane is shorter (6′-9″ deep, throw line at 5′-6″, kids at 4′-0″) and has no ropes, so the walkway behind the throwers (5′-6″) and the north aisle beside the rope bend (5′-3″) stay as wide as Version 4.',
+  '<b>Sankalp:</b> moves 1 ft west so the exit keeps 3′-11″ beside the mural wall. The red-rope line runs straight, with no bend, so the north aisle stays 7′-6″ the whole way. The lane is shorter to keep a 5′-0″ walkway behind the throwers: 4′-6″ deep, throw line at 3′-6″, kids at 2′-6″, no ropes on the lane.',
   '<b>Same as Version 4:</b> station order, value posters, red-rope line, entrance wall, MSM mural.'
  ],
  v4:[
@@ -759,7 +759,7 @@ const S4={
 // 2 ft value posters sit to the right of each station (as you face it)
 function postersFor(L){return [[1,'N',5.25],[2,'N',-8.5],[3,'W',-6],[5,'S',-15.5],[6,'S',-3.25],[7,'S',L.sk-3]];}
 const S5={0:{where:'4 ft wall facing the entrance'},1:{where:'Own 11 ft wall, north side'},2:{where:'Own 9 ft wall, north side'},3:{where:'Own 12 ft wall, west end, at the turn'},
- 5:{where:'Own 9 ft 6 in wall, south side'},6:{where:'Own 9 ft 6 in wall, south side'},7:{where:'Own 6 ft 6 in wall, south side, east end',build:'4 ft velcro target mounted to the Sankalp wall, center at 4 ft 7 in, on a ¾ in plywood backer · 3.5 × 8.5 ft floor decal with throw lines at 7 ft and 5 ft · 6 stanchions with red rope along both sides of the lane · 12 velcro balls · 2 × 7 ft value poster on the same wall, to the left of the lane (to the right as you face it).'},
+ 5:{where:'Own 9 ft 6 in wall, south side'},6:{where:'Own 9 ft 6 in wall, south side'},7:{where:'Own 6 ft 6 in wall, south side, east end',act:'Bird’s Eye Toss. The 4 ft target hangs on the Sankalp wall. Visitors step onto the floor decal, say one goal out loud, and throw three velcro balls from the 3 ft 6 in line (kids from 2 ft 6 in). The red-rope line runs straight past, with a 5 ft walkway behind the throwers.',build:'4 ft velcro target mounted to the Sankalp wall, center at 4 ft 7 in, on a ¾ in plywood backer · 3.5 × 4.5 ft floor decal with throw lines at 3 ft 6 in and 2 ft 6 in, no ropes · 12 velcro balls · 2 × 7 ft value poster on the same wall, to the left of the lane (to the right as you face it).'},
  9:{where:'Own 8 ft 6 in wall, east end, at the exit',build:'8 × 7 ft print on its own 8 ft 6 in freestanding wall · photos, quotes and prasangs from BAPS with approval · 2 clamp spots · card rack for the take-home value cards beside the exit.'}};
 function zonesV4(L){const Z=[],z=(o)=>Z.push(Object.assign({kind:'use'},o));
  z({st:2,side:'N',face:'wall',a:-15.625,b:-10.175,obj:.4,use:0,label:'75 in screen'});
@@ -796,7 +796,7 @@ function lightsV4(L){const {NWF,SWF,WWF,EWF,SN}=L,Lt=[];
  Lt.push({type:'up',f:[1.5,.25,SWF-3.6],t:[1.5,4.2,SWF-1],a:.42,i:1.1,lbl:'Kavad'});
  Lt.push({type:'up',f:[WWF+2.15,.25,0],t:[WWF+.15,4.6,0],a:.42,color:0xFF8A8A,i:.9,cone:false,lbl:'Daya red uplight'});
  return Lt;}
-function ropeFor(L){const z=L.spineZ,k=L.sk,b=z-L.bump;return [[-11,z],[-4.4,z],[2.2,z],[k-2.75,z],[k-1.75,b],[k+1.75,b],[15.25,z-.1]];}
+function ropeFor(L){const z=L.spineZ,k=L.sk,b=z-L.bump;if(!L.bump)return [[-11,z],[-4.4,z],[2.2,z],[8.8,z],[15.25,z-.1]];return [[-11,z],[-4.4,z],[2.2,z],[k-2.75,z],[k-1.75,b],[k+1.75,b],[15.25,z-.1]];}
 function laneFor(L){const k=L.sk,S=L.SWF;const m=S-(L.lane/2+.2),e=S-L.lane;return [[k-1.75,S-.35],[k-1.75,m],[k-1.75,e],[k+1.75,S-.35],[k+1.75,m],[k+1.75,e]];}
 function wallsV4(L){const W=[
  {id:'W1',name:'North wall',len:35,h:8,t:'4″',type:'Single-faced',faces:'Aadar screen and Santosh glow wall, each with a 2 ft value poster on its right',tag:[-2.5,-10],rot:0},
@@ -862,7 +862,7 @@ VIEWS.v5=[{p:[17.25,5.6,-7.2],l:[17.25,3.8,-1.25]},{p:[1,5.4,-2.6],l:[1,3.6,-8.7
  {p:[-12,5.6,2.2],l:[-12,3.4,8.2]},{p:[0,5.4,2.2],l:[0,3,8.75]},{p:[10.5,6,-2.8],l:[10.5,3.6,8.75]},{p:[5,5.4,2.2],l:[5,3.6,8.75]},{p:[11.5,5.6,4.5],l:[18.75,3.8,4.5]},{p:[11.5,5.6,4.5],l:[18.75,3.8,4.5]}];
 SPOTS.v5=[[17.25,-4],[1.25,-6.4],[-12.4,-5.6],[-16,-1],[0,0],[-11.5,5.8],[.75,5.6],[11,2.6],[0,0],[16.5,4.5],[16.5,4.5]];
 LBL.v5=[[17.25,11.8,-4],[1.25,11.8,-7],[-11.75,11.8,-6.5],[-16.5,11.8,-1],[0,11.8,0],[-12,11.8,7],[.25,11.8,7],[10,11.8,5],[0,11.8,0],[17,11.8,4.5],[0,11.8,0]];
-PATHS.v5=[[17,-15],[17,-10.5],[16.4,-6.6],[12,-6.6],[8,-5],[0,-5],[-12.9,-5],[-14.8,-4],[-15,-1],[-14,2],[-13,3],[-9,3],[1.5,3],[6,2.9],[7.6,1.6],[9.2,-2.6],[12.8,-2.6],[14.6,1.6],[15.6,5.5],[16.6,8.4],[17,15]];
+PATHS.v5=[[17,-15],[17,-10.5],[16.4,-6.6],[12,-6.6],[8,-5],[0,-5],[-12.9,-5],[-14.8,-4],[-15,-1],[-14,2],[-13,3],[-9,3],[1.5,3],[6,2.9],[8,1.8],[9.2,1.7],[12.8,1.7],[14.6,3],[15.6,5.5],[16.6,8.4],[17,15]];
 /* ================= Version 5: Version 4's layout, one freestanding wall per station ================= */
 function wallsV5(L){const n=L.NWF-.165,s=L.SWF+.165,w=L.WWF-.165,e=L.EWF+.165;const W=[
  {id:'W1',name:'Aadar wall',len:9,h:8,t:'4″',type:'Single-faced, north side, on 2 T-feet',faces:'Story strip under the 75 in screen + value poster',tag:[-11.75,n],rot:0,x0:-16.25},
@@ -890,10 +890,10 @@ function bomV5(L){const B=bomV4(L),Wl=wallsV5(L);
   ['Paint, matte black','gallons (2 coats)',gal+' gal + '+primer+' gal primer','Both faces of every wall, about '+Math.round(paint).toLocaleString()+' sq ft'],
   ['Pipe and drape, black','8 ft tall',drape+' ft','Along the 40 × 20 line, leaving the 4 ft entry and exit open; rent locally']],
   note:'Quantities are planning estimates; have your builder confirm them. Separate walls use '+frames+' flats instead of Version 4’s 31, plus rented drape.'};
- const fix=(x)=>typeof x!=='string'?x:x.replace('anti-slip floor vinyl, 3 ft 6 in × 8 ft 6 in, throw lines at 7 ft and 5 ft','anti-slip floor vinyl, 3 ft 6 in × 6 ft 9 in, throw lines at 5 ft 6 in and 4 ft')
+ const fix=(x)=>typeof x!=='string'?x:x.replace('anti-slip floor vinyl, 3 ft 6 in × 8 ft 6 in, throw lines at 7 ft and 5 ft','anti-slip floor vinyl, 3 ft 6 in × 4 ft 6 in, throw lines at 3 ft 6 in and 2 ft 6 in')
    .replace('4 ft velcro target mounted on the south wall','4 ft velcro target mounted on the Sankalp wall')
-   .replace('Stanchion posts with red rope: 7 down the center, bending north around the throw lane (6 ropes), 6 along both sides of the lane (4 ropes)','Stanchion posts with red rope: 7 down the center, bending north around the throw lane (no ropes on the lane itself)')
-   .replace('13 posts · 10 ropes','7 posts · 6 ropes').replace('Center line and Sankalp lane','Center line');
+   .replace('Stanchion posts with red rope: 7 down the center, bending north around the throw lane (6 ropes), 6 along both sides of the lane (4 ropes)','Stanchion posts with red rope: 5 in a straight line down the center (no ropes on the lane)')
+   .replace('13 posts · 10 ropes','5 posts · 4 ropes').replace('Center line and Sankalp lane','Center line');
  B.rows.forEach(sec=>{sec.r=sec.r.map(row=>row.map(fix));});
  return B;}
 
@@ -1428,9 +1428,9 @@ function buildWorld(L,E){
  const ax=13.7;dim([ax,.15,NWF],[ax,.15,SN],'north aisle '+fmt(L.northW),{off:[0,1.0,0]});
  const sx2=v1?4.3:v4?-10.85:-6.9;dim([sx2,.15,SS],[sx2,.15,SWF],'south aisle '+fmt(L.southW),{off:[0,1.0,0]});
  dim([WWF,.15,L.spineZ],[L.spineX0,.15,L.spineZ],'turn '+fmt(L.turnW),{off:[0,1.0,0]});
- if(v4)dim([-11,3.4,L.spineZ],[L.sk-2.75,3.4,L.spineZ],'red-rope line, bends north around Sankalp',{off:[0,.7,0]});else dim([L.spineX0,8.75,L.spineZ],[EWF,8.75,L.spineZ],'spine '+fmt(L.spineLen)+' × 6″',{off:[0,.7,0]});
+ if(v4)dim([-11,3.4,L.spineZ],[L.bump?L.sk-2.75:15.25,3.4,L.spineZ],L.bump?'red-rope line, bends north around Sankalp':'red-rope line, straight',{off:[0,.7,0]});else dim([L.spineX0,8.75,L.spineZ],[EWF,8.75,L.spineZ],'spine '+fmt(L.spineLen)+' × 6″',{off:[0,.7,0]});
  dim([15,.12,-10.6],[19,.12,-10.6],'entry 4′-0″',{off:[0,.7,0]});dim([15,.12,10.6],[19,.12,10.6],'exit 4′-0″',{off:[0,.7,0]});
- if(v5)dim([L.sk+.9,.25,L.spineZ-L.bump],[L.sk+.9,.25,NWF],'north aisle at the bend '+fmt(L.spineZ-L.bump-NWF),{off:[0,.7,0]});
+ if(v5&&L.bump)dim([L.sk+.9,.25,L.spineZ-L.bump],[L.sk+.9,.25,NWF],'north aisle at the bend '+fmt(L.spineZ-L.bump-NWF),{off:[0,.7,0]});
  }else{
   dim([13.6,.15,NWF],[13.6,.15,SWF],'open floor, wall face to wall face '+fmt(SWF-NWF),{off:[0,1.0,0]});
   dim([17.25,.15,SN],[17.25,.15,NWF-1.25],'entry lane '+fmt(SN-NWF+1),{off:[0,.9,0]});
@@ -1507,7 +1507,7 @@ const WALLRUN={v5:{
  3:['W3 Daya wall','12′-0″ wide × 8′-0″ high, 3 T-feet','3″ + 2′-0″ × 7′-0″ poster + 3″ gap + 9′-6″ × 7′-6″ rose-heart backdrop with both stories'],
  5:['W4 Kshama wall','9′-6″ wide × 8′-0″ high, 2 T-feet','3″ + 2′-0″ × 7′-0″ poster + 1′-0″ + 6′-0″ × 7′-0″ panel + 3″; ledge and note tank stand in front'],
  6:['W5 Dharma wall','9′-6″ wide × 8′-0″ high, 2 T-feet','3″ + 2′-0″ × 7′-0″ poster + 9″ + 6′-0″ × 7′-0″ panel + 6″; kavad rack in front'],
- 7:['W6 Sankalp wall','6′-6″ wide × 8′-0″ high, 2 T-feet','3″ + 2′-0″ × 7′-0″ poster + 3″ + 3′-6″ for the 4′-0″ target (it overhangs the lane slightly) + 6″; 6′-9″ lane in front'],
+ 7:['W6 Sankalp wall','6′-6″ wide × 8′-0″ high, 2 T-feet','3″ + 2′-0″ × 7′-0″ poster + 3″ + 3′-6″ for the 4′-0″ target (it overhangs the lane slightly) + 6″; 4′-6″ lane in front'],
  9:['W7 MSM mural wall','8′-6″ wide × 8′-0″ high, 2 T-feet','3″ + 8′-0″ × 7′-0″ mural placeholder + 3″']},
  v4:{
  0:['W7 entrance wall','4′-0″ wide × 8′-0″ high','Main sign + passport holder on the whole face'],
