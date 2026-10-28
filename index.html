@@ -386,7 +386,7 @@ const INTRO={
 };
 const CHANGES={
  v5:[
-  '<b>Kshama and Dharma:</b> 8 × 8 ft walls; their story panels are the backdrop, with no side poster.',
+  '<b>Kshama and Dharma:</b> 8 × 8 ft walls; their backdrops use the same black definition design as the value posters, 7 ft 6 in square, with no side poster.',
   '<b>Aadar light:</b> the spot that lit the TV now lights the Aadar definition sign.',
   '<b>Sign lights:</b> every value poster, the main sign and the mural are lit up to the top of the sign.',
   '<b>Walls:</b> no perimeter walls. 8 freestanding walls, 4 to 12 ft long, one per station plus the entrance wall and the mural wall. Sizes are in the wall schedule below.',
@@ -777,7 +777,7 @@ const S5={3:{where:'Own 12 ft wall, west end, at the turn',foot:'9 ft 6 in × 7 
   build:'9 ft 6 in × 7 ft 6 in printed collage backdrop on the Daya wall (photos from BAPS Charities, with approval; keep the center clear for the heart) · rose heart about 4 ft 7 in wide on a ¾ in plywood backer, center at 4 ft 4 in · 2 × 7 ft value poster to its right · one clamp spot on the heart, one on the poster, one red battery uplight on the floor.',
   take:'Compassion is not just feeling someone’s pain; it is doing something about it.'},
  0:{where:'4 ft wall facing the entrance'},1:{where:'Own 11 ft wall, north side',build:'8 × 7 ft black writing surface (black dry-erase vinyl or chalkboard paint) on the Santosh wall · tree outline in UV-reactive paint · 2 UV LED wash lights on arms off the wall top (no floor lights) · 6 ft marker ledge, 6 in deep, on shelf brackets at 3 ft · 40+ fluorescent markers · tour guide stands at the west end of the wall.'},2:{where:'Own 9 ft wall, north side'},3:{where:'Own 12 ft wall, west end, at the turn'},
- 5:{where:'Own 8 × 8 ft wall, south side, story panel as its backdrop'},6:{where:'Own 8 × 8 ft wall, south side, story panel as its backdrop',build:'6 × 7 ft story panel printed on the Dharma wall, centered (no side poster) · 7 ft bamboo kavad on a rack with two baskets and 10 lb weights · 3 × 6 ft anti-slip mat · lit from the wall top only (no floor uplight) · tour guide stands just west of the wall to hand the kavad over and spot lifters.'},7:{where:'Own 6 ft 6 in wall, south side, east end',act:'Bird’s Eye Toss. The 4 ft target hangs on the Sankalp wall. Visitors step onto the floor decal, say one goal out loud, and throw three velcro balls from the 3 ft 6 in line (kids from 2 ft 6 in). The red-rope line runs straight past, with a 5 ft walkway behind the throwers.',build:'4 ft velcro target mounted to the Sankalp wall, center at 4 ft 7 in, on a ¾ in plywood backer · 3.5 × 4.5 ft floor decal with throw lines at 3 ft 6 in and 2 ft 6 in, no ropes · 12 velcro balls · tour guide stands at the west edge of the decal, by the throw line, to hand out balls and keep the line moving · 2 × 7 ft value poster on the same wall, to the left of the lane (to the right as you face it).'},
+ 5:{where:'Own 8 × 8 ft wall, south side, definition panel as its backdrop'},6:{where:'Own 8 × 8 ft wall, south side, definition panel as its backdrop',build:'7 ft 6 in square definition panel on the Dharma wall, centered, same black design as the value posters (no side poster) · 7 ft bamboo kavad on a rack with two baskets and 10 lb weights · 3 × 6 ft anti-slip mat · lit from the wall top only (no floor uplight) · tour guide stands just west of the wall to hand the kavad over and spot lifters.'},7:{where:'Own 6 ft 6 in wall, south side, east end',act:'Bird’s Eye Toss. The 4 ft target hangs on the Sankalp wall. Visitors step onto the floor decal, say one goal out loud, and throw three velcro balls from the 3 ft 6 in line (kids from 2 ft 6 in). The red-rope line runs straight past, with a 5 ft walkway behind the throwers.',build:'4 ft velcro target mounted to the Sankalp wall, center at 4 ft 7 in, on a ¾ in plywood backer · 3.5 × 4.5 ft floor decal with throw lines at 3 ft 6 in and 2 ft 6 in, no ropes · 12 velcro balls · tour guide stands at the west edge of the decal, by the throw line, to hand out balls and keep the line moving · 2 × 7 ft value poster on the same wall, to the left of the lane (to the right as you face it).'},
  9:{where:'Own 8 ft 6 in wall, east end, at the exit',build:'8 × 7 ft print on its own 8 ft 6 in freestanding wall · photos, quotes and prasangs from BAPS with approval · 2 clamp spots · card rack for the take-home value cards beside the exit.'}};
 function zonesV4(L){const Z=[],z=(o)=>Z.push(Object.assign({kind:'use'},o));
  z({st:2,side:'N',face:'wall',a:-15.625,b:-10.175,obj:.4,use:0,label:'75 in screen'});
@@ -890,14 +890,14 @@ function wallsV5(L){const n=L.NWF-.165,s=L.SWF+.165,w=L.WWF-.165,e=L.EWF+.165;co
  {id:'W1',name:'Aadar wall',len:9,h:8,t:'4″',type:'Single-faced, north side, on 2 T-feet',faces:'Story strip under the 75 in screen + value poster',tag:[-11.75,n],rot:0,x0:-16.25},
  {id:'W2',name:'Santosh wall',len:11,h:8,t:'4″',type:'Single-faced, north side, on 3 T-feet',faces:'8 × 7 ft glow wall + value poster; marker ledge below',tag:[1.25,n],rot:0,x0:-4.25},
  {id:'W3',name:'Daya wall',len:12,h:8,t:'4″',type:'Single-faced, west end, on 3 T-feet',faces:'Value poster + 9 ft 6 in BAPS Charities photo collage with the rose heart at its center',tag:[w,-1.25],rot:1,x0:-7.25},
- {id:'W4',name:'Kshama wall',len:8,h:8,t:'4″',type:'Single-faced, south side, on 2 T-feet',faces:'Story panel as the backdrop (6 × 7 ft, centered); ledge and note tank in front; no side poster',tag:[-12.75,s],rot:0,x0:-16.75},
- {id:'W5',name:'Dharma wall',len:8,h:8,t:'4″',type:'Single-faced, south side, on 2 T-feet',faces:'Story panel as the backdrop (6 × 7 ft, centered); kavad rack in front; no side poster',tag:[1.5,s],rot:0,x0:-2.5},
+ {id:'W4',name:'Kshama wall',len:8,h:8,t:'4″',type:'Single-faced, south side, on 2 T-feet',faces:'Definition backdrop, 7 ft 6 in square, centered; ledge and note tank in front; no side poster',tag:[-12.75,s],rot:0,x0:-16.75},
+ {id:'W5',name:'Dharma wall',len:8,h:8,t:'4″',type:'Single-faced, south side, on 2 T-feet',faces:'Definition backdrop, 7 ft 6 in square, centered; kavad rack in front; no side poster',tag:[1.5,s],rot:0,x0:-2.5},
  {id:'W6',name:'Sankalp wall',len:6.5,h:8,t:'4″',type:'Single-faced, south side, on 2 T-feet',faces:'Value poster + 4 ft target at the head of the lane',tag:[10,s],rot:0,x0:6.75},
  {id:'W7',name:'MSM mural wall',len:8.5,h:8,t:'4″',type:'Single-faced, east end, on 2 T-feet',faces:'8 × 7 ft Mahant Swami Maharaj mural (placeholder) by the exit',tag:[e,4.5],rot:1,x0:.25},
  {id:'W8',name:'Entrance wall (main sign)',len:4,h:8,t:'4″',type:'Single-faced, facing the entrance, on 2 T-feet',faces:'Main sign + passport holder',tag:[17.25,L.SN+.165],rot:0,entrance:true}];
  W.forEach(x=>{x.flats=flatsTxt(x.len);x.feet=x.len>10?3:2;});return W;}
 function bomV5(L){const B=bomV4(L),Wl=wallsV5(L);
- B.rows.forEach(sec=>{sec.r=sec.r.map(row=>row[0]==='Value posters'?['Value posters','2 × 7 ft, to the right of Santosh, Aadar, Daya and Sankalp (replaces the header banners)','4']:row[0]==='Kshama, Dharma panels'?['Kshama, Dharma backdrops','6 × 7 ft, centered on the 8 × 8 ft walls (no side poster)','2']:row);});
+ B.rows.forEach(sec=>{sec.r=sec.r.map(row=>row[0]==='Value posters'?['Value posters','2 × 7 ft, to the right of Santosh, Aadar, Daya and Sankalp (replaces the header banners)','4']:row[0]==='Kshama, Dharma panels'?['Kshama, Dharma backdrops','7 ft 6 in square, definition layout, centered on the 8 × 8 ft walls (no side poster)','2']:row);});
  const frames=Wl.reduce((a,w)=>a+Math.ceil(w.len/4-1e-9),0),feet=Wl.reduce((a,w)=>a+w.feet,0),run=Wl.reduce((a,w)=>a+w.len,0);
  const studs=Math.ceil((frames*4+feet*1+6+2+2)*1.1),paint=run*8*2,gal=Math.ceil(paint*2/350),primer=Math.ceil(paint/350),drape=40+40+20+20-8;
  B.rows[0]={title:'Walls and structure',cols:['Item','Size','Qty','Used for'],r:[
@@ -1211,6 +1211,13 @@ const T_dayaCollage=()=>tex('dayaCol',()=>canvasTex(1900,1500,(c,W,H)=>{c.fillSt
     for(let dy=0;dy<h;dy++)for(let dx=0;dx<w;dx++)used.add((x+dx)+','+(y+dy));
     const pad=8;photo(x*cw+pad,y*ch+pad,w*cw-2*pad,h*ch-2*pad);}}));
 
+// Version 5: 8 × 8 ft backdrops for Kshama and Dharma, same design as the value definition panels (black, name, pronunciation, Devanagari, paragraph)
+function T_defSq(si){return tex('defSq'+si,()=>{const d=SIGNTXT[si];return canvasTex(1600,1600,(c,W,H)=>{c.fillStyle='#000';c.fillRect(0,0,W,H);
+  c.fillStyle='#fff';c.font='600 250px '+PF;c.fillText(d[0],120,400);
+  c.font='400 84px '+PF;c.fillStyle='#e8e8e8';c.fillText(d[1].trim(),126,510);c.font='400 96px "Noto Sans Devanagari",'+PF;c.fillText(d[2],126,630);
+  c.fillStyle='#fff';c.fillRect(126,700,160,8);c.fillStyle='#e8e8e8';c.font='400 64px '+PF;wrap(c,d[3],126,800,1350,88,9);
+  c.fillStyle='#8a8a8a';c.font='400 40px '+PF;c.fillText('LIGHT BEYOND LAMPS · DIWALI 2026',126,H-100);});});}
+
 /* ================= world: every object that depends on the layout ================= */
 let G=null;
 const M=(c,o)=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.85},o||{}));
@@ -1309,7 +1316,7 @@ function buildWorld(L,E){
  }
  /* 5 Kshama: panel + note tank + writing ledge */
  const kx=v1?-10:v3?-12.5:v4?-10.5:-9;
- panel(T_kshama(),6,7,v5?-12.75:kx,4.4,SWF-.08,Math.PI,5);
+ if(v5)panel(T_defSq(5),7.5,7.5,-12.75,4,SWF-.08,Math.PI,5,true);else panel(T_kshama(),6,7,kx,4.4,SWF-.08,Math.PI,5);
  const tank=new THREE.Group();const TW=3.2,TH=4,TD=1.4,TB=1.5;
  box(TW+.4,TB,TD+.4,M(0x2A1E22),0,TB/2,0,tank);
  const glass=new THREE.Mesh(new THREE.BoxGeometry(TW,TH,TD),new THREE.MeshStandardMaterial({color:0xDDEEF5,transparent:true,opacity:.18,roughness:.05,metalness:.1,depthWrite:false}));
@@ -1336,7 +1343,7 @@ function buildWorld(L,E){
 
  /* 6 Dharma: panel + kavad rack */
  const dx=v1?-4:v3?-5:v4?1.5:-3;
- if(v3||v4)panel(T_dharma(),6,7,dx,4.4,SWF-.08,Math.PI,6);else panel(T_dharma(),6,7,dx,4.4,SS+.08,0,6);
+ if(v5)panel(T_defSq(6),7.5,7.5,dx,4,SWF-.08,Math.PI,6,true);else if(v3||v4)panel(T_dharma(),6,7,dx,4.4,SWF-.08,Math.PI,6);else panel(T_dharma(),6,7,dx,4.4,SS+.08,0,6);
  const kav=new THREE.Group();const wood=M(0x8A6A43);box(.25,4.4,.25,wood,-2.2,2.2,0,kav);box(.25,4.4,.25,wood,2.2,2.2,0,kav);box(5.2,.15,1.6,wood,0,.08,0,kav);
  cyl(.12,.12,7,M(0xC9A86A),0,4.5,0,kav,12).rotation.z=Math.PI/2;
  [-3.2,3.2].forEach(x=>{cyl(.75,.6,.8,M(0xA9804F),x,2.6,0,kav,16);[0,2.1,4.2].forEach(a=>cyl(.02,.02,1.6,M(0x5A4630),x+Math.cos(a)*.55,3.65,Math.sin(a)*.55,kav,4));});
@@ -1569,9 +1576,9 @@ const PARTS5=[
  ['Aadar (W1)','Story strip under the screen','6′-5″ × 1′-4″','Center 2′-7″'],
  ['Daya (W3)','BAPS Charities photo collage backdrop (no text; center left clear)','9′-6″ × 7′-6″','0′-5″ to 7′-11″'],
  ['Daya (W3)','Rose heart on ¾″ plywood backer, about 450 roses','about 4′-7″ wide × 4′-11″ tall, 7″ deep','Center 4′-4″'],
- ['Kshama (W4)','Story panel as the wall backdrop (centered on the 8 × 8 ft wall)','6′-0″ × 7′-0″','0′-11″ to 7′-11″'],
+ ['Kshama (W4)','Definition backdrop, same black design as the value posters (centered on the 8 × 8 ft wall)','7′-6″ × 7′-6″','0′-3″ to 7′-9″'],
  ['Kshama (W4)','Writing ledge + acrylic note tank','ledge 1′-11″ wide · tank 38 × 48 × 17 in','In front of the panel, west half'],
- ['Dharma (W5)','Story panel as the wall backdrop (centered on the 8 × 8 ft wall)','6′-0″ × 7′-0″','0′-11″ to 7′-11″'],
+ ['Dharma (W5)','Definition backdrop, same black design as the value posters (centered on the 8 × 8 ft wall)','7′-6″ × 7′-6″','0′-3″ to 7′-9″'],
  ['Dharma (W5)','Kavad rack, bamboo pole, 2 baskets, anti-slip mat','7′-0″ wide · mat 3 × 6 ft','On the floor in front of the panel'],
  ['Sankalp (W6)','Velcro target on ¾″ backer','4′-0″ diameter','Center 4′-7″'],
  ['Sankalp (W6)','Floor decal, throw lines at 3′-6″ and 2′-6″','3′-6″ × 4′-6″','On the floor in front of the target, no ropes'],
@@ -1604,8 +1611,8 @@ const WALLRUN={v5:{
  1:['W2 Santosh wall','11′-0″ wide × 8′-0″ high, 3 T-feet','3″ + 8′-0″ × 7′-0″ glow wall + 3″ gap + 2′-0″ × 7′-0″ poster + 6″; 6′-0″ marker ledge below'],
  2:['W1 Aadar wall','9′-0″ wide × 8′-0″ high, 2 T-feet','2″ + 6′-5″ story strip under the 75″ screen + 2″ gap + 2′-0″ × 7′-0″ poster + 3″'],
  3:['W3 Daya wall','12′-0″ wide × 8′-0″ high, 3 T-feet','3″ + 2′-0″ × 7′-0″ poster + 3″ gap + 9′-6″ × 7′-6″ BAPS Charities photo collage with the rose heart at its center'],
- 5:['W4 Kshama wall','8′-0″ wide × 8′-0″ high, 2 T-feet','1′-0″ + 6′-0″ × 7′-0″ story panel as the backdrop + 1′-0″; ledge and note tank stand in front; no side poster'],
- 6:['W5 Dharma wall','8′-0″ wide × 8′-0″ high, 2 T-feet','1′-0″ + 6′-0″ × 7′-0″ story panel as the backdrop + 1′-0″; kavad rack in front; no side poster'],
+ 5:['W4 Kshama wall','8′-0″ wide × 8′-0″ high, 2 T-feet','3″ + 7′-6″ square definition backdrop + 3″; ledge and note tank stand in front; no side poster'],
+ 6:['W5 Dharma wall','8′-0″ wide × 8′-0″ high, 2 T-feet','3″ + 7′-6″ square definition backdrop + 3″; kavad rack in front; no side poster'],
  7:['W6 Sankalp wall','6′-6″ wide × 8′-0″ high, 2 T-feet','3″ + 2′-0″ × 7′-0″ poster + 3″ + 3′-6″ for the 4′-0″ target (it overhangs the lane slightly) + 6″; 4′-6″ lane in front'],
  9:['W7 MSM mural wall','8′-6″ wide × 8′-0″ high, 2 T-feet','3″ + 8′-0″ × 7′-0″ mural placeholder + 3″']},
  v4:{
@@ -1614,7 +1621,7 @@ const WALLRUN={v5:{
  2:['W1 north wall','8′-7″ of wall × 8′-0″ high','75″ screen (5′-5½″ wide) over a 6′-5″ strip + 2″ gap + 2′-0″ × 7′-0″ poster'],
  3:['W6 west wall','11′-9″ of wall × 8′-0″ high','2′-0″ × 7′-0″ poster + 3″ gap + 9′-6″ × 7′-6″ rose heart backdrop with both stories'],
  5:['W5 south wall','9′-0″ of wall × 8′-0″ high','2′-0″ × 7′-0″ poster + 3″ gap + writing ledge and note tank in front of a 6′-0″ × 7′-0″ panel'],
- 6:['W5 south wall','8′-0″ of wall × 8′-0″ high','6′-0″ × 7′-0″ story panel as the backdrop, kavad rack in front (7′-0″ wide); no side poster'],
+ 6:['W5 south wall','8′-0″ of wall × 8′-0″ high','7′-6″ square definition backdrop, kavad rack in front (7′-0″ wide); no side poster'],
  7:['W5 south wall','5′-9″ of wall × 8′-0″ high','2′-0″ × 7′-0″ poster + 3″ gap + 3′-6″ wall section with the 4′-0″ target, lane 8′-6″ deep'],
  9:['W3 east wall','8′-0″ of wall × 8′-0″ high','8′-0″ × 7′-0″ mural placeholder']}};
 const SIDEWALL={N:'North wall',S:'South wall',W:'West wall',E:'East wall'};
