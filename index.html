@@ -376,8 +376,8 @@ const LAYOUTS={
  v1:mkLayout({id:'v1',name:'Version 1',sub:'Symmetric',spineZ:0,spineX0:-12}),
  v2:mkLayout({id:'v2',name:'Version 2',sub:'Asymmetric',spineZ:-1,spineX0:-11.5}),
  v4:mkLayout({id:'v4',name:'Version 4',sub:'Open aisles',spineZ:-1,spineX0:-11,rope:true,sk:12,bump:3.5,lane:8.5,throw:7,kids:5,laneRope:true,shift:(x)=>x>10.25&&x<13.75?3.5:0}),
- v6:mkLayout({id:'v6',name:'Version 6',sub:'Full walls',spineZ:-1,spineX0:-11,rope:true,fin:true,mir:true,sx:9.5,ax:-3.85,dx:-1.25,sk:9,bump:0,lane:5.5,throw:4.5,kids:3.5,laneRope:false,shift:()=>0}),
- v5:mkLayout({id:'v5',name:'Version 5 (Final)',sub:'Separate walls',fin:true,mir:true,sx:9.5,ax:-3.85,dx:-1.25,spineZ:-1,spineX0:-11,rope:true,free:true,NWF:-8.75,SWF:8.75,WWF:-18.75,EWF:18.75,sk:9,bump:0,lane:4.5,throw:3.5,kids:2.5,laneRope:false,shift:()=>0}),
+ v6:mkLayout({id:'v6',name:'Version 6',sub:'Full walls',spineZ:-1,spineX0:-11,rope:true,fin:true,sx:7.5,ax:-8.65,dx:-1.25,sk:11,bump:0,lane:5.5,throw:4.5,kids:3.5,laneRope:false,shift:()=>0}),
+ v5:mkLayout({id:'v5',name:'Version 5 (Final)',sub:'Separate walls',fin:true,sx:7.5,ax:-8.65,dx:-1.25,spineZ:-1,spineX0:-11,rope:true,free:true,NWF:-8.75,SWF:8.75,WWF:-18.75,EWF:18.75,sk:11,bump:0,lane:4.5,throw:3.5,kids:2.5,laneRope:false,shift:()=>0}),
  v3:mkLayout({id:'v3',name:'Version 3',sub:'Open hall',spineZ:0,spineX0:14.75,NWF:-8.75,SWF:8.75,WWF:-18.75,EWF:19.75,open:true})
 };
 const INTRO={
@@ -391,14 +391,14 @@ const INTRO={
 const CHANGES={
  v6:[
   '<b>Walls:</b> full perimeter walls on all four sides (north 35 ft, south 40 ft, east 20 ft, west 16 ft) with the 4 ft entry and exit, instead of separate walls. No drape needed.',
-  '<b>Aisles:</b> about 1 ft wider than Version 5 on each side: north 8′-6″, south 10′-6″, turn at the east end 8′-9″.',
+  '<b>Aisles:</b> about 1 ft wider than Version 5 on each side: north 8′-6″, south 10′-6″, west turn 8′-9″.',
   '<b>Same as Version 5:</b> supplied banners, Kshama and Dharma 8 × 8 ft backdrops, Sankalp backdrop with the 36 in dart board, Daya photo collage, main sign, tour guides, lights, straight rope.',
   '<b>Sankalp:</b> the extra room gives a 5′-6″ floor decal with throw lines at 4′-6″ and 3′-6″, still keeping a 5 ft walkway behind the throwers.',
-  '<b>West wall:</b> blank, with the card rack, and the exit at its south end. Entry and exit match the venue plan, and Santosh and Aadar sit by the entry as in Version 5.'
+  '<b>East wall:</b> blank, with the card rack, and the exit at its south end. Santosh and Aadar are spaced as in Version 5.'
  ],
  v5:[
-  '<b>Entry and exit:</b> both at the west end, as in the venue plan: the entry on the north side, the exit in the west wall at the south corner. Visitors walk east along the north side, turn at Daya on the east wall, and come back west along the south side.',
-  '<b>Santosh and Aadar:</b> moved up to the entry so there is no empty stretch as people walk in, with 3 ft between them. Santosh is now a 12 ft wall with a 10 × 8 ft particle-board glow wall.',
+  '<b>Exit:</b> a 4 ft opening in the east wall at the south corner, as in the venue plan; the entry stays on the north side at the east end.',
+  '<b>Santosh and Aadar:</b> Santosh moved up to the entry so there is no empty stretch as people walk in, and Aadar sits 5′-6″ further along. Santosh is now a 12 ft wall with a 10 × 8 ft particle-board glow wall.',
   '<b>Kshama:</b> the supplied 8 × 8 ft backdrop.',
   '<b>Main sign:</b> the supplied 4 × 8 ft design covers the entrance wall; the passport holder sits under “take a passport”.',
   '<b>Sankalp:</b> the 8 ft wall holds the 2 × 8 ft banner and the supplied 6 × 8 ft backdrop, with a 36 in velcro dart board under the word SANKALP. The wall moved 9 in west to fit.',
@@ -788,15 +788,15 @@ const S4={
   build:'8 × 7 ft print on the east wall flats · photos, quotes and prasangs from BAPS with approval · 2 clamp spots · card rack for the take-home value cards beside the exit.',take:'Every value in this room, lived in one life.'}
 };
 // 2 ft value posters sit to the right of each station (as you face it)
-function postersFor(L){return L.fin?[[1,'N',L.sx-6],[2,'N',L.ax-4.4],[3,'W',6],[7,'S',L.sk+4]]:[[1,'N',5.25],[2,'N',-8.5],[3,'W',-6],[5,'S',-15.5],[6,'S',-3.25],[7,'S',L.sk-3]];}
-const S5={3:{where:'Own 12 ft wall, east end, at the turn',foot:'9 ft 6 in × 7 ft 6 in photo collage + rose heart',
+function postersFor(L){return L.fin?[[1,'N',L.sx+6],[2,'N',L.ax+4.4],[3,'W',-6],[7,'S',L.sk-4]]:[[1,'N',5.25],[2,'N',-8.5],[3,'W',-6],[5,'S',-15.5],[6,'S',-3.25],[7,'S',L.sk-3]];}
+const S5={3:{where:'Own 12 ft wall, west end, at the turn',foot:'9 ft 6 in × 7 ft 6 in photo collage + rose heart',
   story:'Compassion is something you do. The rose heart sits in the middle of a collage of photos from BAPS Charities and BAPS humanitarian work around the world: disaster relief, medical camps, food drives, blood drives, education and environmental projects. No words, just the work.',
   act:'No activity. A quiet stop at the turn: people see the heart and the photos straight ahead as they reach the end of the north aisle.',
   build:'9 ft 6 in × 7 ft 6 in printed collage backdrop on the Daya wall (photos from BAPS Charities, with approval; keep the center clear for the heart) · rose heart about 4 ft 7 in wide on a ¾ in plywood backer, center at 4 ft 4 in · 2 × 8 ft value banner to its right · one clamp spot on the heart, one on the poster, one red battery uplight on the floor.',
   take:'Compassion is not just feeling someone’s pain; it is doing something about it.'},
  0:{where:'4 ft wall facing the entrance'},1:{where:'Own 12 ft wall, north side, by the entry',foot:'10 × 8 ft glow board + 2 × 8 ft banner',build:'10 × 8 ft particle-board glow wall, painted with black chalkboard paint, on the Santosh wall · tree outline in UV-reactive paint · 2 UV LED wash lights on arms off the wall top (no floor lights) · 6 ft marker ledge, 6 in deep, on shelf brackets at 3 ft · 40+ fluorescent markers · 2 × 8 ft value banner to its right · tour guide stands in the gap beside the banner.'},2:{where:'Own 9 ft wall, north side'},3:{where:'Own 12 ft wall, west end, at the turn'},
- 5:{where:'Own 8 × 8 ft wall, south side, Kshama backdrop',build:'8 × 8 ft Kshama backdrop (supplied design: doves leaving open hands, live it today) covering the wall · writing ledge with slips and pens · locking acrylic note tank in front · no side banner.'},6:{where:'Own 8 × 8 ft wall, south side, definition panel as its backdrop',build:'8 × 8 ft Dharma backdrop covering the whole wall (supplied design: Shravan with the kavad, story of Shravan, live it today; no side banner) · 7 ft bamboo kavad on a rack with two baskets and 10 lb weights · 3 × 6 ft anti-slip mat · lit from the wall top only (no floor uplight) · tour guide stands just west of the wall to hand the kavad over and spot lifters.'},7:{where:'Own 8 × 8 ft wall, south side, west end',foot:'6 × 8 ft backdrop + 36 in dart board + 2 × 8 ft banner',act:'Bird’s Eye Toss. Under the word SANKALP, past distraction, confusion, doubt and fear, hangs a 36 in velcro dart board. Visitors step onto the floor decal, say one goal out loud, and throw three velcro balls from the 3 ft 6 in line (kids from 2 ft 6 in). The red-rope line runs straight past, with a 5 ft walkway behind the throwers.',build:'6 × 8 ft Sankalp backdrop (supplied design) · 36 in velcro dart board centered under the word SANKALP, center at 2 ft 7 in, on a ¾ in plywood backer · 3.5 × 4.5 ft floor decal with throw lines at 3 ft 6 in and 2 ft 6 in, no ropes · 12 velcro balls · tour guide stands at the west edge of the decal, by the throw line, to hand out balls and keep the line moving · 2 × 8 ft value banner on the same wall, to the right as you face it.'},
- 9:{short:'Exit',name:'Exit',en:'Take a value home',where:'Blank 5 ft 6 in wall, west end, beside the exit',foot:'Blank black wall + card rack',story:'The east wall stays blank and black, a quiet pause before visitors step into Mandir, Shastras & Sant.',act:'No activity. Visitors pick up a take-home value card from the rack on the way out.',build:'Blank 5 ft 6 in freestanding wall, painted matte black · card rack for the take-home value cards beside the exit · no print and no spotlight.',take:'Take one value home and live it this week.'}};
+ 5:{where:'Own 8 × 8 ft wall, south side, Kshama backdrop',build:'8 × 8 ft Kshama backdrop (supplied design: doves leaving open hands, live it today) covering the wall · writing ledge with slips and pens · locking acrylic note tank in front · no side banner.'},6:{where:'Own 8 × 8 ft wall, south side, definition panel as its backdrop',build:'8 × 8 ft Dharma backdrop covering the whole wall (supplied design: Shravan with the kavad, story of Shravan, live it today; no side banner) · 7 ft bamboo kavad on a rack with two baskets and 10 lb weights · 3 × 6 ft anti-slip mat · lit from the wall top only (no floor uplight) · tour guide stands just west of the wall to hand the kavad over and spot lifters.'},7:{where:'Own 8 × 8 ft wall, south side, east end',foot:'6 × 8 ft backdrop + 36 in dart board + 2 × 8 ft banner',act:'Bird’s Eye Toss. Under the word SANKALP, past distraction, confusion, doubt and fear, hangs a 36 in velcro dart board. Visitors step onto the floor decal, say one goal out loud, and throw three velcro balls from the 3 ft 6 in line (kids from 2 ft 6 in). The red-rope line runs straight past, with a 5 ft walkway behind the throwers.',build:'6 × 8 ft Sankalp backdrop (supplied design) · 36 in velcro dart board centered under the word SANKALP, center at 2 ft 7 in, on a ¾ in plywood backer · 3.5 × 4.5 ft floor decal with throw lines at 3 ft 6 in and 2 ft 6 in, no ropes · 12 velcro balls · tour guide stands at the west edge of the decal, by the throw line, to hand out balls and keep the line moving · 2 × 8 ft value banner on the same wall, to the right as you face it.'},
+ 9:{short:'Exit',name:'Exit',en:'Take a value home',where:'Blank 5 ft 6 in wall, east end, beside the exit',foot:'Blank black wall + card rack',story:'The east wall stays blank and black, a quiet pause before visitors step into Mandir, Shastras & Sant.',act:'No activity. Visitors pick up a take-home value card from the rack on the way out.',build:'Blank 5 ft 6 in freestanding wall, painted matte black · card rack for the take-home value cards beside the exit · no print and no spotlight.',take:'Take one value home and live it this week.'}};
 function zonesV4(L){const Z=[],z=(o)=>Z.push(Object.assign({kind:'use'},o));
  z({st:2,side:'N',face:'wall',a:-15.625,b:-10.175,obj:.4,use:0,label:'75 in screen'});
  z({st:2,side:'N',face:'spine',a:-15.6,b:-10.2,obj:.1,use:2,kind:'view',label:'Screen viewers at the rope line'});
@@ -905,13 +905,13 @@ LBL.v5=[[17.25,11.8,-4],[1.25,11.8,-7],[-11.75,11.8,-6.5],[-16.5,11.8,-1],[0,11.
 PATHS.v5=[[17,-15],[17,-10.5],[16.4,-6.6],[12,-6.6],[8,-5],[0,-5],[-12.9,-5],[-14.8,-4],[-15,-1],[-14,2],[-13,3],[-9,3],[1.5,3],[6,2.9],[8,1.8],[9.2,1.7],[12.8,1.7],[14.6,3],[15.6,5.5],[16.6,8.4],[17,15]];
 /* ================= Version 5: Version 4's layout, one freestanding wall per station ================= */
 function wallsV5(L){const n=L.NWF-.165,s=L.SWF+.165,w=L.WWF-.165,e=L.EWF+.165;const W=[
- {id:'W1',name:'Aadar wall',len:9,h:8,t:'4″',type:'Single-faced, north side, on 2 T-feet',faces:'75 in screen over the story strip + 2 × 8 ft value banner',tag:[L.ax-1.15,n],rot:0,x0:L.ax-5.65},
- {id:'W2',name:'Santosh wall',len:12,h:8,t:'4″',type:'Single-faced, north side, on 3 T-feet',faces:'10 × 8 ft particle-board glow wall + 2 × 8 ft value banner; marker ledge below',tag:[L.sx-1,n],rot:0,x0:L.sx-7},
- {id:'W3',name:'Daya wall',len:12,h:8,t:'4″',type:'Single-faced, east end, on 3 T-feet',faces:'9 ft 6 in BAPS Charities photo collage with the rose heart at its center + 2 × 8 ft value banner',tag:[w,1],rot:1,x0:-5},
+ {id:'W1',name:'Aadar wall',len:9,h:8,t:'4″',type:'Single-faced, north side, on 2 T-feet',faces:'75 in screen over the story strip + 2 × 8 ft value banner',tag:[L.ax+1.15,n],rot:0,x0:L.ax-3.35},
+ {id:'W2',name:'Santosh wall',len:12,h:8,t:'4″',type:'Single-faced, north side, on 3 T-feet',faces:'10 × 8 ft particle-board glow wall + 2 × 8 ft value banner; marker ledge below',tag:[L.sx+1,n],rot:0,x0:L.sx-5},
+ {id:'W3',name:'Daya wall',len:12,h:8,t:'4″',type:'Single-faced, west end, on 3 T-feet',faces:'9 ft 6 in BAPS Charities photo collage with the rose heart at its center + 2 × 8 ft value banner',tag:[w,-1.25],rot:1,x0:-7.25},
  {id:'W4',name:'Kshama wall',len:8,h:8,t:'4″',type:'Single-faced, south side, on 2 T-feet',faces:'8 × 8 ft Kshama backdrop (supplied design) covering the wall; ledge and note tank in front; no side banner',tag:[-12.75,s],rot:0,x0:-16.75},
  {id:'W5',name:'Dharma wall',len:8,h:8,t:'4″',type:'Single-faced, south side, on 2 T-feet',faces:'8 × 8 ft Dharma backdrop covering the wall; kavad rack in front; no side banner',tag:[L.dx,s],rot:0,x0:L.dx-4},
- {id:'W6',name:'Sankalp wall',len:8,h:8,t:'4″',type:'Single-faced, south side, on 2 T-feet',faces:'2 × 8 ft value banner + 6 × 8 ft Sankalp backdrop with a 36 in velcro dart board under the word SANKALP',tag:[L.sk+1,s],rot:0,x0:L.sk-3},
- {id:'W7',name:'West wall (blank)',len:5.5,h:8,t:'4″',type:'Single-faced, west end, beside the exit, on 2 T-feet',faces:'Blank, painted black; card rack for the take-home value cards',tag:[e,3],rot:1,x0:.25},
+ {id:'W6',name:'Sankalp wall',len:8,h:8,t:'4″',type:'Single-faced, south side, on 2 T-feet',faces:'2 × 8 ft value banner + 6 × 8 ft Sankalp backdrop with a 36 in velcro dart board under the word SANKALP',tag:[L.sk-1,s],rot:0,x0:L.sk-5},
+ {id:'W7',name:'East wall (blank)',len:5.5,h:8,t:'4″',type:'Single-faced, east end, beside the exit, on 2 T-feet',faces:'Blank, painted black; card rack for the take-home value cards',tag:[e,3],rot:1,x0:.25},
  {id:'W8',name:'Entrance wall (main sign)',len:4,h:8,t:'4″',type:'Single-faced, facing the entrance, on 2 T-feet',faces:'4 × 8 ft main sign (supplied design) covering the face + passport holder under “take a passport”',tag:[17.25,L.SN+.165],rot:0,entrance:true}];
  W.forEach(x=>{x.flats=flatsTxt(x.len);x.feet=x.len>10?3:2;});return W;}
 function ftin(x){const f=Math.floor(x+1e-9),i=Math.round((x-f)*12);return f+' ft'+(i?' '+i+' in':'');}
@@ -952,23 +952,23 @@ function bomV5(L){const B=bomV4(L),Wl=wallsV5(L);
  return B;}
 
 /* tour guides (volunteers), Version 5 */
-function GUIDES5(L){const gS=L.fin?L.sx-8.5:-5.75,gD=L.fin?L.dx-5.75:-5.9;return [
- {st:1,side:'N',c:gS,d:1.1,x:gS,z:L.NWF+1.1,where:'Gap between the Santosh and Aadar walls, beside the Santosh banner',job:'Invites people to write one thing they are grateful for, hands out markers, and tells the Krishna and Sudama story in 30 seconds.'},
- {st:6,side:'S',c:gD,d:1.1,x:gD,z:L.SWF-1.1,where:'Gap between the Kshama and Dharma walls, at the east end of the Dharma backdrop',job:'Tells Shravan’s story, hands over the kavad, spots each lifter and resets the baskets.'},
- {st:7,side:'S',c:L.sk-2.4,d:L.throw+.4,x:L.sk-2.4,z:L.SWF-(L.throw+.4),where:'East edge of the Sankalp floor decal, level with the throw line',job:'Asks each thrower to say one goal out loud, hands out three balls, collects them, and keeps the walkway behind the throwers clear.'}];}
+function GUIDES5(L){const gS=L.fin?L.sx-6.3:-5.75,gD=L.fin?L.dx-5.75:-5.9;return [
+ {st:1,side:'N',c:gS,d:1.1,x:gS,z:L.NWF+1.1,where:'Gap between the Aadar and Santosh walls, at the west end of the glow wall',job:'Invites people to write one thing they are grateful for, hands out markers, and tells the Krishna and Sudama story in 30 seconds.'},
+ {st:6,side:'S',c:gD,d:1.1,x:gD,z:L.SWF-1.1,where:'Gap between the Kshama and Dharma walls, at the west end of the Dharma backdrop',job:'Tells Shravan’s story, hands over the kavad, spots each lifter and resets the baskets.'},
+ {st:7,side:'S',c:L.sk-2.4,d:L.throw+.4,x:L.sk-2.4,z:L.SWF-(L.throw+.4),where:'West edge of the Sankalp floor decal, level with the throw line',job:'Asks each thrower to say one goal out loud, hands out three balls, collects them, and keeps the walkway behind the throwers clear.'}];}
 function stName(i,fin){return Object.assign({},S[i],S4[i]||{},fin?S5[i]||{}:{}).short;}
 
 /* ================= Version 6: Version 5's content on full perimeter walls ================= */
-const S6={1:{where:'North wall, by the entry'},2:{where:'North wall'},3:{where:'East wall, at the turn'},5:{where:'South wall, 8 × 8 ft backdrop'},6:{where:'South wall, 8 × 8 ft backdrop'},
- 7:{where:'South wall, west end',act:'Bird’s Eye Toss. Under the word SANKALP, past distraction, confusion, doubt and fear, hangs a 36 in velcro dart board. Visitors step onto the floor decal, say one goal out loud, and throw three velcro balls from the 4 ft 6 in line (kids from 3 ft 6 in). The red-rope line runs straight past, with a 5 ft walkway behind the throwers.',
+const S6={1:{where:'North wall, by the entry'},2:{where:'North wall'},3:{where:'West wall, at the turn'},5:{where:'South wall, 8 × 8 ft backdrop'},6:{where:'South wall, 8 × 8 ft backdrop'},
+ 7:{where:'South wall, east end',act:'Bird’s Eye Toss. Under the word SANKALP, past distraction, confusion, doubt and fear, hangs a 36 in velcro dart board. Visitors step onto the floor decal, say one goal out loud, and throw three velcro balls from the 4 ft 6 in line (kids from 3 ft 6 in). The red-rope line runs straight past, with a 5 ft walkway behind the throwers.',
   build:'6 × 8 ft Sankalp backdrop (supplied design) on the south wall · 36 in velcro dart board centered under the word SANKALP, center at 2 ft 7 in, on a ¾ in plywood backer · 3.5 × 5.5 ft floor decal with throw lines at 4 ft 6 in and 3 ft 6 in, no ropes · 12 velcro balls · tour guide at the west edge of the decal · 2 × 8 ft value banner to the right as you face it.'},
- 9:{where:'Blank west wall, beside the exit',build:'East wall left blank, painted matte black · card rack for the take-home value cards beside the exit · no print and no spotlight.'}};
+ 9:{where:'Blank east wall, beside the exit',build:'East wall left blank, painted matte black · card rack for the take-home value cards beside the exit · no print and no spotlight.'}};
 function wallsV6(L){const W=[
  {id:'W1',name:'North wall',len:35,h:8,t:'4″',type:'Single-faced, on wall jacks',faces:'Santosh glow wall + 2 × 8 ft banner by the entry, then the Aadar screen + 2 × 8 ft banner',tag:[-2.5,-10],rot:0},
- {id:'W2',name:'North return, west of the entry',len:1,h:8,t:'4″',type:'Single-faced',faces:'Frames the 4′-0″ entry',tag:[19.5,-10],rot:0},
- {id:'W3',name:'West wall',len:16,h:8,t:'4″',type:'Single-faced, on wall jacks',faces:'Blank, painted black; card rack; the 4′-0″ exit is at its south end',tag:[20,-2],rot:1},
+ {id:'W2',name:'North return, east of the entry',len:1,h:8,t:'4″',type:'Single-faced',faces:'Frames the 4′-0″ entry',tag:[19.5,-10],rot:0},
+ {id:'W3',name:'East wall',len:16,h:8,t:'4″',type:'Single-faced, on wall jacks',faces:'Blank, painted black; card rack; the 4′-0″ exit is at its south end',tag:[20,-2],rot:1},
  {id:'W5',name:'South wall',len:40,h:8,t:'4″',type:'Single-faced, on wall jacks',faces:'Kshama and Dharma 8 × 8 ft backdrops; Sankalp 2 × 8 ft banner + 6 × 8 ft backdrop with the 36 in dart board',tag:[0,10],rot:0},
- {id:'W6',name:'East wall',len:20,h:8,t:'4″',type:'Single-faced, on wall jacks',faces:'Daya photo collage and rose heart + 2 × 8 ft banner, at the turn',tag:[-20,0],rot:1},
+ {id:'W6',name:'West wall',len:20,h:8,t:'4″',type:'Single-faced, on wall jacks',faces:'Daya photo collage and rose heart + 2 × 8 ft banner, at the turn',tag:[-20,0],rot:1},
  {id:'W7',name:'Entrance wall (main sign)',len:4,h:8,t:'4″',type:'Freestanding, on T-feet',faces:'4 × 8 ft main sign + passport holder, facing the entry',tag:[17.25,-1.085],rot:0}];
  W.forEach(w=>{w.flats=flatsTxt(w.len);});return W;}
 function bomV6(L){const B=bomV4(L);finRows(B,L);
@@ -997,14 +997,14 @@ function zonesFin(L){const Z=[],z=(o)=>Z.push(Object.assign({kind:'use'},o)),sx=
  z({st:9,side:'E',face:'wall',a:2,b:3.5,obj:.6,use:0,label:'Card rack (take-home value cards)'});
  postersFor(L).forEach(([st,side,c])=>z({st,side,face:'wall',a:c-1,b:c+1,obj:.1,use:2,kind:'view',label:'Value banner readers'}));
  return Z;}
-function checksFin(L){const ex=L.EWF-(L.sk+5);return [
- {st:0,aisle:'N',a:15.25,b:19.25},{st:1,aisle:'N',a:L.sx-7,b:L.sx+5},{st:2,aisle:'N',a:L.ax-5.65,b:L.ax+3.35},{st:3,aisle:'W',a:-4.75,b:7},
- {st:5,aisle:'S',a:-16.5,b:-8.7},{st:6,aisle:'S',a:L.dx-4,b:L.dx+4},{st:7,aisle:'S',a:L.sk-3,b:L.sk+5},
- {st:9,aisle:'X',fixed:ex,label:'Exit',note:'Between the end of the Sankalp wall and the west side, '+fmt(ex)+' leads to the 4 ft exit in the west wall'}];}
+function checksFin(L){const ex=L.EWF-(L.sk+3);return [
+ {st:0,aisle:'N',a:15.25,b:19.25},{st:1,aisle:'N',a:L.sx-5,b:L.sx+7},{st:2,aisle:'N',a:L.ax-3.35,b:L.ax+5.65},{st:3,aisle:'W',a:-7,b:4.75},
+ {st:5,aisle:'S',a:-16.5,b:-8.7},{st:6,aisle:'S',a:L.dx-4,b:L.dx+4},{st:7,aisle:'S',a:L.sk-5,b:L.sk+3},
+ {st:9,aisle:'X',fixed:ex,label:'Exit',note:'Between the end of the Sankalp wall and the east side, '+fmt(ex)+' leads to the 4 ft exit in the east wall'}];}
 function lightsFin(L){const {NWF,SWF,WWF,EWF,SN}=L,Lt=[],PY=6.6,PA=.4,dx=L.dx;
  const w=(f,t,o)=>Lt.push(Object.assign({type:'warm',f,t},o||{}));
  w([17.25,8.8,SN-2.4],[17.25,5.8,SN],{a:.45,wall:[17.25,SN+.165],lbl:'Main sign'});
- w([L.ax-3.5,8.8,NWF+1.8],[L.ax-4.4,6.6,NWF],{a:.4,i:1.1,lbl:'Aadar definition sign'});
+ w([L.ax+5.3,8.8,NWF+1.8],[L.ax+4.4,6.6,NWF],{a:.4,i:1.1,lbl:'Aadar definition sign'});
  w([WWF+2.95,8.8,0],[WWF+.15,4.3,0],{a:.42,i:1.5,color:0xFFD0B0,lbl:'Daya heart'});
  w([-12.75,8.8,SWF-2.05],[-12.75,PY,SWF],{a:PA,i:1,lbl:'Kshama panel'});
  w([-10.5,8.8,SWF-3.4],[-10.5,3.4,SWF-1],{a:.42,i:1.3,wall:[-10.5,SWF],lbl:'Kshama tank'});
@@ -1016,15 +1016,15 @@ function lightsFin(L){const {NWF,SWF,WWF,EWF,SN}=L,Lt=[],PY=6.6,PA=.4,dx=L.dx;
  return Lt;}
 
 // camera views, selection spots and label spots for the final versions (model frame; drawn mirrored)
-(function(){const mk=(n,s)=>[{p:[17.25,5.6,n+1.6],l:[17.25,3.8,-1.25]},{p:[9.5,5.4,-2.6],l:[9.5,3.8,n]},{p:[-5.6,5.4,-2.6],l:[-5.6,4.2,n]},{p:[-11.5,5.6,1],l:[-s-10,3.8,1]},{p:[0,5.4,0],l:[0,3,0]},
+(function(){const mk=(n,s)=>[{p:[17.25,5.6,n+1.6],l:[17.25,3.8,-1.25]},{p:[7.5,5.4,-2.6],l:[7.5,3.8,n]},{p:[-6.5,5.4,-2.6],l:[-6.5,4.2,n]},{p:[-11.5,5.6,-1],l:[-s-10,3.8,-1]},{p:[0,5.4,0],l:[0,3,0]},
   {p:[-12.75,5.6,2.2],l:[-12.75,3.4,s]},{p:[-1.25,5.4,2.2],l:[-1.25,3,s]},{p:[10,6,-2.2],l:[10,3.6,s]},{p:[0,5.4,0],l:[0,3,0]},{p:[11,5.6,5],l:[s+10,3,4]},{p:[0,5.4,0],l:[0,3,0]}];
  VIEWS.v5=mk(-8.75,8.75);VIEWS.v6=mk(-9.75,9.75);
- SPOTS.v5=[[17.25,-4],[9.5,-6.2],[-5.6,-5.6],[-16,1],[0,0],[-12.5,5.8],[-1.25,5.6],[9,2.6],[0,0],[17,7],[0,0]];
- SPOTS.v6=[[17.25,-4],[9.5,-7],[-5.6,-6.4],[-17,1],[0,0],[-12.5,6.6],[-1.25,6.4],[9,3.2],[0,0],[17.5,7],[0,0]];
+ SPOTS.v5=[[17.25,-4],[7.5,-6.2],[-6.5,-5.6],[-16,-1],[0,0],[-12.5,5.8],[-1.25,5.6],[11,2.6],[0,0],[17,7],[0,0]];
+ SPOTS.v6=[[17.25,-4],[7.5,-7],[-6.5,-6.4],[-17,-1],[0,0],[-12.5,6.6],[-1.25,6.4],[11,3.2],[0,0],[17.5,7],[0,0]];
  LBL.v5=SPOTS.v5.map((p,i)=>[p[0],11.8,i===1||i===2?-7:i===5||i===6||i===7?7:p[1]]);
  LBL.v6=SPOTS.v6.map((p,i)=>[p[0],11.8,i===1||i===2?-8:i===5||i===6||i===7?8:p[1]]);
- PATHS.v5=[[17,-15],[17,-10.5],[16.6,-6.2],[14,-5],[2,-5],[-12.9,-5],[-14.8,-4],[-15,-1],[-14,2],[-13,3],[-9,3],[-1,2.9],[3.8,2.6],[6.5,1.8],[11.5,1.8],[13.5,3.2],[16.5,6.5],[19,8],[23,8]];
- PATHS.v6=[[17,-15],[17,-10.5],[16.6,-6.6],[14,-5.6],[2,-5.6],[-12.9,-5.6],[-15.5,-4.4],[-15.8,-1],[-14.6,2.2],[-13.5,3.4],[-9,3.4],[-1,3.3],[3.8,3],[6.5,1.8],[11.5,1.8],[13.5,3.4],[16.8,6.8],[19.5,8],[23,8]];})();
+ PATHS.v5=[[17,-15],[17,-10.5],[16.6,-6.2],[14,-5],[2,-5],[-12.9,-5],[-14.8,-4],[-15,-1],[-14,2],[-13,3],[-9,3],[-1,2.9],[5,2.6],[8.5,1.8],[13,1.8],[15,3.2],[16.5,6.5],[19,8],[23,8]];
+ PATHS.v6=[[17,-15],[17,-10.5],[16.6,-6.6],[14,-5.6],[2,-5.6],[-12.9,-5.6],[-15.5,-4.4],[-15.8,-1],[-14.6,2.2],[-13.5,3.4],[-9,3.4],[-1,3.3],[5,3],[8.5,1.8],[13,1.8],[15,3.4],[16.8,6.8],[19.5,8],[23,8]];})();
 
 /* ================= textures (built once, cached across layout switches) ================= */
 const MAROON='#8C1D3A',SAFF='#D9831C',IVORY='#FBF6EE',INK='#2A1E22';
@@ -1345,7 +1345,7 @@ function buildWorld(L,E){
  const floor=new THREE.Mesh(new THREE.PlaneGeometry(64,48),M(0xffffff,{map:floorTex(),roughness:.7}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;world.add(floor);
  const fp=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(40,0.01,20)),new THREE.LineBasicMaterial({color:0x8C1D3A}));fp.position.y=0.03;world.add(fp);
  const ftext=(text,x,z,rot,w,size)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,w*160/1024),new THREE.MeshBasicMaterial({map:floorTextTex(text,size),transparent:true,depthWrite:false}));m.rotation.x=-Math.PI/2;m.rotation.z=rot||0;m.position.set(x,0.04,z);world.add(m);};
- if(L.mir){ftext('↓  FROM FESTIVAL',17,-14,0,14);ftext('←  TO MANDIR, SHASTRAS & SANT',31,8,0,18,62);ftext('MAIN HALL  →',-25,0,Math.PI/2,12);}
+ if(L.fin){ftext('↓  FROM FESTIVAL',17,-14,0,14);ftext('TO MANDIR, SHASTRAS & SANT  →',31,8,0,18,62);ftext('MAIN HALL  →',25,-4,Math.PI/2,12);}
  else{ftext('↓  FROM FESTIVAL',17,-14,0,14);ftext('↓  TO MANDIR, SHASTRAS & SANT',17,14,0,18,62);ftext('MAIN HALL  →',25,0,Math.PI/2,12);}
 
  /* walls: perimeter flats (ghostable) and the double-faced spine */
@@ -1618,7 +1618,7 @@ function buildWorld(L,E){
    else if(w.rot)p=[w.tag[0]<0?-20.4:20.4,6.6,w.tag[1]+(w.tag[0]<0?3:-3)];else p=[w.tag[0],6.6,w.tag[1]<0?-10.4:10.4];
    chipSprite(lab,new THREE.Vector3(...p),.95,'#5B2C83','#FFFFFF',W.dims);});
  const sL=v3?4.15:4.65,sR=v3?12.85:13.35;
- if(v4){dim([fin?L.sx-7:4.25,8.2,NWF+.3],[fin?L.sx-5:6.25,8.2,NWF+.3],fin?'value banner 2′-0″ × 8′-0″':'value poster 2′-0″ × 7′-0″',{off:[0,.7,0]});dim([fin?L.sx-7.35:6.6,fin?0:.9,NWF+.35],[fin?L.sx-7.35:6.6,fin?8:7.9,NWF+.35],fin?'banners + backdrops 0′-0″ to 8′-0″':'panels + posters 0′-11″ to 7′-11″',{tick:[.35,0,0],off:[3.2,0,0]});}
+ if(v4){dim([fin?L.sx+5:4.25,8.2,NWF+.3],[fin?L.sx+7:6.25,8.2,NWF+.3],fin?'value banner 2′-0″ × 8′-0″':'value poster 2′-0″ × 7′-0″',{off:[0,.7,0]});dim([fin?L.sx+7.35:6.6,fin?0:.9,NWF+.35],[fin?L.sx+7.35:6.6,fin?8:7.9,NWF+.35],fin?'banners + backdrops 0′-0″ to 8′-0″':'panels + posters 0′-11″ to 7′-11″',{tick:[.35,0,0],off:[3.2,0,0]});}
  else{dim([sL,8.25,NWF-.5],[sL,9.96,NWF-.5],'banners 8′-3″ to 10′-0″',{tick:[.35,0,0],off:[-2.9,0,0]});
  dim([sR,.9,NWF+.35],[sR,7.9,NWF+.35],'panels 0′-11″ to 7′-11″',{tick:[.35,0,0],off:[2.9,0,0]});}
  if(v1)dim([0,5.25,NWF+.3],[0,5.25,-6.4],'bench 3′-2″ from 85″ screen',{off:[0,.75,0]});
@@ -1694,7 +1694,7 @@ const PARTS5=[
  ['Sankalp (W6)','Floor decal, throw lines at 3′-6″ and 2′-6″','3′-6″ × 4′-6″','On the floor in front of the target, no ropes'],
  ['Station walls (×4)','Value banner, supplied designs (black, name, Devanagari, pronunciation, English word, paragraph, orange action box); Santosh, Aadar, Daya, Sankalp only','2′-0″ × 8′-0″ (× 4)','Floor to top of wall, 0′-0″ to 8′-0″, right of each station as you face it'],
  ['Center','Stanchions with red rope, straight line','5 posts · 4 ropes, about 26 ft','Rope at about 2′-9″'],
- ['Exit','Card rack for the take-home value cards','about 1′-6″ wide','On the blank west wall (W7), beside the exit']];
+ ['Exit','Card rack for the take-home value cards','about 1′-6″ wide','On the blank east wall (W7), beside the exit']];
 function wallOf(x,z){let best=null,bd=1.6;wallsV5(LAYOUTS.v5).forEach(w=>{const s0=w.x0!=null?w.x0:w.tag[0]-w.len/2;
   if(w.rot){if(z<s0-.5||z>s0+w.len+.5)return;const d=Math.abs(x-w.tag[0]);if(d<bd){bd=d;best=w;}}
   else{const a=w.entrance?w.tag[0]-w.len/2:s0;if(x<a-.5||x>a+w.len+.5)return;const d=Math.abs(z-w.tag[1]);if(d<bd){bd=d;best=w;}}});return best;}
@@ -1719,11 +1719,11 @@ const WALLRUN={v6:{
  0:['W7 entrance wall','4′-0″ wide × 8′-0″ high, 2 T-feet','4′-0″ × 8′-0″ main sign (supplied design) covers the face; passport holder under “take a passport”'],
  1:['W1 north wall, by the entry','12′-0″ of wall × 8′-0″ high','10′-0″ × 8′-0″ particle-board glow wall + 2′-0″ × 8′-0″ banner; 6′-0″ marker ledge below'],
  2:['W1 north wall','8′-7″ of wall × 8′-0″ high','75″ screen over a 6′-5″ strip + 2″ gap + 2′-0″ × 8′-0″ banner'],
- 3:['W6 east wall','11′-9″ of wall × 8′-0″ high','9′-6″ × 7′-6″ BAPS Charities photo collage with the rose heart + 3″ gap + 2′-0″ × 8′-0″ banner'],
+ 3:['W6 west wall','11′-9″ of wall × 8′-0″ high','9′-6″ × 7′-6″ BAPS Charities photo collage with the rose heart + 3″ gap + 2′-0″ × 8′-0″ banner'],
  5:['W5 south wall','8′-0″ of wall × 8′-0″ high','8′-0″ × 8′-0″ Kshama backdrop (supplied design); ledge and note tank in front; no side banner'],
  6:['W5 south wall','8′-0″ of wall × 8′-0″ high','8′-0″ × 8′-0″ Dharma backdrop (supplied design); kavad rack in front; no side banner'],
- 7:['W5 south wall, west end','8′-0″ of wall × 8′-0″ high','2′-0″ × 8′-0″ banner + 6′-0″ × 8′-0″ Sankalp backdrop with a 36″ velcro dart board under SANKALP (center 2′-7″); 5′-6″ floor decal in front'],
- 9:['W3 west wall','blank','Blank, painted black; card rack for the take-home value cards; exit at its south end']},
+ 7:['W5 south wall, east end','8′-0″ of wall × 8′-0″ high','2′-0″ × 8′-0″ banner + 6′-0″ × 8′-0″ Sankalp backdrop with a 36″ velcro dart board under SANKALP (center 2′-7″); 5′-6″ floor decal in front'],
+ 9:['W3 east wall','blank','Blank, painted black; card rack for the take-home value cards; exit at its south end']},
  v5:{
  0:['W8 entrance wall','4′-0″ wide × 8′-0″ high, 2 T-feet','4′-0″ × 8′-0″ main sign (supplied design) covers the face; passport holder under “take a passport”'],
  1:['W2 Santosh wall, by the entry','12′-0″ wide × 8′-0″ high, 3 T-feet','10′-0″ × 8′-0″ particle-board glow wall + 2′-0″ × 8′-0″ banner; 6′-0″ marker ledge below'],
@@ -1732,7 +1732,7 @@ const WALLRUN={v6:{
  5:['W4 Kshama wall','8′-0″ wide × 8′-0″ high, 2 T-feet','8′-0″ × 8′-0″ Kshama backdrop (supplied design) covering the whole wall; ledge and note tank stand in front; no side banner'],
  6:['W5 Dharma wall','8′-0″ wide × 8′-0″ high, 2 T-feet','8′-0″ × 8′-0″ Dharma backdrop (supplied design) covering the whole wall; kavad rack in front; no side banner'],
  7:['W6 Sankalp wall','8′-0″ wide × 8′-0″ high, 2 T-feet','2′-0″ × 8′-0″ banner + 6′-0″ × 8′-0″ Sankalp backdrop, with a 36″ velcro dart board under the word SANKALP (center 2′-7″); 4′-6″ floor decal in front'],
- 9:['W7 west wall (blank)','5′-6″ wide × 8′-0″ high, 2 T-feet','Blank, painted black; card rack for the take-home value cards, beside the exit']},
+ 9:['W7 east wall (blank)','5′-6″ wide × 8′-0″ high, 2 T-feet','Blank, painted black; card rack for the take-home value cards, beside the exit']},
  v4:{
  0:['W7 entrance wall','4′-0″ wide × 8′-0″ high','Main sign + passport holder on the whole face'],
  1:['W1 north wall','10′-3″ of wall × 8′-0″ high','8′-0″ × 7′-0″ glow wall + 3″ gap + 2′-0″ × 7′-0″ poster; 6′-0″ marker ledge below'],
@@ -1771,7 +1771,7 @@ function renderSpace(){const L=LAYOUTS[VER];
   $('spaceTable').innerHTML=h+'</tbody>';}
 
 /* ---------- plan drawing ---------- */
-function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(L.mir?20-x:x+20)*s,Z=z=>oz+(z+10)*s,Wd=ox+40*s+60,Hd=oz+20*s+140,o=[];
+function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(L.mir?20-x:x+20)*s,Z=z=>oz+(z+10)*s,Wd=ox+40*s+(L.fin?92:60),Hd=oz+20*s+140,o=[];
   const r=(x0,x1,z0,z1,c,extra)=>{const a=Math.min(x0,x1),b=Math.min(z0,z1),w=Math.abs(x1-x0),h=Math.abs(z1-z0);if(w<.01||h<.01)return;o.push('<rect x="'+Math.min(X(x0),X(x1)).toFixed(1)+'" y="'+Z(b).toFixed(1)+'" width="'+(w*s).toFixed(1)+'" height="'+(h*s).toFixed(1)+'" class="'+c+'"'+(extra||'')+'/>');};
   const t=(x,y,txt,c,extra)=>o.push('<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" class="'+c+'"'+(extra||'')+'>'+txt+'</text>');
   const ln=(x1,y1,x2,y2,c)=>o.push('<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" class="'+(c||'sv-dim')+'"/>');
@@ -1824,7 +1824,7 @@ function planSVG(L,E){const v1=L.id==='v1',s=18,ox=74,oz=70,X=x=>ox+(L.mir?20-x:
   lightsFor(L).forEach(l=>{const c=l.type==='uv'?'sv-uvl':'sv-warm';o.push('<circle cx="'+X(l.f[0]).toFixed(1)+'" cy="'+Z(l.f[2]).toFixed(1)+'" r="'+(l.type==='up'?3:4)+'" class="'+c+'"'+(l.type==='up'?' fill-opacity=".55"':'')+'/>');});
   if(L.fin)GUIDES5(L).forEach(g=>{o.push('<circle cx="'+X(g.x).toFixed(1)+'" cy="'+Z(g.z).toFixed(1)+'" r="7" fill="#F07A1A" stroke="#fff" stroke-width="1.5"/>');t(X(g.x),Z(g.z)+3.5,'G','',' text-anchor="middle" style="fill:#fff;font:700 9.5px var(--f-mono)"');});
   // station names
-  const PL=L.fin?{0:[17.25,L.SN-3.2],1:[L.sx,L.NWF+1.2],2:[L.ax-1.5,L.NWF+1.2],3:[L.WWF+2.35,-1.6],5:[-12.75,L.SWF-1.2],6:[L.dx,L.SWF-1.2],7:[L.sk,L.SWF-1.2],9:[L.EWF-2.6,8]}:L.rope?{0:[17.25,L.SN-3.2],1:[0,L.NWF+1.2],2:[-12.9,L.NWF+1.2],3:[L.WWF+2.35,-1.6],5:[L.fin?-12.75:-10.5,L.SWF-1.2],6:[1.5,L.SWF-1.2],7:[L.sk,L.SWF-1.2],9:[L.EWF-2.35,1.4]}:L.open?{0:[17.25,L.SN-1.2],1:[8.5,L.NWF+1.7],2:[-.25,L.NWF+1.5],3:[-9.75,L.NWF+1.5],4:[-17,1.6],5:[-12.5,L.SWF-1.6],6:[-5,L.SWF-1.6],7:[8,L.SWF-1.6],8:[1.25,L.SWF-1.6],9:[17.25,L.SS+1.2],10:[17.6,-7.3]}:{0:[17,L.SN-1.3],1:[9,L.NWF+1.2],2:[0,L.NWF+(v1?2.2:1.2)],3:[-8.75,L.NWF+1.2],4:[-17.6,L.spineZ+(v1?-3:0)],5:[v1?-10:-9,L.SWF-1.2],6:[v1?-4:-3,L.SS+1.2],7:[v1?2:5.5,L.SWF-1.2],8:[v1?10:13,L.SS+1.2],9:[18.1,5],10:[v1?-6.5:-7.6,L.SN-1.2]};
+  const PL=L.fin?{0:[17.25,L.SN-3.2],1:[L.sx,L.NWF+1.2],2:[L.ax+1.2,L.NWF+1.2],3:[L.WWF+2.35,-1.6],5:[-12.75,L.SWF-1.2],6:[L.dx,L.SWF-1.2],7:[L.sk,L.SWF-1.2],9:[L.EWF-2.6,8]}:L.rope?{0:[17.25,L.SN-3.2],1:[0,L.NWF+1.2],2:[-12.9,L.NWF+1.2],3:[L.WWF+2.35,-1.6],5:[L.fin?-12.75:-10.5,L.SWF-1.2],6:[1.5,L.SWF-1.2],7:[L.sk,L.SWF-1.2],9:[L.EWF-2.35,1.4]}:L.open?{0:[17.25,L.SN-1.2],1:[8.5,L.NWF+1.7],2:[-.25,L.NWF+1.5],3:[-9.75,L.NWF+1.5],4:[-17,1.6],5:[-12.5,L.SWF-1.6],6:[-5,L.SWF-1.6],7:[8,L.SWF-1.6],8:[1.25,L.SWF-1.6],9:[17.25,L.SS+1.2],10:[17.6,-7.3]}:{0:[17,L.SN-1.3],1:[9,L.NWF+1.2],2:[0,L.NWF+(v1?2.2:1.2)],3:[-8.75,L.NWF+1.2],4:[-17.6,L.spineZ+(v1?-3:0)],5:[v1?-10:-9,L.SWF-1.2],6:[v1?-4:-3,L.SS+1.2],7:[v1?2:5.5,L.SWF-1.2],8:[v1?10:13,L.SS+1.2],9:[18.1,5],10:[v1?-6.5:-7.6,L.SN-1.2]};
   Object.keys(PL).forEach(k=>{const i=+k,p=PL[k];t(X(p[0]),Z(p[1])+4,(i===10?(L.open?'Today':'Mural'):i===9&&L.rope?(L.fin?'Exit':'MSM mural'):S[i].short).toUpperCase(),'sv-h sv-halo',' text-anchor="middle" letter-spacing="0.06em"');});
   // walkway labels at the tightest point
   E.R.forEach(rr=>{if(rr.aisle==='X')return;const m=rr.min;let px,pz;
@@ -1941,10 +1941,10 @@ function renderBOM(){const L=LAYOUTS[VER],B=bomFor(L);
   $('bom').innerHTML=B.rows.map(sec=>'<h4>'+sec.title+'</h4><div class="tblwrap"><table><thead><tr>'+sec.cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+
     sec.r.map(row=>'<tr>'+row.map((cell,k)=>'<td'+((sec.cols[k]==='Qty')?' class="num"':'')+'>'+(sec.title==='Lighting'&&k===3?cell:esc(cell))+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'+(sec.note?'<p class="bomnote">'+esc(sec.note)+'</p>':'')).join('');}
 
-function renderWalls(){const L=LAYOUTS[VER],Wl=wallsFor(L);$('wallNote').textContent=(L.fin&&!L.free)?'All walls are 8′-0″ tall, built from 4 × 8 ft flats (2×4 frame on edge with a ½ in plywood face) and run the full length of each side, standing on wall jacks with sandbags at the edge of the 40 × 20 footprint. No header banners and no drape. Entry and exit are both at the west end: the entry on the north side, the exit in the west wall at its south end. Santosh, Aadar, Daya and Sankalp each have a 2 × 8 ft value banner, floor to wall top, to the right of the station. Kshama and Dharma each have an 8 × 8 ft backdrop on the south wall; Sankalp has a 6 × 8 ft backdrop beside its banner. The west wall is left blank. W2 is a short return that frames the entry.':L.free?'Every wall is a separate freestanding piece built from 4 × 8 ft flats (2×4 frame on edge with a ½ in plywood face), bolted together and standing on 3 ft T-feet with two sandbags each: 1 ft of foot in front, 2 ft behind. Walls stand 1′-3″ in from the 40 × 20 line, so the back of each foot reaches about 1 ft under the drape; if that space is not yours, use 2 ft wall jacks behind instead. No header banners. Santosh, Aadar, Daya and Sankalp each have a 2 × 8 ft value banner, floor to wall top, to the right of the station. Kshama, Dharma and Sankalp are 8 × 8 ft walls; Kshama and Dharma are covered by an 8 × 8 ft backdrop, with no side banner.':L.rope?'All walls are 8′-0″ tall, built from 4 × 8 ft flats (2×4 frame on edge with a ½ in plywood face). The 3D model and plan draw them slightly thinner. No header banners: each station has a 2 × 7 ft value poster on the wall to its right. W2 and W4 are short returns that frame the entry and exit openings; they can also be a single 2 ft flat or a pipe-and-drape leg.':L.open?'Every wall is a separate freestanding piece built from 4 × 8 ft flats (2×4 frame on edge with a ½ in plywood face), standing on two 3 ft T-feet with sandbags: 1 ft of foot in front, 2 ft behind. Walls stand 1′-3″ in from the drape line. Header banners add 1′-8½″ above the walls, from 8′-3″ to 10′-0″. The edges are black pipe-and-drape, not built walls.':'All walls are 8′-0″ tall, built from 4 × 8 ft flats (2×4 frame on edge with a ½ in plywood face). The 3D model and plan draw them slightly thinner. Header banners add 1′-8½″ above the walls, from 8′-3″ to 10′-0″. W2 and W4 are short returns that frame the entry and exit openings; they can also be a single 2 ft flat or a pipe-and-drape leg.';$('wallTitle').textContent='Wall schedule · '+L.name;
+function renderWalls(){const L=LAYOUTS[VER],Wl=wallsFor(L);$('wallNote').textContent=(L.fin&&!L.free)?'All walls are 8′-0″ tall, built from 4 × 8 ft flats (2×4 frame on edge with a ½ in plywood face) and run the full length of each side, standing on wall jacks with sandbags at the edge of the 40 × 20 footprint. No header banners and no drape. Entry and exit are both at the east end: the entry on the north side, the exit in the east wall at its south end. Santosh, Aadar, Daya and Sankalp each have a 2 × 8 ft value banner, floor to wall top, to the right of the station. Kshama and Dharma each have an 8 × 8 ft backdrop on the south wall; Sankalp has a 6 × 8 ft backdrop beside its banner. The east wall is left blank. W2 is a short return that frames the entry.':L.free?'Every wall is a separate freestanding piece built from 4 × 8 ft flats (2×4 frame on edge with a ½ in plywood face), bolted together and standing on 3 ft T-feet with two sandbags each: 1 ft of foot in front, 2 ft behind. Walls stand 1′-3″ in from the 40 × 20 line, so the back of each foot reaches about 1 ft under the drape; if that space is not yours, use 2 ft wall jacks behind instead. No header banners. Santosh, Aadar, Daya and Sankalp each have a 2 × 8 ft value banner, floor to wall top, to the right of the station. Kshama, Dharma and Sankalp are 8 × 8 ft walls; Kshama and Dharma are covered by an 8 × 8 ft backdrop, with no side banner.':L.rope?'All walls are 8′-0″ tall, built from 4 × 8 ft flats (2×4 frame on edge with a ½ in plywood face). The 3D model and plan draw them slightly thinner. No header banners: each station has a 2 × 7 ft value poster on the wall to its right. W2 and W4 are short returns that frame the entry and exit openings; they can also be a single 2 ft flat or a pipe-and-drape leg.':L.open?'Every wall is a separate freestanding piece built from 4 × 8 ft flats (2×4 frame on edge with a ½ in plywood face), standing on two 3 ft T-feet with sandbags: 1 ft of foot in front, 2 ft behind. Walls stand 1′-3″ in from the drape line. Header banners add 1′-8½″ above the walls, from 8′-3″ to 10′-0″. The edges are black pipe-and-drape, not built walls.':'All walls are 8′-0″ tall, built from 4 × 8 ft flats (2×4 frame on edge with a ½ in plywood face). The 3D model and plan draw them slightly thinner. Header banners add 1′-8½″ above the walls, from 8′-3″ to 10′-0″. W2 and W4 are short returns that frame the entry and exit openings; they can also be a single 2 ft flat or a pipe-and-drape leg.';$('wallTitle').textContent='Wall schedule · '+L.name;
   $('wallTable').innerHTML='<thead><tr><th>Tag</th><th>Wall</th><th>Length</th><th>Height</th><th>Thickness</th><th>Built from 4 ft flats</th><th>What hangs on it</th></tr></thead><tbody>'+
    Wl.map(w=>'<tr><td class="num"><b>'+w.id+'</b></td><td>'+esc(w.name)+'<br><small>'+esc(w.type)+'</small></td><td class="num">'+fmt(w.len)+'</td><td class="num">'+fmt(w.h)+'</td><td class="num">'+w.t+'</td><td class="num">'+esc(w.flats)+'</td><td>'+esc(w.faces)+'</td></tr>').join('')+
-   (L.free?'<tr><td class="num"><b>—</b></td><td>Pipe-and-drape edge</td><td class="num">about 112 ft</td><td class="num">8′-0″</td><td></td><td>rental</td><td>Along the 40 × 20 line, closing the gaps between walls · entry 4′-0″ from Festival (north side, west end) and exit 4′-0″ to Mandir (west side, south end) left open</td></tr>':(L.open?'<tr><td class="num"><b>—</b></td><td>Pipe-and-drape edge</td><td class="num">about 112 ft</td><td class="num">8′-0″</td><td></td><td>rental</td><td>Entry and exit openings 4′-0″ each, at the east end</td></tr>':'<tr><td class="num"><b>—</b></td><td>Openings</td><td class="num">4′-0″ each</td><td class="num">full height</td><td></td><td></td><td>'+(L.fin?'Entry from Festival (north side, west end, between W2 and W1) · exit to Mandir (west wall, south end, beside W3)':'Entry from Festival (north, between W1 and W2) · exit to Mandir (south, between W5 and W4)')+'</td></tr>'))+'</tbody>';}
+   (L.free?'<tr><td class="num"><b>—</b></td><td>Pipe-and-drape edge</td><td class="num">about 112 ft</td><td class="num">8′-0″</td><td></td><td>rental</td><td>Along the 40 × 20 line, closing the gaps between walls · entry 4′-0″ from Festival (north side, east end) and exit 4′-0″ to Mandir (east side, south end) left open</td></tr>':(L.open?'<tr><td class="num"><b>—</b></td><td>Pipe-and-drape edge</td><td class="num">about 112 ft</td><td class="num">8′-0″</td><td></td><td>rental</td><td>Entry and exit openings 4′-0″ each, at the east end</td></tr>':'<tr><td class="num"><b>—</b></td><td>Openings</td><td class="num">4′-0″ each</td><td class="num">full height</td><td></td><td></td><td>'+(L.fin?'Entry from Festival (north side, east end, between W1 and W2) · exit to Mandir (east wall, south end, beside W3)':'Entry from Festival (north, between W1 and W2) · exit to Mandir (south, between W5 and W4)')+'</td></tr>'))+'</tbody>';}
 function renderAll(){renderReview();EVAL=evaluate(LAYOUTS[VER]);renderIntro();renderList();renderDetail(current);renderSpace();renderWalls();
   const L=LAYOUTS[VER];$('planTitle').textContent='Plan · '+L.name;$('plan').innerHTML=planSVG(L,EVAL);
   $('secTitle').textContent='Section A–A · '+L.name+(L.open?' · cut across the room through the Aadar and Tyag walls':L.rope?' · cut across both aisles through the Aadar screen center':' · cut across both aisles 1′-6″ east of the Aadar screen center');$('section').innerHTML=sectionSVG(L,EVAL);renderBOM();}
