@@ -567,6 +567,7 @@ const pathLen=(P)=>{let s=0;for(let i=1;i<P.length;i++)s+=Math.hypot(P[i][0]-P[i
 
 /* ---------- materials and lighting ---------- */
 const LINKS={
+ picture:{t:'Wireless rechargeable LED picture light with remote (Amazon, the one you chose)',u:'https://www.amazon.com/dp/B0DBTSQWKY'},
  stanchion:{t:'Lancaster silver stanchion set with 8 ft red rope (WebstaurantStore)',u:'https://www.webstaurantstore.com/lancaster-table-seating-40-silver-rope-style-crowd-control-guidance-stanchion-set-with-8-red-rope/164CRSSRD8KT.html'},
  stanchion2:{t:'Red rope stanchion sets (Displays2go)',u:'https://www.displays2go.com/FLP/red-rope-stanchion-set'},
  clamp:{t:'BIBIVIS black clamp lamp, 8.5 in reflector, 6-pack (Home Depot)',u:'https://homedepot.com/p/BIBIVIS-Black-Clamp-Lamp-Light-150-Watt-with-8-5-in-Aluminum-Reflector-No-Bulb-Included-6-ft-Cord-6-Pack-SG60-T2R/333804598'},
@@ -848,7 +849,7 @@ function wallsV4(L){const W=[
  {id:'W7',name:'Entrance wall (main sign)',len:4,h:8,t:'4″',type:'Freestanding, on T-feet',faces:'Main sign + passport holder, facing the entrance',tag:[17.25,-1.085],rot:0},
 ];
  W.forEach(w=>{w.flats=flatsTxt(w.len);});return W;}
-function bomV4(L){const Lt=lightsV4(L),cnt=(t)=>Lt.filter(l=>l.type===t).length,warm=cnt('warm'),uv=cnt('uv'),ups=cnt('up');
+function bomV4(L){const Lt=lightsFor(L),cnt=(t)=>Lt.filter(l=>l.type===t).length,warm=cnt('warm'),uv=cnt('uv'),ups=cnt('up');
  const perim=[35,1,35,1,20,20],perimFlats=perim.reduce((s,l)=>s+Math.ceil(l/4),0),perimLen=perim.reduce((s,l)=>s+l,0),frames=perimFlats+1;
  const jacks=Math.ceil(perimLen/8),ply=perimFlats+1,studs=Math.ceil((frames*4+jacks*2+6+2+2)*1.1);
  const paint=perimLen*8+4*8*2,gal=Math.ceil(paint*2/350),primer=Math.ceil(paint/350);
@@ -928,6 +929,8 @@ function finRows(B,L){
  B.rows.forEach(sec=>{sec.r=sec.r.map(row=>row.map(fix));});
 
  B.rows.forEach(sec=>{sec.r=sec.r.map(row=>row[0]==='Santosh glow wall'?['Santosh glow wall','10 × 8 ft particle board, black chalkboard paint + UV paint tree','1']:row[0]==='Santosh'?['Santosh','6 ft marker ledge on 3 brackets · fluorescent markers · particle board 4 × 8 ft sheets for the glow wall','1 · 40+ · 3']:row);});
+ B.rows.forEach(sec=>{sec.r=sec.r.map(row=>/^Warm clamp spot/.test(row[0])?[row[0],'Wall tops, on short arms: main sign, Daya heart, Kshama backdrop and tank, Dharma backdrop, Sankalp backdrop and dart board',row[2],row[3]]:row[0]==='Plug-in LED dimmer'?[row[0],'One per circuit: west end, south walls, entrance sign (picture lights and UV bars are not dimmed)','3',row[3]]:row);});
+ const npic=lightsFor(L).filter(o=>o.type==='pic').length,lit=B.rows.find(x=>x.title==='Lighting');if(lit&&npic)lit.r.splice(1,0,['Picture light (rechargeable LED bar, remote)','Top edge of each value banner: Santosh, Aadar, Daya, Sankalp',String(npic),'<a href="'+LINKS.picture.u+'" target="_blank" rel="noopener">'+LINKS.picture.t+'</a>']);
  B.rows.forEach(sec=>{sec.r=sec.r.map(row=>row[0]==='Sankalp'?['Sankalp','36 in velcro dart board on a ¾ in plywood backer, center 2 ft 7 in, under the word SANKALP · velcro balls','1 · 12']:row);});
  B.rows.forEach(sec=>{sec.r=sec.r.filter(row=>!/Mahant Swami Maharaj mural/.test(row[0]));sec.r=sec.r.map(row=>row[0]==='Main sign'?['Main sign','4 × 8 ft, supplied design, covers the entrance wall face','1']:row);});
  const pr=B.rows.find(x=>x.title==='Printing');if(pr)pr.r.splice(pr.r.length-1,0,['Sankalp backdrop','6 × 8 ft, supplied design, beside the Sankalp banner','1']);
@@ -1004,13 +1007,14 @@ function checksFin(L){const ex=L.EWF-(L.sk+3);return [
 function lightsFin(L){const {NWF,SWF,WWF,EWF,SN}=L,Lt=[],PY=6.6,PA=.4,dx=L.dx;
  const w=(f,t,o)=>Lt.push(Object.assign({type:'warm',f,t},o||{}));
  w([17.25,8.8,SN-2.4],[17.25,5.8,SN],{a:.45,wall:[17.25,SN+.165],lbl:'Main sign'});
- w([L.ax+5.3,8.8,NWF+1.8],[L.ax+4.4,6.6,NWF],{a:.4,i:1.1,lbl:'Aadar definition sign'});
  w([WWF+2.95,8.8,0],[WWF+.15,4.3,0],{a:.42,i:1.5,color:0xFFD0B0,lbl:'Daya heart'});
  w([-12.75,8.8,SWF-2.05],[-12.75,PY,SWF],{a:PA,i:1,lbl:'Kshama panel'});
  w([-10.5,8.8,SWF-3.4],[-10.5,3.4,SWF-1],{a:.42,i:1.3,wall:[-10.5,SWF],lbl:'Kshama tank'});
  w([dx,8.8,SWF-2.05],[dx,PY,SWF],{a:PA,lbl:'Dharma'});
  w([L.sk-.8,8.8,SWF-2.1],[L.sk,5.9,SWF],{a:.45,i:1.2,lbl:'Sankalp backdrop'});w([L.sk+.8,8.8,SWF-2.6],[L.sk,2.6,SWF],{a:.36,i:1.3,lbl:'Sankalp dart board'});
- postersFor(L).forEach(([st,side,c])=>{if(side==='N')w([c,8.8,NWF+1.8],[c,PY,NWF],{a:PA,i:1.1,lbl:'Value poster · '+stName(st)});else if(side==='S')w([c,8.8,SWF-1.8],[c,PY,SWF],{a:PA,i:1.1,lbl:'Value poster · '+stName(st)});else w([WWF+1.8,8.8,c],[WWF,PY,c],{a:PA,i:1.1,wall:[WWF,c],lbl:'Value poster · '+stName(st)});});
+ // value banners: one rechargeable LED picture light on the top edge of each banner, bar pointing down the print
+ postersFor(L).forEach(([st,side,c])=>{const o={type:'pic',a:.55,i:1.1,bar:1.33,noArm:true,lbl:'Value poster · '+stName(st)};
+   if(side==='N')Lt.push(Object.assign(o,{f:[c,8.15,NWF+.55],t:[c,5,NWF]}));else if(side==='S')Lt.push(Object.assign(o,{f:[c,8.15,SWF-.55],t:[c,5,SWF]}));else Lt.push(Object.assign(o,{f:[WWF+.55,8.15,c],t:[WWF,5,c]}));});
  [L.sx-3.3,L.sx,L.sx+3.3].forEach(x=>Lt.push({type:'uv',f:[x,8.2,NWF+1],t:[x,3.2,NWF],a:.75,color:0x7B3CFF,i:1,beam:0x9B5CFF,bar:3.2,noArm:true,lbl:'Santosh UV bar'}));
  Lt.push({type:'up',f:[WWF+2.15,.25,0],t:[WWF+.15,4.6,0],a:.42,color:0xFF8A8A,i:.9,cone:false,lbl:'Daya red uplight'});
  return Lt;}
@@ -1554,7 +1558,9 @@ function buildWorld(L,E){
    const Ls=new THREE.SpotLight(o.color||WARM,o.i||1.6,o.d||18,a,0.6,1.3);Ls.position.copy(F);Ls.target.position.copy(T);world.add(Ls);world.add(Ls.target);W.fixtures.push(Ls);
    const dir=new THREE.Vector3().subVectors(T,F).normalize();
    const head=new THREE.Group();
-   if(o.type==='uv'){head.add(new THREE.Mesh(new THREE.BoxGeometry(o.bar||.9,.25,o.bar?.3:.5),canMat));const ln=new THREE.Mesh(new THREE.PlaneGeometry(.8,.4),uvLens);ln.rotation.x=Math.PI/2;ln.position.y=-.13;head.add(ln);}
+   if(o.type==='pic'){head.add(new THREE.Mesh(new THREE.BoxGeometry(o.bar,.12,.22),M(0x2A2A2A,{metalness:.5,roughness:.35})));const ln=new THREE.Mesh(new THREE.PlaneGeometry(o.bar*.94,.14),lensMat);ln.rotation.x=Math.PI/2;ln.position.y=-.065;head.add(ln);
+     const back=o.t[0]===o.f[0]?new THREE.Vector3(o.t[0],8.02,o.t[2]):new THREE.Vector3(o.t[0],8.02,o.t[2]);const arm=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,back.distanceTo(F),6),canMat);arm.position.copy(back).lerp(F,.5);arm.quaternion.setFromUnitVectors(Yv,new THREE.Vector3().subVectors(F,back).normalize());world.add(arm);}
+   else if(o.type==='uv'){head.add(new THREE.Mesh(new THREE.BoxGeometry(o.bar||.9,.25,o.bar?.3:.5),canMat));const ln=new THREE.Mesh(new THREE.PlaneGeometry(.8,.4),uvLens);ln.rotation.x=Math.PI/2;ln.position.y=-.13;head.add(ln);}
    else{head.add(new THREE.Mesh(new THREE.CylinderGeometry(.15,.21,.5,14),canMat));const ln=new THREE.Mesh(new THREE.CircleGeometry(.19,14),lensMat);ln.rotation.x=Math.PI/2;ln.position.y=-.26;head.add(ln);}
    head.position.copy(F);head.quaternion.setFromUnitVectors(new THREE.Vector3(0,-1,0),dir);world.add(head);
    if(F.y>7&&!o.noArm){const A=new THREE.Vector3(o.wall?o.wall[0]:o.t[0],8.05,o.wall?o.wall[1]:o.t[2]);const len=A.distanceTo(F);
@@ -1706,13 +1712,13 @@ function renderReview(){const L=LAYOUTS.v5,Wl=wallsV5(L);const row=(c)=>'<tr>'+c
     return row(['<b>'+w.id+'</b>',esc(w.name),fmt(w.len)+' × '+fmt(w.h)+' × '+w.t,esc(w.flats),String(w.feet||2),pos,esc(w.faces)]);}).join('')+
    row(['<b>—</b>','Pipe-and-drape edge','about 112 ft × 8′-0″','rental','—','Along the 40 × 20 line','Closes the edges and the gaps between walls; 4′-0″ entry and exit left open'])+'</tbody>';
   $('rvParts').innerHTML='<thead><tr><th>Where</th><th>Part</th><th>Size</th><th>Mounting height</th></tr></thead><tbody>'+PARTS5.map(p=>'<tr><td>'+p.map(esc).join('</td><td>')+'</td></tr>').join('')+'</tbody>';
-  const Lt=lightsFor(L),TY={warm:'Warm clamp spot, PAR38 3000K',uv:'UV LED wash',up:'Battery uplight (red)'};
+  const Lt=lightsFor(L),TY={warm:'Warm clamp spot, PAR38 3000K',uv:'UV LED bar',up:'Battery uplight (red)',pic:'Picture light, rechargeable LED bar'};
   $('rvLights').innerHTML='<thead><tr><th>#</th><th>Station / aims at</th><th>Fixture</th><th>Mounted</th><th>Fixture position</th><th>Aim point</th></tr></thead><tbody>'+
    Lt.map((o,k)=>{const w=o.f[1]>7?wallOf(o.wall?o.wall[0]:o.t[0],o.wall?o.wall[1]:o.t[2]):null;
-    const mount=o.type==='up'?'On the floor, battery':'Short arm off the top of '+(w?w.id+' ('+esc(w.name)+')':'the wall');
+    const mount=o.type==='up'?'On the floor, battery':o.type==='pic'?'Top edge of the banner on '+(w?w.id+' ('+esc(w.name)+')':'the wall')+', battery':o.type==='uv'?'UV ledge on '+(w?w.id:'the wall'):'Short arm off the top of '+(w?w.id+' ('+esc(w.name)+')':'the wall');
     return row([String(k+1),esc(o.lbl||''),TY[o.type],mount,EN(o.f[0])+' · '+SO(o.f[2])+' · '+fmt(o.f[1])+' high',EN(o.t[0])+' · '+SO(o.t[2])+' · '+fmt(o.t[1])+' high']);}).join('')+'</tbody>';
-  const wc=Lt.filter(o=>o.type==='warm').length,uc=Lt.filter(o=>o.type==='uv').length,upc=Lt.filter(o=>o.type==='up').length;
-  $('rvLightNote').textContent=wc+' warm spots, '+uc+' UV LED bars (on a 2×4 ledge along the top of the Santosh wall) and '+upc+' floor uplight ('+Lt.length+' fixtures). No floor lights at stations with an activity (Santosh, Kshama, Dharma, Sankalp); the only floor light is the red uplight under the Daya heart. Every spot hangs on a short arm off a wall top at 8′-9″, so no stands or cords sit on the floor.';
+  const wc=Lt.filter(o=>o.type==='warm').length,uc=Lt.filter(o=>o.type==='uv').length,upc=Lt.filter(o=>o.type==='up').length,pc=Lt.filter(o=>o.type==='pic').length;
+  $('rvLightNote').textContent=pc+' picture lights on the value banners, '+wc+' warm spots, '+uc+' UV LED bars (on a 2×4 ledge along the top of the Santosh wall) and '+upc+' floor uplight ('+Lt.length+' fixtures). No floor lights at stations with an activity (Santosh, Kshama, Dharma, Sankalp); the only floor light is the red uplight under the Daya heart. Every warm spot hangs on a short arm off a wall top at 8′-9″, and the picture lights mount on the top edge of each banner and run on batteries, so no stands or cords sit on the floor.';
   $('rvGuides').innerHTML='<thead><tr><th>#</th><th>Station</th><th>Standing spot</th><th>Where</th><th>What they do</th></tr></thead><tbody>'+
    GUIDES5(L).map((g,k)=>row([String(k+1),'<b>'+esc(stName(g.st))+'</b>',EN(g.x)+' · '+SO(g.z),esc(g.where),esc(g.job)])).join('')+'</tbody>';
   const E5=evaluate(L);$('rvWalk').innerHTML='<thead><tr><th>Station</th><th>Narrowest walkway</th><th>Status</th></tr></thead><tbody>'+
